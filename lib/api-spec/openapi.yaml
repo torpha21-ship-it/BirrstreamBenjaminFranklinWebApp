@@ -1,0 +1,1263 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: BirrStream API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: admin
+    description: Admin moderation operations
+  - name: auth
+    description: Authentication operations
+  - name: dashboard
+    description: Dashboard and summary operations
+  - name: packages
+    description: VIP package operations
+  - name: transactions
+    description: Transaction ledger operations
+  - name: deposits
+    description: Deposit operations
+  - name: withdrawals
+    description: Withdrawal operations
+  - name: tasks
+    description: Daily task operations
+  - name: referrals
+    description: Referral and affiliate operations
+  - name: user
+    description: User profile operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/forgot-password:
+    post:
+      operationId: forgotPassword
+      tags: [auth]
+      summary: Send password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordInput"
+      responses:
+        "200":
+          description: Reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard financial summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/streak:
+    get:
+      operationId: getLoginStreak
+      tags: [dashboard]
+      summary: Get login streak calendar
+      responses:
+        "200":
+          description: Login streak data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginStreak"
+
+  /dashboard/streak/checkin:
+    post:
+      operationId: checkinStreak
+      tags: [dashboard]
+      summary: Check in for today's streak bonus
+      responses:
+        "200":
+          description: Checkin recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakCheckinResult"
+
+  /packages:
+    get:
+      operationId: listPackages
+      tags: [packages]
+      summary: List all VIP packages
+      responses:
+        "200":
+          description: List of packages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Package"
+
+  /packages/{id}/purchase:
+    post:
+      operationId: purchasePackage
+      tags: [packages]
+      summary: Purchase a VIP package
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Package purchased
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseResult"
+        "400":
+          description: Insufficient balance or validation error
+
+  /packages/active:
+    get:
+      operationId: getActivePackage
+      tags: [packages]
+      summary: Get user's active VIP package
+      responses:
+        "200":
+          description: Active package info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivePackage"
+
+  /tasks:
+    get:
+      operationId: listDailyTasks
+      tags: [tasks]
+      summary: List today's daily tasks
+      responses:
+        "200":
+          description: Today's tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DailyTask"
+
+  /tasks/{id}/complete:
+    post:
+      operationId: completeTask
+      tags: [tasks]
+      summary: Complete a daily task and earn reward
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Task completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskCompleteResult"
+        "400":
+          description: Already completed or error
+
+  /deposits:
+    post:
+      operationId: submitDeposit
+      tags: [deposits]
+      summary: Submit a deposit request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositInput"
+      responses:
+        "201":
+          description: Deposit submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Deposit"
+
+  /deposits/history:
+    get:
+      operationId: listDeposits
+      tags: [deposits]
+      summary: List all deposits for the user
+      responses:
+        "200":
+          description: Deposit history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Deposit"
+
+  /withdrawals:
+    post:
+      operationId: submitWithdrawal
+      tags: [withdrawals]
+      summary: Submit a withdrawal request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalInput"
+      responses:
+        "201":
+          description: Withdrawal submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Withdrawal"
+        "400":
+          description: Below reserve limit or insufficient balance
+
+  /withdrawals/history:
+    get:
+      operationId: listWithdrawals
+      tags: [withdrawals]
+      summary: List all withdrawals for the user
+      responses:
+        "200":
+          description: Withdrawal history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Withdrawal"
+
+  /withdrawals/settings:
+    get:
+      operationId: getWithdrawalSettings
+      tags: [withdrawals]
+      summary: Get user's bank/wallet withdrawal settings
+      responses:
+        "200":
+          description: Withdrawal settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalSettings"
+    put:
+      operationId: updateWithdrawalSettings
+      tags: [withdrawals]
+      summary: Update bank/wallet withdrawal settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalSettingsInput"
+      responses:
+        "200":
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalSettings"
+
+  /referrals/info:
+    get:
+      operationId: getReferralInfo
+      tags: [referrals]
+      summary: Get user's referral code, link, and stats
+      responses:
+        "200":
+          description: Referral info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferralInfo"
+
+  /referrals/network:
+    get:
+      operationId: getAffiliateNetwork
+      tags: [referrals]
+      summary: Get affiliate network downline data
+      responses:
+        "200":
+          description: Affiliate network
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AffiliateNetwork"
+
+  /referrals/vip-upgrades:
+    get:
+      operationId: getVipUpgradeGoals
+      tags: [referrals]
+      summary: Get VIP upgrade milestone goals and progress
+      responses:
+        "200":
+          description: VIP upgrade goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VipUpgradeGoal"
+
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags: [transactions]
+      summary: List all transactions for the user
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, deposits, withdrawals, task_earnings, commissions]
+      responses:
+        "200":
+          description: Transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get platform-wide stats (admin only)
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+        "403":
+          description: Not an admin
+
+  /admin/deposits/pending:
+    get:
+      operationId: listPendingDeposits
+      tags: [admin]
+      summary: List all pending deposits (admin only)
+      responses:
+        "200":
+          description: Pending deposits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminDeposit"
+        "403":
+          description: Not an admin
+
+  /admin/deposits/{id}/approve:
+    post:
+      operationId: approveDeposit
+      tags: [admin]
+      summary: Approve a pending deposit and credit the user (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deposit approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "403":
+          description: Not an admin
+        "404":
+          description: Deposit not found
+
+  /admin/deposits/{id}/reject:
+    post:
+      operationId: rejectDeposit
+      tags: [admin]
+      summary: Reject a pending deposit (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deposit rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "403":
+          description: Not an admin
+        "404":
+          description: Deposit not found
+
+  /admin/withdrawals/pending:
+    get:
+      operationId: listPendingWithdrawals
+      tags: [admin]
+      summary: List all pending withdrawals (admin only)
+      responses:
+        "200":
+          description: Pending withdrawals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminWithdrawal"
+        "403":
+          description: Not an admin
+
+  /admin/withdrawals/{id}/approve:
+    post:
+      operationId: approveWithdrawal
+      tags: [admin]
+      summary: Approve a pending withdrawal (funds already deducted) (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Withdrawal approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "403":
+          description: Not an admin
+        "404":
+          description: Withdrawal not found
+
+  /admin/withdrawals/{id}/reject:
+    post:
+      operationId: rejectWithdrawal
+      tags: [admin]
+      summary: Reject a pending withdrawal and refund the user (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Withdrawal rejected and refunded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "403":
+          description: Not an admin
+        "404":
+          description: Withdrawal not found
+
+  /user/profile:
+    get:
+      operationId: getUserProfile
+      tags: [user]
+      summary: Get user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateUserProfile
+      tags: [user]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /user/delete:
+    delete:
+      operationId: deleteAccount
+      tags: [user]
+      summary: Delete user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteAccountInput"
+      responses:
+        "200":
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Confirmation string mismatch
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        mainBalance:
+          type: number
+        totalYield:
+          type: number
+        totalDeposited:
+          type: number
+        totalWithdrawn:
+          type: number
+        referralCode:
+          type: string
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - username
+        - email
+        - mainBalance
+        - totalYield
+        - totalDeposited
+        - totalWithdrawn
+        - referralCode
+        - isAdmin
+        - createdAt
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required:
+        - user
+        - token
+
+    RegisterInput:
+      type: object
+      properties:
+        fullName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+        referralCode:
+          type: ["string", "null"]
+      required:
+        - fullName
+        - username
+        - email
+        - password
+        - confirmPassword
+
+    LoginInput:
+      type: object
+      properties:
+        usernameOrEmail:
+          type: string
+        password:
+          type: string
+        rememberMe:
+          type: boolean
+      required:
+        - usernameOrEmail
+        - password
+
+    ForgotPasswordInput:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+        - email
+
+    DashboardSummary:
+      type: object
+      properties:
+        mainBalance:
+          type: number
+        totalYield:
+          type: number
+        totalDeposited:
+          type: number
+        totalWithdrawn:
+          type: number
+        activePackageName:
+          type: ["string", "null"]
+        activePackageDailyReturn:
+          type: ["number", "null"]
+        packageExpiresAt:
+          type: ["string", "null"]
+        daysUntilExpiry:
+          type: ["integer", "null"]
+        progressToNextTier:
+          type: number
+        nextTierName:
+          type: ["string", "null"]
+        reserveFloor:
+          type: number
+      required:
+        - mainBalance
+        - totalYield
+        - totalDeposited
+        - totalWithdrawn
+        - progressToNextTier
+        - reserveFloor
+
+    LoginStreak:
+      type: object
+      properties:
+        currentStreak:
+          type: integer
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/StreakDay"
+        todayCheckedIn:
+          type: boolean
+        bonusPerDay:
+          type: number
+      required:
+        - currentStreak
+        - days
+        - todayCheckedIn
+        - bonusPerDay
+
+    StreakDay:
+      type: object
+      properties:
+        dayNumber:
+          type: integer
+        date:
+          type: string
+        checkedIn:
+          type: boolean
+        bonus:
+          type: number
+      required:
+        - dayNumber
+        - date
+        - checkedIn
+        - bonus
+
+    StreakCheckinResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        bonusEarned:
+          type: number
+        newStreak:
+          type: integer
+        newBalance:
+          type: number
+      required:
+        - success
+        - bonusEarned
+        - newStreak
+        - newBalance
+
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cost:
+          type: number
+        dailyReturn:
+          type: number
+        totalYield:
+          type: number
+        durationDays:
+          type: integer
+        isLocked:
+          type: boolean
+        tier:
+          type: string
+          enum: [vip1, vip2, vip3, vip4, vip5, elite, apex, titan, alpha]
+      required:
+        - id
+        - name
+        - cost
+        - dailyReturn
+        - totalYield
+        - durationDays
+        - isLocked
+        - tier
+
+    PurchaseResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        package:
+          $ref: "#/components/schemas/Package"
+        newBalance:
+          type: number
+        message:
+          type: string
+        shortfallAmount:
+          type: ["number", "null"]
+      required:
+        - success
+        - message
+
+    ActivePackage:
+      type: object
+      properties:
+        package:
+          $ref: "#/components/schemas/Package"
+        purchasedAt:
+          type: string
+        expiresAt:
+          type: string
+        daysRemaining:
+          type: integer
+        totalEarnedSoFar:
+          type: number
+        dailyEarningsToday:
+          type: number
+      required:
+        - package
+        - purchasedAt
+        - expiresAt
+        - daysRemaining
+        - totalEarnedSoFar
+        - dailyEarningsToday
+
+    DailyTask:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        reward:
+          type: number
+        taskType:
+          type: string
+          enum: [stream_video, open_page, join_telegram, other]
+        actionUrl:
+          type: ["string", "null"]
+        completedAt:
+          type: ["string", "null"]
+        isCompleted:
+          type: boolean
+      required:
+        - id
+        - title
+        - description
+        - reward
+        - taskType
+        - isCompleted
+
+    TaskCompleteResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        rewardEarned:
+          type: number
+        newBalance:
+          type: number
+        message:
+          type: string
+      required:
+        - success
+        - rewardEarned
+        - newBalance
+        - message
+
+    Deposit:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+        senderName:
+          type: string
+        receiptUrl:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+      required:
+        - id
+        - amount
+        - senderName
+        - status
+        - createdAt
+
+    AdminStats:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        totalDeposited:
+          type: number
+        totalWithdrawn:
+          type: number
+        pendingDepositsCount:
+          type: integer
+        pendingDepositsAmount:
+          type: number
+        pendingWithdrawalsCount:
+          type: integer
+        pendingWithdrawalsAmount:
+          type: number
+        totalActivePackages:
+          type: integer
+      required:
+        - totalUsers
+        - totalDeposited
+        - totalWithdrawn
+        - pendingDepositsCount
+        - pendingDepositsAmount
+        - pendingWithdrawalsCount
+        - pendingWithdrawalsAmount
+        - totalActivePackages
+
+    AdminDeposit:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        username:
+          type: string
+        fullName:
+          type: string
+        amount:
+          type: number
+        senderName:
+          type: string
+        receiptUrl:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - username
+        - fullName
+        - amount
+        - senderName
+        - status
+        - createdAt
+
+    AdminWithdrawal:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        username:
+          type: string
+        fullName:
+          type: string
+        amount:
+          type: number
+        bankName:
+          type: string
+        accountName:
+          type: string
+        walletId:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - username
+        - fullName
+        - amount
+        - bankName
+        - accountName
+        - walletId
+        - status
+        - createdAt
+
+    DepositInput:
+      type: object
+      properties:
+        amount:
+          type: number
+        senderName:
+          type: string
+        receiptBase64:
+          type: ["string", "null"]
+      required:
+        - amount
+        - senderName
+
+    Withdrawal:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        bankName:
+          type: string
+        accountName:
+          type: string
+        walletId:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - amount
+        - status
+        - bankName
+        - accountName
+        - walletId
+        - createdAt
+
+    WithdrawalInput:
+      type: object
+      properties:
+        amount:
+          type: number
+      required:
+        - amount
+
+    WithdrawalSettings:
+      type: object
+      properties:
+        bankName:
+          type: ["string", "null"]
+        accountName:
+          type: ["string", "null"]
+        walletId:
+          type: ["string", "null"]
+        isConfigured:
+          type: boolean
+      required:
+        - isConfigured
+
+    WithdrawalSettingsInput:
+      type: object
+      properties:
+        bankName:
+          type: string
+        accountName:
+          type: string
+        walletId:
+          type: string
+      required:
+        - bankName
+        - accountName
+        - walletId
+
+    ReferralInfo:
+      type: object
+      properties:
+        referralCode:
+          type: string
+        referralLink:
+          type: string
+        totalDirectReferrals:
+          type: integer
+        totalNetworkSize:
+          type: integer
+        totalCommissionsEarned:
+          type: number
+        level1Count:
+          type: integer
+        level2Count:
+          type: integer
+        level3Count:
+          type: integer
+      required:
+        - referralCode
+        - referralLink
+        - totalDirectReferrals
+        - totalNetworkSize
+        - totalCommissionsEarned
+        - level1Count
+        - level2Count
+        - level3Count
+
+    AffiliateNetwork:
+      type: object
+      properties:
+        level1:
+          type: array
+          items:
+            $ref: "#/components/schemas/AffiliateEntry"
+        level2:
+          type: array
+          items:
+            $ref: "#/components/schemas/AffiliateEntry"
+        level3:
+          type: array
+          items:
+            $ref: "#/components/schemas/AffiliateEntry"
+      required:
+        - level1
+        - level2
+        - level3
+
+    AffiliateEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        joinedAt:
+          type: string
+        activeDepositAmount:
+          type: number
+        commissionPaid:
+          type: number
+        hasActivePackage:
+          type: boolean
+      required:
+        - id
+        - username
+        - joinedAt
+        - activeDepositAmount
+        - commissionPaid
+        - hasActivePackage
+
+    VipUpgradeGoal:
+      type: object
+      properties:
+        id:
+          type: integer
+        packageName:
+          type: string
+        requiredDirectReferrals:
+          type: integer
+        requiredDownlineVolume:
+          type: number
+        currentDirectReferrals:
+          type: integer
+        currentDownlineVolume:
+          type: number
+        isUnlocked:
+          type: boolean
+        progressPercent:
+          type: number
+      required:
+        - id
+        - packageName
+        - requiredDirectReferrals
+        - requiredDownlineVolume
+        - currentDirectReferrals
+        - currentDownlineVolume
+        - isUnlocked
+        - progressPercent
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [deposit, withdrawal, task_earning, commission, streak_bonus, daily_yield]
+        amount:
+          type: number
+        description:
+          type: string
+        status:
+          type: string
+          enum: [pending, completed, rejected]
+        createdAt:
+          type: string
+      required:
+        - id
+        - type
+        - amount
+        - description
+        - status
+        - createdAt
+
+    UserProfileUpdate:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+
+    DeleteAccountInput:
+      type: object
+      properties:
+        confirmationText:
+          type: string
+      required:
+        - confirmationText

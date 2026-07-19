@@ -1,0 +1,3 @@
+- [BirrStream auth pattern](birrstream-auth.md) — in-memory session store with token format `birr_userId_timestamp_random`; restart clears all sessions.
+- [BirrStream DB seed](birrstream-seed.md) — must run `pnpm --filter @workspace/scripts run seed` after every `db push` to populate packages and daily_tasks tables.
+- [Stale lib declarations fix](stale-lib-declarations.md) — run `pnpm run typecheck:libs` before leaf package typechecks when `@workspace/db` exports appear missing.
