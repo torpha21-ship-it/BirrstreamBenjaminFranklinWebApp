@@ -1,27 +1,31 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, userPackagesTable, packagesTable, loginStreakTable, transactionsTable } from "@workspace/db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
+import { getEthiopiaToday, getEthiopiaYesterday } from "../lib/date";
 
 const router = Router();
 
 router.get("/dashboard/summary", requireAuth, async (req, res) => {
   const user = (req as any).user;
 
-  const [activeUserPkg] = await db
-    .select()
-    .from(userPackagesTable)
-    .innerJoin(packagesTable, eq(userPackagesTable.packageId, packagesTable.id))
-    .where(and(eq(userPackagesTable.userId, user.id), eq(userPackagesTable.isActive, true)))
-    .orderBy(desc(userPackagesTable.purchasedAt))
-    .limit(1);
+  // Fetch fresh balance from DB — req.user was populated at auth time and may
+  // be stale if yield/tasks/streaks ran concurrently in other tabs.
+  const [[freshUser], [activeUserPkg], packages] = await Promise.all([
+    db.select({ mainBalance: usersTable.mainBalance }).from(usersTable).where(eq(usersTable.id, user.id)),
+    db
+      .select()
+      .from(userPackagesTable)
+      .innerJoin(packagesTable, eq(userPackagesTable.packageId, packagesTable.id))
+      .where(and(eq(userPackagesTable.userId, user.id), eq(userPackagesTable.isActive, true)))
+      .orderBy(desc(userPackagesTable.purchasedAt))
+      .limit(1),
+    db.select().from(packagesTable).where(eq(packagesTable.isLocked, false)).orderBy(packagesTable.sortOrder),
+  ]);
 
-  const packages = await db.select().from(packagesTable).where(eq(packagesTable.isLocked, false)).orderBy(packagesTable.sortOrder);
-  const userBalance = parseFloat(user.mainBalance);
-  const reserveFloor = activeUserPkg
-    ? parseFloat(activeUserPkg.packages.cost) * 0.4
-    : 0;
+  const userBalance = parseFloat(freshUser?.mainBalance ?? user.mainBalance);
+  const reserveFloor = activeUserPkg ? parseFloat(activeUserPkg.packages.cost) * 0.4 : 0;
 
   let progressToNextTier = 0;
   let nextTierName: string | null = null;
@@ -31,7 +35,10 @@ router.get("/dashboard/summary", requireAuth, async (req, res) => {
   if (activeUserPkg) {
     const now = new Date();
     const expires = new Date(activeUserPkg.user_packages.expiresAt);
-    daysUntilExpiry = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+    daysUntilExpiry = Math.max(
+      0,
+      Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+    );
     packageExpiresAt = expires.toISOString();
 
     const currentIdx = packages.findIndex(p => p.id === activeUserPkg.user_packages.packageId);
@@ -48,7 +55,7 @@ router.get("/dashboard/summary", requireAuth, async (req, res) => {
   }
 
   res.json({
-    mainBalance: parseFloat(user.mainBalance),
+    mainBalance: userBalance,
     totalYield: parseFloat(user.totalYield),
     totalDeposited: parseFloat(user.totalDeposited),
     totalWithdrawn: parseFloat(user.totalWithdrawn),
@@ -64,32 +71,28 @@ router.get("/dashboard/summary", requireAuth, async (req, res) => {
 
 router.get("/dashboard/streak", requireAuth, async (req, res) => {
   const user = (req as any).user;
-  const today = new Date().toISOString().split("T")[0];
+  const today = getEthiopiaToday();
 
-  let [streak] = await db.select().from(loginStreakTable).where(eq(loginStreakTable.userId, user.id));
+  let [streak] = await db
+    .select()
+    .from(loginStreakTable)
+    .where(eq(loginStreakTable.userId, user.id));
   if (!streak) {
-    [streak] = await db.insert(loginStreakTable).values({
-      userId: user.id,
-      currentStreak: 0,
-      lastCheckinDate: null,
-    }).returning();
+    [streak] = await db
+      .insert(loginStreakTable)
+      .values({ userId: user.id, currentStreak: 0, lastCheckinDate: null })
+      .returning();
   }
 
+  // Build the 7-day calendar view in Ethiopia timezone
   const days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (6 - i));
-    const dateStr = date.toISOString().split("T")[0];
-    const daysSinceLastCheckin = streak.lastCheckinDate
-      ? Math.floor((new Date(today).getTime() - new Date(streak.lastCheckinDate).getTime()) / (1000 * 60 * 60 * 24))
-      : 999;
+    const eatNowMs = Date.now() + 3 * 60 * 60 * 1000;
+    const d = new Date(eatNowMs);
+    d.setUTCDate(d.getUTCDate() - (6 - i));
+    const dateStr = d.toISOString().split("T")[0];
     const daysAgo = 6 - i;
     const checkedIn = streak.lastCheckinDate !== null && daysAgo <= streak.currentStreak - 1;
-    return {
-      dayNumber: i + 1,
-      date: dateStr,
-      checkedIn,
-      bonus: 5,
-    };
+    return { dayNumber: i + 1, date: dateStr, checkedIn, bonus: 5 };
   });
 
   res.json({
@@ -102,52 +105,66 @@ router.get("/dashboard/streak", requireAuth, async (req, res) => {
 
 router.post("/dashboard/streak/checkin", requireAuth, async (req, res) => {
   const user = (req as any).user;
-  const today = new Date().toISOString().split("T")[0];
+  const today = getEthiopiaToday();
+  const yesterday = getEthiopiaYesterday();
 
-  let [streak] = await db.select().from(loginStreakTable).where(eq(loginStreakTable.userId, user.id));
-  if (!streak) {
-    [streak] = await db.insert(loginStreakTable).values({
-      userId: user.id,
-      currentStreak: 0,
-      lastCheckinDate: null,
-    }).returning();
+  try {
+    const result = await db.transaction(async (tx) => {
+      // ── Lock the streak row to prevent concurrent double check-in ─────────
+      let [streak] = await tx
+        .select()
+        .from(loginStreakTable)
+        .where(eq(loginStreakTable.userId, user.id))
+        .for("update");
+
+      if (!streak) {
+        [streak] = await tx
+          .insert(loginStreakTable)
+          .values({ userId: user.id, currentStreak: 0, lastCheckinDate: null })
+          .returning();
+      }
+
+      if (streak.lastCheckinDate === today) {
+        throw Object.assign(new Error("ALREADY_CHECKED_IN"), {
+          httpStatus: 400,
+          clientMessage: "Already checked in today",
+        });
+      }
+
+      const newStreak = streak.lastCheckinDate === yesterday ? streak.currentStreak + 1 : 1;
+      const bonusEarned = 5;
+
+      await tx
+        .update(loginStreakTable)
+        .set({ currentStreak: newStreak, lastCheckinDate: today, updatedAt: new Date() })
+        .where(eq(loginStreakTable.userId, user.id));
+
+      // ── Atomically credit the streak bonus ────────────────────────────────
+      const [updated] = await tx
+        .update(usersTable)
+        .set({ mainBalance: sql`main_balance + ${String(bonusEarned)}::numeric` })
+        .where(eq(usersTable.id, user.id))
+        .returning({ mainBalance: usersTable.mainBalance });
+
+      await tx.insert(transactionsTable).values({
+        userId: user.id,
+        type: "streak_bonus",
+        amount: String(bonusEarned),
+        description: `Day ${newStreak} login streak bonus`,
+        status: "completed",
+      });
+
+      return { bonusEarned, newStreak, newBalance: parseFloat(updated.mainBalance) };
+    });
+
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    if (err.httpStatus === 400) {
+      res.status(400).json({ error: err.clientMessage });
+    } else {
+      throw err;
+    }
   }
-
-  if (streak.lastCheckinDate === today) {
-    res.status(400).json({ error: "Already checked in today" });
-    return;
-  }
-
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split("T")[0];
-  const newStreak = streak.lastCheckinDate === yesterdayStr ? streak.currentStreak + 1 : 1;
-  const bonusEarned = 5;
-
-  await db.update(loginStreakTable).set({
-    currentStreak: newStreak,
-    lastCheckinDate: today,
-    updatedAt: new Date(),
-  }).where(eq(loginStreakTable.userId, user.id));
-
-  await db.update(usersTable).set({
-    mainBalance: String(parseFloat(user.mainBalance) + bonusEarned),
-  }).where(eq(usersTable.id, user.id));
-
-  await db.insert(transactionsTable).values({
-    userId: user.id,
-    type: "streak_bonus",
-    amount: String(bonusEarned),
-    description: `Day ${newStreak} login streak bonus`,
-    status: "completed",
-  });
-
-  res.json({
-    success: true,
-    bonusEarned,
-    newStreak,
-    newBalance: parseFloat(user.mainBalance) + bonusEarned,
-  });
 });
 
 export default router;

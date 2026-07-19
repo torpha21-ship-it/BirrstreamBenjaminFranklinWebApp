@@ -12,16 +12,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // DEV-only shortcut: ?devtoken=<token> in the URL populates the session
+  // without going through the login page. Written to sessionStorage (not
+  // localStorage) so it is cleared when the tab closes and cannot be
+  // accidentally shared via a link.
   if (import.meta.env.DEV) {
     const params = new URLSearchParams(window.location.search);
     const devToken = params.get("devtoken");
-    if (devToken) localStorage.setItem("token", devToken);
+    if (devToken) sessionStorage.setItem("token", devToken);
   }
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token") ?? sessionStorage.getItem("token"),
+  );
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    setAuthTokenGetter(() => localStorage.getItem("token"));
+    setAuthTokenGetter(
+      () => localStorage.getItem("token") ?? sessionStorage.getItem("token"),
+    );
   }, []);
 
   const { data: me, isLoading: isMeLoading, error } = useGetMe({
@@ -40,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(null);
       setUser(null);
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }, [me, error]);
 
@@ -51,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logoutFn = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setToken(null);
     setUser(null);
   };

@@ -1,3 +1,5 @@
-- [BirrStream auth pattern](birrstream-auth.md) — in-memory session store with token format `birr_userId_timestamp_random`; restart clears all sessions.
+- [BirrStream auth pattern](birrstream-auth.md) — token is now 32-byte hex from crypto.randomBytes with 30-day expiry; revokeToken() exists for logout.
 - [BirrStream DB seed](birrstream-seed.md) — must run `pnpm --filter @workspace/scripts run seed` after every `db push` to populate packages and daily_tasks tables.
 - [Stale lib declarations fix](stale-lib-declarations.md) — run `pnpm run typecheck:libs` before leaf package typechecks when `@workspace/db` exports appear missing.
+- [BirrStream money-op pattern](birrstream-money-ops.md) — all balance mutations use db.transaction() + atomic SQL increments; never read-modify-write from req.user.
+- [BirrStream password hashing](birrstream-password.md) — scrypt via Node.js crypto (no deps); legacy SHA-256 hashes auto-upgraded on login.

@@ -21,11 +21,16 @@ router.post("/deposits", requireAuth, async (req, res) => {
     return;
   }
 
+  // Store the receipt as a data URL so admins can view the actual image.
+  // Previously the base64 payload was silently discarded and replaced with
+  // the placeholder string "receipt_uploaded", making admin verification impossible.
+  const receiptUrl = receiptBase64 ? receiptBase64 : null;
+
   const [deposit] = await db.insert(depositsTable).values({
     userId: user.id,
     amount: String(amount),
     senderName,
-    receiptUrl: receiptBase64 ? "receipt_uploaded" : null,
+    receiptUrl,
     status: "pending",
   }).returning();
 
@@ -33,7 +38,7 @@ router.post("/deposits", requireAuth, async (req, res) => {
     id: deposit.id,
     amount: parseFloat(deposit.amount),
     senderName: deposit.senderName,
-    receiptUrl: deposit.receiptUrl,
+    receiptUrl: deposit.receiptUrl ? "receipt_uploaded" : null, // don't echo base64 back
     status: deposit.status,
     createdAt: deposit.createdAt.toISOString(),
   });
@@ -49,7 +54,7 @@ router.get("/deposits/history", requireAuth, async (req, res) => {
     id: d.id,
     amount: parseFloat(d.amount),
     senderName: d.senderName,
-    receiptUrl: d.receiptUrl,
+    receiptUrl: d.receiptUrl ? "receipt_uploaded" : null,
     status: d.status,
     createdAt: d.createdAt.toISOString(),
   })));

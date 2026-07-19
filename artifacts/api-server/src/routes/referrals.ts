@@ -1,107 +1,143 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, commissionsTable, userPackagesTable, packagesTable } from "@workspace/db";
-import { eq, and, sum } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
 
 const router = Router();
+
+// ---------------------------------------------------------------------------
+// Batch affiliate entry builder — replaces the original N+1 per-user loop.
+// Issues exactly 3 queries (users, active packages, commissions) regardless
+// of network size, then assembles results in memory.
+// ---------------------------------------------------------------------------
+async function getBatchAffiliateEntries(
+  userIds: number[],
+  viewerUserId: number,
+): Promise<Array<{
+  id: number;
+  username: string;
+  joinedAt: string;
+  activeDepositAmount: number;
+  commissionPaid: number;
+  hasActivePackage: boolean;
+}>> {
+  if (userIds.length === 0) return [];
+
+  const [users, activePkgs, commissions] = await Promise.all([
+    db.select().from(usersTable).where(inArray(usersTable.id, userIds)),
+    db
+      .select()
+      .from(userPackagesTable)
+      .innerJoin(packagesTable, eq(userPackagesTable.packageId, packagesTable.id))
+      .where(and(inArray(userPackagesTable.userId, userIds), eq(userPackagesTable.isActive, true))),
+    db
+      .select()
+      .from(commissionsTable)
+      .where(
+        and(
+          eq(commissionsTable.userId, viewerUserId),
+          inArray(commissionsTable.fromUserId, userIds),
+        ),
+      ),
+  ]);
+
+  const pkgByUserId = new Map(activePkgs.map(p => [p.user_packages.userId, p]));
+  const commissionByFromUserId = new Map<number, number>();
+  for (const c of commissions) {
+    commissionByFromUserId.set(
+      c.fromUserId,
+      (commissionByFromUserId.get(c.fromUserId) ?? 0) + parseFloat(c.amount),
+    );
+  }
+
+  return users.map(u => {
+    const pkg = pkgByUserId.get(u.id);
+    return {
+      id: u.id,
+      username: u.username,
+      joinedAt: u.createdAt.toISOString(),
+      activeDepositAmount: pkg ? parseFloat(pkg.packages.cost) : 0,
+      commissionPaid: commissionByFromUserId.get(u.id) ?? 0,
+      hasActivePackage: pkgByUserId.has(u.id),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Helper: fetch one level of referral IDs given a set of parent IDs
+// ---------------------------------------------------------------------------
+async function getChildIds(parentIds: number[]): Promise<number[]> {
+  if (parentIds.length === 0) return [];
+  const rows = await db
+    .select({ id: usersTable.id })
+    .from(usersTable)
+    .where(inArray(usersTable.referredByUserId, parentIds));
+  return rows.map(r => r.id);
+}
+
+// ---------------------------------------------------------------------------
 
 router.get("/referrals/info", requireAuth, async (req, res) => {
   const user = (req as any).user;
   const host = req.headers.host || "birrstream.com";
   const protocol = req.headers["x-forwarded-proto"] || "https";
 
-  const level1 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, user.id));
-  const level1Ids = level1.map(u => u.id);
+  const level1Ids = await getChildIds([user.id]);
+  const level2Ids = await getChildIds(level1Ids);
+  const level3Ids = await getChildIds(level2Ids);
 
-  let level2Count = 0;
-  let level3Count = 0;
-  for (const l1Id of level1Ids) {
-    const l2 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, l1Id));
-    level2Count += l2.length;
-    for (const l2User of l2) {
-      const l3 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, l2User.id));
-      level3Count += l3.length;
-    }
-  }
-
-  const commissions = await db.select().from(commissionsTable).where(eq(commissionsTable.userId, user.id));
-  const totalCommissions = commissions.reduce((sum, c) => sum + parseFloat(c.amount), 0);
+  const allCommissions = await db
+    .select()
+    .from(commissionsTable)
+    .where(eq(commissionsTable.userId, user.id));
+  const totalCommissionsEarned = allCommissions.reduce((sum, c) => sum + parseFloat(c.amount), 0);
 
   res.json({
     referralCode: user.referralCode,
     referralLink: `${protocol}://${host}/register?ref=${user.referralCode}`,
-    totalDirectReferrals: level1.length,
-    totalNetworkSize: level1.length + level2Count + level3Count,
-    totalCommissionsEarned: totalCommissions,
-    level1Count: level1.length,
-    level2Count,
-    level3Count,
+    totalDirectReferrals: level1Ids.length,
+    totalNetworkSize: level1Ids.length + level2Ids.length + level3Ids.length,
+    totalCommissionsEarned,
+    level1Count: level1Ids.length,
+    level2Count: level2Ids.length,
+    level3Count: level3Ids.length,
   });
 });
 
 router.get("/referrals/network", requireAuth, async (req, res) => {
   const user = (req as any).user;
 
-  async function getAffiliateEntries(userIds: number[]) {
-    const entries = [];
-    for (const uid of userIds) {
-      const [u] = await db.select().from(usersTable).where(eq(usersTable.id, uid));
-      if (!u) continue;
-      const [activePkg] = await db.select().from(userPackagesTable)
-        .innerJoin(packagesTable, eq(userPackagesTable.packageId, packagesTable.id))
-        .where(and(eq(userPackagesTable.userId, uid), eq(userPackagesTable.isActive, true)))
-        .limit(1);
-      const commissions = await db.select().from(commissionsTable).where(
-        and(eq(commissionsTable.userId, user.id), eq(commissionsTable.fromUserId, uid))
-      );
-      entries.push({
-        id: u.id,
-        username: u.username,
-        joinedAt: u.createdAt.toISOString(),
-        activeDepositAmount: activePkg ? parseFloat(activePkg.packages.cost) : 0,
-        commissionPaid: commissions.reduce((s, c) => s + parseFloat(c.amount), 0),
-        hasActivePackage: !!activePkg,
-      });
-    }
-    return entries;
-  }
+  const level1Ids = await getChildIds([user.id]);
+  const level2Ids = await getChildIds(level1Ids);
+  const level3Ids = await getChildIds(level2Ids);
 
-  const level1Users = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, user.id));
-  const level1 = await getAffiliateEntries(level1Users.map(u => u.id));
+  // 3 parallel calls × 3 queries each = 9 total DB round-trips, regardless of network size
+  const [level1Entries, level2Entries, level3Entries] = await Promise.all([
+    getBatchAffiliateEntries(level1Ids, user.id),
+    getBatchAffiliateEntries(level2Ids, user.id),
+    getBatchAffiliateEntries(level3Ids, user.id),
+  ]);
 
-  const level2UsersList = [];
-  for (const l1 of level1Users) {
-    const l2 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, l1.id));
-    level2UsersList.push(...l2);
-  }
-  const level2 = await getAffiliateEntries(level2UsersList.map(u => u.id));
-
-  const level3UsersList = [];
-  for (const l2 of level2UsersList) {
-    const l3 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, l2.id));
-    level3UsersList.push(...l3);
-  }
-  const level3 = await getAffiliateEntries(level3UsersList.map(u => u.id));
-
-  res.json({ level1, level2, level3 });
+  res.json({ level1: level1Entries, level2: level2Entries, level3: level3Entries });
 });
 
 router.get("/referrals/vip-upgrades", requireAuth, async (req, res) => {
   const user = (req as any).user;
 
-  const level1 = await db.select().from(usersTable).where(eq(usersTable.referredByUserId, user.id));
-  const level1Ids = level1.map(u => u.id);
+  const level1Ids = await getChildIds([user.id]);
 
   let downlineVolume = 0;
-  for (const lid of level1Ids) {
-    const [pkg] = await db.select().from(userPackagesTable)
+  if (level1Ids.length > 0) {
+    const activePkgs = await db
+      .select()
+      .from(userPackagesTable)
       .innerJoin(packagesTable, eq(userPackagesTable.packageId, packagesTable.id))
-      .where(and(eq(userPackagesTable.userId, lid), eq(userPackagesTable.isActive, true)))
-      .limit(1);
-    if (pkg) downlineVolume += parseFloat(pkg.packages.cost);
+      .where(and(inArray(userPackagesTable.userId, level1Ids), eq(userPackagesTable.isActive, true)));
+    downlineVolume = activePkgs.reduce((sum, p) => sum + parseFloat(p.packages.cost), 0);
   }
 
+  const directReferrals = level1Ids.length;
   const goals = [
     { id: 1, packageName: "VIP Elite", requiredDirectReferrals: 5, requiredDownlineVolume: 15000 },
     { id: 2, packageName: "VIP Apex", requiredDirectReferrals: 10, requiredDownlineVolume: 50000 },
@@ -109,23 +145,23 @@ router.get("/referrals/vip-upgrades", requireAuth, async (req, res) => {
     { id: 4, packageName: "VIP Alpha", requiredDirectReferrals: 50, requiredDownlineVolume: 500000 },
   ];
 
-  const directReferrals = level1.length;
-
-  res.json(goals.map(g => {
-    const refProgress = Math.min(1, directReferrals / g.requiredDirectReferrals);
-    const volProgress = Math.min(1, downlineVolume / g.requiredDownlineVolume);
-    const progressPercent = Math.round(((refProgress + volProgress) / 2) * 100);
-    return {
-      id: g.id,
-      packageName: g.packageName,
-      requiredDirectReferrals: g.requiredDirectReferrals,
-      requiredDownlineVolume: g.requiredDownlineVolume,
-      currentDirectReferrals: directReferrals,
-      currentDownlineVolume: downlineVolume,
-      isUnlocked: directReferrals >= g.requiredDirectReferrals && downlineVolume >= g.requiredDownlineVolume,
-      progressPercent,
-    };
-  }));
+  res.json(
+    goals.map(g => {
+      const refProgress = Math.min(1, directReferrals / g.requiredDirectReferrals);
+      const volProgress = Math.min(1, downlineVolume / g.requiredDownlineVolume);
+      const progressPercent = Math.round(((refProgress + volProgress) / 2) * 100);
+      return {
+        id: g.id,
+        packageName: g.packageName,
+        requiredDirectReferrals: g.requiredDirectReferrals,
+        requiredDownlineVolume: g.requiredDownlineVolume,
+        currentDirectReferrals: directReferrals,
+        currentDownlineVolume: downlineVolume,
+        isUnlocked: directReferrals >= g.requiredDirectReferrals && downlineVolume >= g.requiredDownlineVolume,
+        progressPercent,
+      };
+    }),
+  );
 });
 
 export default router;

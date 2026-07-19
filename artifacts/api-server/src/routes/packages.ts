@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { packagesTable, userPackagesTable, usersTable, transactionsTable } from "@workspace/db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
 import { PurchasePackageParams } from "@workspace/api-zod";
 
@@ -33,67 +33,103 @@ router.post("/packages/:id/purchase", requireAuth, async (req, res) => {
   }
 
   const user = (req as any).user;
-  const [pkg] = await db.select().from(packagesTable).where(eq(packagesTable.id, parsed.data.id));
 
-  if (!pkg) {
-    res.status(404).json({ error: "Package not found" });
-    return;
-  }
-  if (pkg.isLocked) {
-    res.status(400).json({ error: "Package is locked. Unlock through VIP upgrades." });
-    return;
-  }
+  try {
+    const result = await db.transaction(async (tx) => {
+      const [pkg] = await tx
+        .select()
+        .from(packagesTable)
+        .where(eq(packagesTable.id, parsed.data.id));
 
-  const cost = parseFloat(pkg.cost);
-  const balance = parseFloat(user.mainBalance);
+      if (!pkg) {
+        throw Object.assign(new Error("NOT_FOUND"), {
+          httpStatus: 404,
+          clientMessage: "Package not found.",
+        });
+      }
+      if (pkg.isLocked) {
+        throw Object.assign(new Error("LOCKED"), {
+          httpStatus: 400,
+          clientMessage: "Package is locked. Unlock through VIP upgrades.",
+        });
+      }
 
-  if (balance < cost) {
-    const shortfallAmount = cost - balance;
-    res.status(400).json({
-      success: false,
-      message: `Insufficient balance. Need ${shortfallAmount.toFixed(2)} more ETB to unlock.`,
-      shortfallAmount,
+      const cost = parseFloat(pkg.cost);
+
+      // ── Atomically deduct balance — WHERE enforces sufficient funds ────────
+      // If balance < cost the UPDATE touches 0 rows; we throw and the
+      // transaction rolls back, so no partial state is ever committed.
+      const [updated] = await tx
+        .update(usersTable)
+        .set({ mainBalance: sql`main_balance - ${String(cost)}::numeric` })
+        .where(and(eq(usersTable.id, user.id), sql`main_balance >= ${String(cost)}::numeric`))
+        .returning({ mainBalance: usersTable.mainBalance });
+
+      if (!updated) {
+        const [fresh] = await tx
+          .select({ mainBalance: usersTable.mainBalance })
+          .from(usersTable)
+          .where(eq(usersTable.id, user.id));
+        const balance = parseFloat(fresh?.mainBalance ?? "0");
+        const shortfall = cost - balance;
+        throw Object.assign(new Error("INSUFFICIENT_FUNDS"), {
+          httpStatus: 400,
+          clientMessage: `Insufficient balance. Need ${shortfall.toFixed(2)} more ETB to unlock.`,
+          shortfallAmount: shortfall,
+        });
+      }
+
+      // ── Deactivate any currently active packages ──────────────────────────
+      await tx
+        .update(userPackagesTable)
+        .set({ isActive: false })
+        .where(and(eq(userPackagesTable.userId, user.id), eq(userPackagesTable.isActive, true)));
+
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + pkg.durationDays);
+
+      await tx.insert(userPackagesTable).values({
+        userId: user.id,
+        packageId: pkg.id,
+        purchasedAt: new Date(),
+        expiresAt,
+        isActive: true,
+        totalEarned: "0",
+      });
+
+      // ── Log with the correct transaction type ─────────────────────────────
+      // Previously logged as "deposit" which corrupted transaction history.
+      await tx.insert(transactionsTable).values({
+        userId: user.id,
+        type: "package_purchase",
+        amount: String(cost),
+        description: `Purchased ${pkg.name} package`,
+        status: "completed",
+      });
+
+      return { pkg, newBalance: parseFloat(updated.mainBalance) };
     });
-    return;
+
+    res.json({
+      success: true,
+      package: formatPackage(result.pkg),
+      newBalance: result.newBalance,
+      message: `Successfully activated ${result.pkg.name}!`,
+      shortfallAmount: null,
+    });
+  } catch (err: any) {
+    if (err.httpStatus === 404) {
+      res.status(404).json({ error: err.clientMessage });
+    } else if (err.httpStatus === 400) {
+      res.status(400).json({
+        success: false,
+        message: err.clientMessage,
+        shortfallAmount: err.shortfallAmount ?? null,
+      });
+    } else {
+      throw err;
+    }
   }
-
-  // Deactivate previous packages
-  await db.update(userPackagesTable).set({ isActive: false }).where(
-    and(eq(userPackagesTable.userId, user.id), eq(userPackagesTable.isActive, true))
-  );
-
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + pkg.durationDays);
-
-  await db.insert(userPackagesTable).values({
-    userId: user.id,
-    packageId: pkg.id,
-    purchasedAt: new Date(),
-    expiresAt,
-    isActive: true,
-    totalEarned: "0",
-  });
-
-  const newBalance = balance - cost;
-  await db.update(usersTable).set({
-    mainBalance: String(newBalance),
-  }).where(eq(usersTable.id, user.id));
-
-  await db.insert(transactionsTable).values({
-    userId: user.id,
-    type: "deposit",
-    amount: String(cost),
-    description: `Purchased ${pkg.name} package`,
-    status: "completed",
-  });
-
-  res.json({
-    success: true,
-    package: formatPackage(pkg),
-    newBalance,
-    message: `Successfully activated ${pkg.name}!`,
-    shortfallAmount: null,
-  });
 });
 
 router.get("/packages/active", requireAuth, async (req, res) => {
@@ -114,7 +150,10 @@ router.get("/packages/active", requireAuth, async (req, res) => {
 
   const now = new Date();
   const expires = new Date(result.user_packages.expiresAt);
-  const daysRemaining = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+  const daysRemaining = Math.max(
+    0,
+    Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+  );
   const totalDays = result.packages.durationDays;
   const daysElapsed = totalDays - daysRemaining;
   const dailyReturn = parseFloat(result.packages.dailyReturn);
