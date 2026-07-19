@@ -238,9 +238,9 @@ export default function Dashboard() {
               className="absolute -right-2 -bottom-2 h-14 w-14 object-contain pointer-events-none select-none opacity-90"
             />
             <div className="relative z-10">
-              <p className={`text-xs font-semibold ${card.textColor} opacity-70 mb-1`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{card.label}</p>
-              <p className={`text-lg font-bold ${card.textColor}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{fmt(card.value)}</p>
-              <p className={`text-xs ${card.textColor} opacity-60`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</p>
+              <p className={`text-[20px] ${card.textColor} opacity-60 mb-0.5`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{card.label}</p>
+              <p className={`text-[14px] font-bold ${card.textColor}`}>{fmt(card.value)}</p>
+              <p className={`text-[10px] ${card.textColor} opacity-50`}>ETB</p>
             </div>
           </div>
         ))}

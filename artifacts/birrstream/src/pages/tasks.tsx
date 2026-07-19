@@ -52,7 +52,7 @@ export default function Tasks() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="backdrop-blur-md bg-white/40 rounded-2xl px-4 py-2 shadow-sm border border-white/50">
-          <h1 className="text-xl font-bold text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Daily Tasks</h1>
+          <h1 className="text-[20px] font-bold text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Daily Tasks</h1>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export default function Tasks() {
           className="absolute right-0 top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90"
         />
         <div className="relative z-10 pr-32">
-          <p className="text-gray-400 text-sm mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Tasks completed today</p>
+          <p className="text-gray-400 text-[20px] mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Tasks completed today</p>
           <p className="text-3xl font-bold text-white">{completed}<span className="text-gray-400 text-xl">/{total}</span></p>
         </div>
         <div className="mt-3 h-2 bg-white/10 rounded-full overflow-hidden relative z-10">
@@ -91,7 +91,7 @@ export default function Tasks() {
         <div className="absolute inset-0 bg-[#4A35A8]/65" aria-hidden="true" />
         {/* Text above both layers */}
         <div className="relative z-10 p-4">
-          <p className="text-white font-bold text-sm" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>💡 Daily Tip</p>
+          <p className="text-white font-bold text-[20px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>💡 Daily Tip</p>
           <p className="text-white/90 text-xs mt-1.5 leading-relaxed">
             Complete all tasks daily to maximise your earnings. Tasks reset at midnight.
           </p>
@@ -116,7 +116,7 @@ export default function Tasks() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <p className={`font-semibold text-sm ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+                  <p className={`font-semibold text-[20px] leading-tight ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
                     {task.title}
                   </p>
                   <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} ETB</span>
