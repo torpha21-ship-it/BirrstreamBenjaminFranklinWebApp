@@ -4,18 +4,12 @@ import { useAuth } from "@/lib/auth";
 import {
   LayoutDashboard, ListChecks, Plus, User as UserIcon,
   X, ArrowUpRight, ArrowDownRight, Package, Users, Receipt, ChevronRight,
-  Trophy, ShieldAlert
+  Trophy, ShieldAlert, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import quickActionsLower from "@/assets/decor/quick-actions-lower.svg";
-import chatbotSrc from "@/assets/decor/chatbot.svg";
-
-function ChatbotIcon({ className, size }: { className?: string; size?: number }) {
-  const style = size ? { width: size, height: size } : undefined;
-  return <img src={chatbotSrc} alt="" className={className} style={style} />;
-}
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -24,14 +18,14 @@ const NAV_ITEMS = [
   { href: "/referral", icon: Users, label: "Referrals" },
   { href: "/transactions", icon: Receipt, label: "Transactions" },
   { href: "/vip-upgrades", icon: Trophy, label: "VIP Upgrades" },
-  { href: "/support", icon: ChatbotIcon, label: "Support" },
+  { href: "/support", icon: MessageCircle, label: "Support" },
   { href: "/profile", icon: UserIcon, label: "Profile" },
 ];
 
 const MOBILE_NAV = [
   { href: "/dashboard", icon: LayoutDashboard },
   { href: "/tasks", icon: ListChecks },
-  { href: "/support", icon: ChatbotIcon },
+  { href: "/support", icon: MessageCircle },
   { href: "/profile", icon: UserIcon },
 ];
 
