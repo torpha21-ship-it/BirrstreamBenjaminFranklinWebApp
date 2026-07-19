@@ -1,37 +1,60 @@
 # BirrStream
 
-A full-stack habit/task tracking web app built on a pnpm monorepo.
+A full-stack task/reward streaming platform with a React frontend, Express API, and PostgreSQL database.
 
 ## Stack
 
-- **Frontend** — React 19 + Vite + Tailwind CSS v4 + shadcn/ui (`artifacts/birrstream`)
-- **API** — Express 5 + Pino logging (`artifacts/api-server`)
-- **Database** — PostgreSQL via Drizzle ORM (`lib/db`)
-- **Shared libs** — `lib/api-spec` (OpenAPI/orval), `lib/api-zod` (Zod schemas), `lib/api-client-react` (React Query hooks)
+- **Frontend**: React + Vite (`artifacts/birrstream`) — served at `/`
+- **API**: Express (`artifacts/api-server`) — served at `/api`
+- **Database**: Replit built-in PostgreSQL via Drizzle ORM (`lib/db`)
+- **Package manager**: pnpm (workspace monorepo)
 
 ## How to run
 
-Workflows are configured and start automatically. The app runs at the root preview path (`/`); the API server is at `/api`.
-
-### First-time setup (already done)
+All services start automatically via Replit workflows. To start manually:
 
 ```bash
-pnpm install
-pnpm run typecheck:libs          # build shared lib declarations
-pnpm --filter @workspace/db run push   # push DB schema
-pnpm --filter @workspace/scripts run seed  # seed packages + daily_tasks tables
-```
+# Install dependencies
+pnpm install --frozen-lockfile
 
-### After any `db push`
+# Push DB schema
+pnpm --filter @workspace/db run push
 
-Always re-run the seed script:
-
-```bash
+# Seed database (packages + daily_tasks)
 pnpm --filter @workspace/scripts run seed
+
+# Start API server (port 8080)
+pnpm --filter @workspace/api-server run dev
+
+# Start frontend (port 21707)
+pnpm --filter @workspace/birrstream run dev
 ```
 
-## Auth
+## Environment
 
-Sessions are stored in-memory (token format: `birr_userId_timestamp_random`). Restarting the API server clears all active sessions.
+- `DATABASE_URL` — managed automatically by Replit (do not set manually)
+- `SESSION_SECRET` — set as a Replit secret
+
+## Database notes
+
+- After every `db push`, run the seed script to populate `packages` and `daily_tasks` tables.
+- Sessions are stored in-memory; restarting the API server clears all active sessions.
+- Auth tokens use the format `birr_<userId>_<timestamp>_<random>`.
+
+## Project structure
+
+```
+artifacts/
+  birrstream/        # React + Vite frontend
+  api-server/        # Express API
+  mockup-sandbox/    # Design/canvas preview server
+lib/
+  db/                # Drizzle ORM schema + client
+  api-spec/          # OpenAPI spec (orval-generated client)
+  api-client-react/  # Generated React Query hooks
+  api-zod/           # Generated Zod validators
+scripts/
+  src/seed.ts        # DB seed script
+```
 
 ## User preferences
