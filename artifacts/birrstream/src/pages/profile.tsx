@@ -92,6 +92,7 @@ export default function Profile() {
       <div className="flex items-center gap-3 mb-6 relative z-10">
         <Link
           href="/dashboard"
+          aria-label="Back to dashboard"
           className="w-9 h-9 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 shadow-sm flex-shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -119,6 +120,7 @@ export default function Profile() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
+            aria-label={uploading ? "Uploading profile photo" : "Upload profile photo"}
             className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-md border-2 border-white hover:opacity-90 active:scale-95 transition-all"
           >
             <Camera className="w-3.5 h-3.5 text-white" />

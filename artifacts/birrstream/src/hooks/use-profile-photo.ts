@@ -1,7 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { useCallback, useEffect, useState } from "react";
-
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+import { withApiBaseUrl } from "@/lib/api-base-url";
 
 export function useProfilePhoto(serverPhoto?: string | null) {
   const { token } = useAuth();
@@ -21,7 +20,7 @@ export function useProfilePhoto(serverPhoto?: string | null) {
           const base64 = ev.target?.result as string;
           setUploading(true);
           try {
-            const res = await fetch(`${BASE}/api/user/profile-photo`, {
+            const res = await fetch(withApiBaseUrl("/api/user/profile-photo"), {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",

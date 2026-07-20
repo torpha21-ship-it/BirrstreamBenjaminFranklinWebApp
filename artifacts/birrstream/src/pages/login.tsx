@@ -55,42 +55,52 @@ export default function Login() {
 
           {/* Card */}
           <div className="bg-card rounded-3xl p-6 shadow-sm border border-border">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
               <div>
                 <label
+                  htmlFor="login-username-or-email"
                   className="block text-sm font-semibold text-foreground mb-2"
                   style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
                 >
                   Username or Email
                 </label>
                 <input
+                  id="login-username-or-email"
+                  name="usernameOrEmail"
                   type="text"
                   value={form.usernameOrEmail}
                   onChange={e => setForm(f => ({ ...f, usernameOrEmail: e.target.value }))}
                   placeholder="Enter your username or email"
+                  autoComplete="username"
                   className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
                   required
                 />
               </div>
               <div>
                 <label
+                  htmlFor="login-password"
                   className="block text-sm font-semibold text-foreground mb-2"
                   style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
                 >
                   Password
                 </label>
                 <input
+                  id="login-password"
+                  name="password"
                   type="password"
                   value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                   className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
                   required
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label htmlFor="login-remember-me" className="flex items-center gap-2 cursor-pointer">
                   <input
+                    id="login-remember-me"
+                    name="rememberMe"
                     type="checkbox"
                     checked={form.rememberMe}
                     onChange={e => setForm(f => ({ ...f, rememberMe: e.target.checked }))}

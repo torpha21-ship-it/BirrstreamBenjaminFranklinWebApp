@@ -8,6 +8,7 @@ import { ArrowDownRight, ArrowUpRight, Package, ListChecks, Users, ChevronRight,
 import { UpperScreenBg } from "@/components/upper-screen-bg";
 import { BSLogo } from "@/components/bs-logo";
 import { showEarningAlert } from "@/components/earning-alert";
+import { withApiBaseUrl } from "@/lib/api-base-url";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
 import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
@@ -22,7 +23,7 @@ function fmt(n: number) {
 async function creditDailyYield(token: string | null) {
   if (!token) return null;
   try {
-    const res = await fetch("/api/yields/credit-daily", {
+    const res = await fetch(withApiBaseUrl("/api/yields/credit-daily"), {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -110,7 +110,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 onClick={href === "/dashboard" ? clearBadge : undefined}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
                   active
-                    ? "bg-primary/10 text-primary font-semibold"
+                    ? "bg-primary text-[#1A1A1A] font-semibold"
                     : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                 }`}
               >
@@ -133,7 +133,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <div className="px-4 pb-6 flex-shrink-0 space-y-2">
           <Link
             href="/deposit"
-            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-2xl text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-[#1A1A1A] rounded-2xl text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             <ArrowDownRight className="w-4 h-4" /> Deposit
           </Link>
@@ -157,12 +157,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="relative bg-card w-full max-w-md rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 fade-in duration-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Quick Actions</h2>
-              <Button variant="ghost" size="icon" onClick={() => setIsAddMenuOpen(false)} className="rounded-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsAddMenuOpen(false)}
+                className="rounded-full"
+                aria-label="Close quick actions"
+              >
                 <X className="w-5 h-5" />
               </Button>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
-              <Link href="/deposit" onClick={() => setIsAddMenuOpen(false)} className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+              <Link href="/deposit" onClick={() => setIsAddMenuOpen(false)} className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-primary text-[#1A1A1A] hover:opacity-90 transition-opacity">
                 <ArrowDownRight className="w-7 h-7" />
                 <span className="font-semibold text-sm">Deposit</span>
               </Link>
@@ -216,6 +222,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               key={href}
               href={href}
+              aria-label={href === "/dashboard" ? "Dashboard" : "Daily Tasks"}
               onClick={href === "/dashboard" ? clearBadge : undefined}
               className={`flex flex-col items-center p-2 transition-colors ${location === href ? "text-primary" : "text-gray-400"}`}
             >
@@ -235,14 +242,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <div className="relative -top-6">
           <button
             onClick={() => setIsAddMenuOpen(prev => !prev)}
-            className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 text-white hover:scale-105 transition-transform active:scale-95"
+            aria-label={isAddMenuOpen ? "Close quick actions" : "Open quick actions"}
+            className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 text-[#1A1A1A] hover:scale-105 transition-transform active:scale-95"
           >
             <Plus className={`w-8 h-8 transition-transform duration-200 ${isAddMenuOpen ? "rotate-45" : ""}`} />
           </button>
         </div>
 
         {MOBILE_NAV.slice(2).map(({ href, icon: Icon }) => (
-          <Link key={href} href={href} className={`flex flex-col items-center p-2 transition-colors ${location === href ? "text-primary" : "text-gray-400"}`}>
+          <Link
+            key={href}
+            href={href}
+            aria-label={href === "/support" ? "Support" : "Profile"}
+            className={`flex flex-col items-center p-2 transition-colors ${location === href ? "text-primary" : "text-gray-400"}`}
+          >
             <Icon className="w-6 h-6" />
           </Link>
         ))}

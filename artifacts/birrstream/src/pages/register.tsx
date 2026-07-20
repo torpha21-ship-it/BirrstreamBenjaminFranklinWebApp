@@ -36,12 +36,12 @@ export default function Register() {
   };
 
   const fields = [
-    { key: "fullName", label: "Full Name", type: "text", placeholder: "John Doe" },
-    { key: "username", label: "Username", type: "text", placeholder: "johndoe" },
-    { key: "email", label: "Email", type: "email", placeholder: "john@example.com" },
-    { key: "password", label: "Password", type: "password", placeholder: "Create a password" },
-    { key: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Repeat your password" },
-    { key: "referralCode", label: "Referral Code (optional)", type: "text", placeholder: "Enter referral code" },
+    { key: "fullName", label: "Full Name", type: "text", placeholder: "John Doe", autoComplete: "name" },
+    { key: "username", label: "Username", type: "text", placeholder: "johndoe", autoComplete: "username" },
+    { key: "email", label: "Email", type: "email", placeholder: "john@example.com", autoComplete: "email" },
+    { key: "password", label: "Password", type: "password", placeholder: "Create a password", autoComplete: "new-password" },
+    { key: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Repeat your password", autoComplete: "new-password" },
+    { key: "referralCode", label: "Referral Code (optional)", type: "text", placeholder: "Enter referral code", autoComplete: "off" },
   ] as const;
 
   return (
@@ -70,20 +70,24 @@ export default function Register() {
 
           {/* Card */}
           <div className="bg-card rounded-3xl p-6 shadow-sm border border-border">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
               {fields.map(field => (
                 <div key={field.key}>
                   <label
+                    htmlFor={`register-${field.key}`}
                     className="block text-sm font-semibold text-foreground mb-2"
                     style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
                   >
                     {field.label}
                   </label>
                   <input
+                    id={`register-${field.key}`}
+                    name={field.key}
                     type={field.type}
                     value={form[field.key]}
                     onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                     placeholder={field.placeholder}
+                    autoComplete={field.autoComplete}
                     required={field.key !== "referralCode"}
                     className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
                   />
