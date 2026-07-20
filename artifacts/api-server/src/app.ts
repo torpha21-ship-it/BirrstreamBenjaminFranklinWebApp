@@ -65,4 +65,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const status = err.statusCode || err.status || 500;
+  logger.error({ err, statusCode: status }, "Unhandled error");
+  res.status(status).json({
+    error: err.message || "Internal server error",
+    ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
+  });
+});
+
 export default app;
