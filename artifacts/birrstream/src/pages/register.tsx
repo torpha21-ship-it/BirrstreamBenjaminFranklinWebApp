@@ -4,7 +4,6 @@ import { useRegister } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import bsLogo from "@/assets/BS-logo.svg";
-import jesterImg from "@/assets/jester.png";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -68,56 +67,44 @@ export default function Register() {
             </p>
           </div>
 
-          {/* Card */}
-          <div className="bg-card rounded-3xl p-6 shadow-sm border border-border">
-            <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
-              {fields.map(field => (
-                <div key={field.key}>
-                  <label
-                    htmlFor={`register-${field.key}`}
-                    className="block text-sm font-semibold text-foreground mb-2"
-                    style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
-                  >
-                    {field.label}
-                  </label>
-                  <input
-                    id={`register-${field.key}`}
-                    name={field.key}
-                    type={field.type}
-                    value={form[field.key]}
-                    onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-                    placeholder={field.placeholder}
-                    autoComplete={field.autoComplete}
-                    required={field.key !== "referralCode"}
-                    className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
-                  />
-                </div>
-              ))}
-              <button
-                type="submit"
-                disabled={registerMutation.isPending}
-                className="w-full py-3.5 bg-black text-white rounded-2xl font-bold text-sm shadow-lg shadow-black/25 hover:opacity-80 active:scale-[0.98] transition-all disabled:opacity-60 mt-2"
-              >
-                {registerMutation.isPending ? "Creating account..." : "Create Account"}
-              </button>
-            </form>
-          </div>
+          {/* Form — no card wrapper */}
+          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
+            {fields.map(field => (
+              <div key={field.key}>
+                <label
+                  htmlFor={`register-${field.key}`}
+                  className="block text-[20px] font-semibold text-foreground mb-2"
+                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+                >
+                  {field.label}
+                </label>
+                <input
+                  id={`register-${field.key}`}
+                  name={field.key}
+                  type={field.type}
+                  value={form[field.key]}
+                  onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
+                  placeholder={field.placeholder}
+                  autoComplete={field.autoComplete}
+                  required={field.key !== "referralCode"}
+                  className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
+                />
+              </div>
+            ))}
+            <button
+              type="submit"
+              disabled={registerMutation.isPending}
+              className="w-full py-3.5 bg-black text-white rounded-2xl font-bold text-sm shadow-lg shadow-black/25 hover:opacity-80 active:scale-[0.98] transition-all disabled:opacity-60 mt-2"
+            >
+              {registerMutation.isPending ? "Creating account..." : "Create Account"}
+            </button>
+          </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             Already have an account?{" "}
             <Link href="/login" className="text-black font-semibold">Sign in</Link>
           </p>
         </div>
-      </div>
-
-      {/* Jester background image — pinned to bottom, full width */}
-      <div className="w-full flex-shrink-0">
-        <img
-          src={jesterImg}
-          alt=""
-          aria-hidden="true"
-          className="w-full block"
-        />
       </div>
     </div>
   );
