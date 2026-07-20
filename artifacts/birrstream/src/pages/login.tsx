@@ -4,6 +4,7 @@ import { useLogin } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import bsLogo from "@/assets/BS-logo.svg";
+import jesterImg from "@/assets/jester.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -122,6 +123,17 @@ export default function Login() {
             <Link href="/register" className="text-black font-semibold">Create one</Link>
           </p>
         </div>
+      </div>
+
+      {/* Jester background image — pinned to bottom, full width */}
+      <div className="w-full flex-shrink-0">
+        <img
+          src={jesterImg}
+          alt=""
+          aria-hidden="true"
+          className="w-full block"
+          style={{ display: "block" }}
+        />
       </div>
     </div>
   );
