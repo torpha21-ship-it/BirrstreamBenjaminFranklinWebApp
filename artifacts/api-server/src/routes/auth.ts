@@ -1,15 +1,17 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable } from "@workspace/db";
-import { eq, or } from "drizzle-orm";
+import { usersTable, passwordResetTokensTable } from "@workspace/db";
+import { eq, or, and } from "drizzle-orm";
 import { generateToken, revokeToken, requireAuth } from "../middlewares/auth";
+import { loginLimiter, registerLimiter } from "../middlewares/rate-limit";
 import {
   RegisterBody,
   LoginBody,
   ForgotPasswordBody,
 } from "@workspace/api-zod";
-import crypto from "crypto";
+import crypto, { createHash } from "crypto";
 import { promisify } from "util";
+import nodemailer from "nodemailer";
 
 const scryptAsync = promisify(crypto.scrypt);
 const router = Router();
@@ -54,7 +56,7 @@ async function generateUniqueReferralCode(): Promise<string> {
   throw new Error("Could not generate a unique referral code — please retry");
 }
 
-function formatUser(user: any) {
+export function formatUser(user: any) {
   return {
     id: user.id,
     fullName: user.fullName,
@@ -70,7 +72,7 @@ function formatUser(user: any) {
   };
 }
 
-router.post("/auth/register", async (req, res) => {
+router.post("/auth/register", registerLimiter, async (req, res) => {
   const parsed = RegisterBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Invalid input" });
@@ -125,7 +127,7 @@ router.post("/auth/register", async (req, res) => {
   res.status(201).json({ user: formatUser(user), token });
 });
 
-router.post("/auth/login", async (req, res) => {
+router.post("/auth/login", loginLimiter, async (req, res) => {
   const parsed = LoginBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Invalid input" });
@@ -178,8 +180,116 @@ router.post("/auth/forgot-password", async (req, res) => {
     res.status(400).json({ error: "Invalid input" });
     return;
   }
-  // In a real app, send a reset email. Here just acknowledge.
+  const { email } = parsed.data;
+
+  // Always return 200 with the same message — never reveal whether an email
+  // is registered (prevents account enumeration).
+  const [user] = await db
+    .select({ id: usersTable.id })
+    .from(usersTable)
+    .where(eq(usersTable.email, email))
+    .limit(1);
+
+  if (user) {
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Invalidate any existing unused tokens for this user so only the newest
+    // link is valid.
+    await db
+      .update(passwordResetTokensTable)
+      .set({ used: true })
+      .where(
+        and(
+          eq(passwordResetTokensTable.userId, user.id),
+          eq(passwordResetTokensTable.used, false),
+        ),
+      );
+
+    await db.insert(passwordResetTokensTable).values({
+      userId: user.id,
+      tokenHash,
+      expiresAt,
+    });
+
+    // Only attempt email delivery when SMTP is configured. Errors are logged
+    // but never surfaced to the caller (again, no enumeration signal).
+    if (process.env["SMTP_HOST"] && process.env["SMTP_USER"]) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env["SMTP_HOST"],
+          port: Number(process.env["SMTP_PORT"] ?? 587),
+          secure: false,
+          auth: {
+            user: process.env["SMTP_USER"],
+            pass: process.env["SMTP_PASS"],
+          },
+        });
+
+        const frontendUrl = process.env["FRONTEND_URL"] ?? "";
+        const resetLink = `${frontendUrl}/reset-password?token=${rawToken}`;
+        await transporter.sendMail({
+          from: `"BirrStream" <${process.env["SMTP_USER"]}>`,
+          to: email,
+          subject: "BirrStream — Reset Your Password",
+          text: `Click the link below to reset your password (valid for 1 hour):\n\n${resetLink}`,
+          html: `<p>Click the link below to reset your password (valid for 1 hour):</p>
+                 <p><a href="${resetLink}">${resetLink}</a></p>`,
+        });
+      } catch (err) {
+        req.log?.error({ err }, "Failed to send password reset email");
+      }
+    }
+  }
+
   res.json({ message: "If that email is registered, a reset link has been sent." });
+});
+
+router.post("/auth/reset-password", async (req, res) => {
+  const { token, newPassword } = (req.body ?? {}) as {
+    token?: unknown;
+    newPassword?: unknown;
+  };
+  if (
+    typeof token !== "string" ||
+    typeof newPassword !== "string" ||
+    newPassword.length < 8
+  ) {
+    res
+      .status(400)
+      .json({ error: "Invalid input. Password must be at least 8 characters." });
+    return;
+  }
+
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const [tokenRow] = await db
+    .select()
+    .from(passwordResetTokensTable)
+    .where(eq(passwordResetTokensTable.tokenHash, tokenHash))
+    .limit(1);
+
+  if (!tokenRow || tokenRow.used || new Date(tokenRow.expiresAt) < new Date()) {
+    res
+      .status(400)
+      .json({ error: "Invalid or expired reset link. Please request a new one." });
+    return;
+  }
+
+  const newHash = await hashPassword(newPassword);
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(usersTable)
+      .set({ passwordHash: newHash })
+      .where(eq(usersTable.id, tokenRow.userId));
+    await tx
+      .update(passwordResetTokensTable)
+      .set({ used: true })
+      .where(eq(passwordResetTokensTable.id, tokenRow.id));
+  });
+
+  res.json({ message: "Password updated successfully. You can now log in." });
 });
 
 router.get("/auth/me", requireAuth, (req, res) => {

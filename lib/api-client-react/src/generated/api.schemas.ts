@@ -52,6 +52,12 @@ export interface ForgotPasswordInput {
   email: string;
 }
 
+export interface ResetPasswordInput {
+  token: string;
+  /** @minLength 8 */
+  newPassword: string;
+}
+
 export interface DashboardSummary {
   mainBalance: number;
   totalYield: number;
@@ -286,6 +292,100 @@ export interface WithdrawalSettingsInput {
   walletId: string;
 }
 
+export type CommissionEntryLevel = typeof CommissionEntryLevel[keyof typeof CommissionEntryLevel];
+
+
+export const CommissionEntryLevel = {
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+} as const;
+
+export interface CommissionEntry {
+  id: number;
+  fromUsername: string;
+  level: CommissionEntryLevel;
+  amount: number;
+  description: string;
+  createdAt: string;
+}
+
+export interface AdminUserSummary {
+  id: number;
+  username: string;
+  fullName: string;
+  email: string;
+  mainBalance: number;
+  isAdmin: boolean;
+  createdAt: string;
+}
+
+export interface AdminUserList {
+  users: AdminUserSummary[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
+
+
+export const TransactionType = {
+  deposit: 'deposit',
+  withdrawal: 'withdrawal',
+  task_earning: 'task_earning',
+  commission: 'commission',
+  streak_bonus: 'streak_bonus',
+  daily_yield: 'daily_yield',
+  admin_adjustment: 'admin_adjustment',
+} as const;
+
+export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
+
+
+export const TransactionStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  rejected: 'rejected',
+} as const;
+
+export interface Transaction {
+  id: number;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  status: TransactionStatus;
+  createdAt: string;
+}
+
+export interface AdminUserDetail {
+  id: number;
+  username: string;
+  fullName: string;
+  email: string;
+  mainBalance: number;
+  totalYield: number;
+  totalDeposited: number;
+  totalWithdrawn: number;
+  referralCode: string;
+  isAdmin: boolean;
+  createdAt: string;
+  /** @nullable */
+  activePackage?: string | null;
+  recentTransactions: Transaction[];
+  totalCommissionsEarned: number;
+}
+
+export interface AdjustBalanceInput {
+  amount: number;
+  reason: string;
+}
+
+export interface AdjustBalanceResult {
+  message: string;
+  newBalance: number;
+}
+
 export interface ReferralInfo {
   referralCode: string;
   referralLink: string;
@@ -323,36 +423,6 @@ export interface VipUpgradeGoal {
   progressPercent: number;
 }
 
-export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
-
-
-export const TransactionType = {
-  deposit: 'deposit',
-  withdrawal: 'withdrawal',
-  task_earning: 'task_earning',
-  commission: 'commission',
-  streak_bonus: 'streak_bonus',
-  daily_yield: 'daily_yield',
-} as const;
-
-export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
-
-
-export const TransactionStatus = {
-  pending: 'pending',
-  completed: 'completed',
-  rejected: 'rejected',
-} as const;
-
-export interface Transaction {
-  id: number;
-  type: TransactionType;
-  amount: number;
-  description: string;
-  status: TransactionStatus;
-  createdAt: string;
-}
-
 export interface UserProfileUpdate {
   fullName?: string;
   email?: string;
@@ -376,4 +446,8 @@ export const ListTransactionsType = {
   task_earnings: 'task_earnings',
   commissions: 'commissions',
 } as const;
+
+export type ListAdminUsersParams = {
+page?: number;
+};
 

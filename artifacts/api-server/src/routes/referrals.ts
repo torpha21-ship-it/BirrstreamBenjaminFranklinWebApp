@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, commissionsTable, userPackagesTable, packagesTable } from "@workspace/db";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
 
 const router = Router();
@@ -161,6 +161,36 @@ router.get("/referrals/vip-upgrades", requireAuth, async (req, res) => {
         progressPercent,
       };
     }),
+  );
+});
+
+router.get("/referrals/commissions", requireAuth, async (req, res) => {
+  const user = (req as any).user;
+
+  const rows = await db
+    .select({
+      id: commissionsTable.id,
+      fromUserId: commissionsTable.fromUserId,
+      fromUsername: usersTable.username,
+      level: commissionsTable.level,
+      amount: commissionsTable.amount,
+      description: commissionsTable.description,
+      createdAt: commissionsTable.createdAt,
+    })
+    .from(commissionsTable)
+    .innerJoin(usersTable, eq(commissionsTable.fromUserId, usersTable.id))
+    .where(eq(commissionsTable.userId, user.id))
+    .orderBy(desc(commissionsTable.createdAt));
+
+  res.json(
+    rows.map((r) => ({
+      id: r.id,
+      fromUsername: r.fromUsername,
+      level: r.level,
+      amount: parseFloat(r.amount),
+      description: r.description,
+      createdAt: r.createdAt.toISOString(),
+    })),
   );
 });
 

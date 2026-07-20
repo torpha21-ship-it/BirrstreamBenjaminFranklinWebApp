@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import ForgotPassword from "@/pages/forgot-password";
+import ResetPassword from "@/pages/reset-password";
 import Dashboard from "@/pages/dashboard";
 import Packages from "@/pages/packages";
 import Tasks from "@/pages/tasks";
@@ -68,6 +69,7 @@ function Router() {
         <Route path="/login" component={() => <PublicRoute component={Login} />} />
         <Route path="/register" component={() => <PublicRoute component={Register} />} />
         <Route path="/forgot-password" component={() => <PublicRoute component={ForgotPassword} />} />
+        <Route path="/reset-password" component={() => <PublicRoute component={ResetPassword} />} />
         <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
         <Route path="/packages" component={() => <ProtectedRoute component={Packages} />} />
         <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />

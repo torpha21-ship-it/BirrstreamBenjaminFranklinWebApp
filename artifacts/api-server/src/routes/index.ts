@@ -11,6 +11,7 @@ import transactionsRouter from "./transactions";
 import userRouter from "./user";
 import yieldsRouter from "./yields";
 import adminRouter from "./admin";
+import adminUsersRouter from "./admin-users";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(transactionsRouter);
 router.use(userRouter);
 router.use(yieldsRouter);
 router.use(adminRouter);
+router.use(adminUsersRouter);
 
 export default router;

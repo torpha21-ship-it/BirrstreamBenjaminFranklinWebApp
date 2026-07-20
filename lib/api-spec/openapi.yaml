@@ -119,6 +119,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
 
+  /auth/reset-password:
+    post:
+      operationId: resetPassword
+      tags: [auth]
+      summary: Reset password using a reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordInput"
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid or expired token
+
   /auth/me:
     get:
       operationId: getMe
@@ -399,6 +420,21 @@ paths:
                 items:
                   $ref: "#/components/schemas/VipUpgradeGoal"
 
+  /referrals/commissions:
+    get:
+      operationId: getReferralCommissions
+      tags: [referrals]
+      summary: Get the current user's earned referral commissions
+      responses:
+        "200":
+          description: Referral commissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommissionEntry"
+
   /transactions:
     get:
       operationId: listTransactions
@@ -562,6 +598,81 @@ paths:
         "404":
           description: Withdrawal not found
 
+  /admin/users:
+    get:
+      operationId: listAdminUsers
+      tags: [admin]
+      summary: List all users paginated (admin only)
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Paginated user list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserList"
+        "403":
+          description: Not an admin
+
+  /admin/users/{id}:
+    get:
+      operationId: getAdminUser
+      tags: [admin]
+      summary: Get full detail for a single user (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Full user detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserDetail"
+        "403":
+          description: Not an admin
+        "404":
+          description: User not found
+
+  /admin/users/{id}/adjust-balance:
+    post:
+      operationId: adjustUserBalance
+      tags: [admin]
+      summary: Manually credit or debit a user's balance (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdjustBalanceInput"
+      responses:
+        "200":
+          description: Balance adjusted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdjustBalanceResult"
+        "400":
+          description: Invalid input or would reduce balance below zero
+        "403":
+          description: Not an admin
+        "404":
+          description: User not found
+
   /user/profile:
     get:
       operationId: getUserProfile
@@ -722,6 +833,18 @@ components:
           type: string
       required:
         - email
+
+    ResetPasswordInput:
+      type: object
+      properties:
+        token:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+      required:
+        - token
+        - newPassword
 
     DashboardSummary:
       type: object
@@ -1120,6 +1243,145 @@ components:
         - accountName
         - walletId
 
+    CommissionEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        fromUsername:
+          type: string
+        level:
+          type: integer
+          enum: [1, 2, 3]
+        amount:
+          type: number
+        description:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - fromUsername
+        - level
+        - amount
+        - description
+        - createdAt
+
+    AdminUserSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        mainBalance:
+          type: number
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - username
+        - fullName
+        - email
+        - mainBalance
+        - isAdmin
+        - createdAt
+
+    AdminUserList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminUserSummary"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - users
+        - total
+        - page
+        - totalPages
+
+    AdminUserDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        mainBalance:
+          type: number
+        totalYield:
+          type: number
+        totalDeposited:
+          type: number
+        totalWithdrawn:
+          type: number
+        referralCode:
+          type: string
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+        activePackage:
+          type: ["string", "null"]
+        recentTransactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+        totalCommissionsEarned:
+          type: number
+      required:
+        - id
+        - username
+        - fullName
+        - email
+        - mainBalance
+        - totalYield
+        - totalDeposited
+        - totalWithdrawn
+        - referralCode
+        - isAdmin
+        - createdAt
+        - recentTransactions
+        - totalCommissionsEarned
+
+    AdjustBalanceInput:
+      type: object
+      properties:
+        amount:
+          type: number
+        reason:
+          type: string
+      required:
+        - amount
+        - reason
+
+    AdjustBalanceResult:
+      type: object
+      properties:
+        message:
+          type: string
+        newBalance:
+          type: number
+      required:
+        - message
+        - newBalance
+
     ReferralInfo:
       type: object
       properties:
@@ -1228,7 +1490,7 @@ components:
           type: integer
         type:
           type: string
-          enum: [deposit, withdrawal, task_earning, commission, streak_bonus, daily_yield]
+          enum: [deposit, withdrawal, task_earning, commission, streak_bonus, daily_yield, admin_adjustment]
         amount:
           type: number
         description:

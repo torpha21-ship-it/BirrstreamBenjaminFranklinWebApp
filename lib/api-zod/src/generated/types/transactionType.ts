@@ -16,4 +16,5 @@ export const TransactionType = {
   commission: 'commission',
   streak_bonus: 'streak_bonus',
   daily_yield: 'daily_yield',
+  admin_adjustment: 'admin_adjustment',
 } as const;

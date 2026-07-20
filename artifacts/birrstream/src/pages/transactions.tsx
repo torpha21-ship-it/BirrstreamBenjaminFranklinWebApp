@@ -243,7 +243,6 @@ export default function Transactions() {
                 >
                   {/* Subtle horizontal grid lines for scale reference */}
                   <CartesianGrid
-                    yAxisId="amt"
                     strokeDasharray="3 3"
                     stroke="#C8D8F0"
                     horizontal={true}

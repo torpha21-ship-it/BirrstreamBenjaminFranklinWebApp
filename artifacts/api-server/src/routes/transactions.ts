@@ -19,6 +19,7 @@ const TYPE_MAP: Record<string, string[]> = {
   packages: ["package_purchase"],
   yields: ["daily_yield"],
   streaks: ["streak_bonus"],
+  admin_adjustments: ["admin_adjustment"],
 };
 
 router.get("/transactions", requireAuth, async (req, res) => {

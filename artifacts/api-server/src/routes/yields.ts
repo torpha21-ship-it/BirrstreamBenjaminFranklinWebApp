@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { usersTable, userPackagesTable, packagesTable, transactionsTable } from "@workspace/db";
 import { eq, and, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
+import { yieldLimiter } from "../middlewares/rate-limit";
 import { getEthiopiaToday } from "../lib/date";
 
 const router = Router();
@@ -17,8 +18,14 @@ const router = Router();
  *     already-inserted yield transaction and returns early.
  *  2. The idempotency check queries only today's records using a SQL date
  *     filter (not a JavaScript scan of all historical records).
+ *
+ * A per-user rate limiter (yieldLimiter, 3/day) is applied after requireAuth
+ * as a backstop against accidental client-side double-firing loops. It is
+ * keyed by authenticated user id, so it never penalises distinct users and
+ * the generous 24h/3-request window will not 429 normal single dashboard
+ * loads. The idempotency layers above remain the real guarantee.
  */
-router.post("/yields/credit-daily", requireAuth, async (req, res) => {
+router.post("/yields/credit-daily", requireAuth, yieldLimiter, async (req, res) => {
   const user = (req as any).user;
   const today = getEthiopiaToday();
 

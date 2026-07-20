@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { dailyTasksTable, userTaskCompletionsTable, usersTable, transactionsTable } from "@workspace/db";
 import { eq, and, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
+import { taskLimiter } from "../middlewares/rate-limit";
 import { CompleteTaskParams } from "@workspace/api-zod";
 import { getEthiopiaToday } from "../lib/date";
 
@@ -45,7 +46,7 @@ router.get("/tasks", requireAuth, async (req, res) => {
   res.json(taskList);
 });
 
-router.post("/tasks/:id/complete", requireAuth, async (req, res) => {
+router.post("/tasks/:id/complete", requireAuth, taskLimiter, async (req, res) => {
   const parsed = CompleteTaskParams.safeParse({ id: parseInt(req.params["id"] as string) });
   if (!parsed.success) {
     res.status(400).json({ error: "Invalid task id" });

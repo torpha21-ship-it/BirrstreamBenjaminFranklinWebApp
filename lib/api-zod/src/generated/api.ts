@@ -95,6 +95,23 @@ export const ForgotPasswordResponse = zod.object({
 
 
 /**
+ * @summary Reset password using a reset token
+ */
+export const resetPasswordBodyNewPasswordMin = 8;
+
+
+
+export const ResetPasswordBody = zod.object({
+  "token": zod.string(),
+  "newPassword": zod.string().min(resetPasswordBodyNewPasswordMin)
+})
+
+export const ResetPasswordResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
  * @summary Get current authenticated user
  */
 export const GetMeResponse = zod.object({
@@ -408,6 +425,20 @@ export const GetVipUpgradeGoalsResponse = zod.array(GetVipUpgradeGoalsResponseIt
 
 
 /**
+ * @summary Get the current user's earned referral commissions
+ */
+export const GetReferralCommissionsResponseItem = zod.object({
+  "id": zod.number(),
+  "fromUsername": zod.string(),
+  "level": zod.union([zod.literal(1),zod.literal(2),zod.literal(3)]),
+  "amount": zod.number(),
+  "description": zod.string(),
+  "createdAt": zod.string()
+})
+export const GetReferralCommissionsResponse = zod.array(GetReferralCommissionsResponseItem)
+
+
+/**
  * @summary List all transactions for the user
  */
 export const ListTransactionsQueryParams = zod.object({
@@ -416,7 +447,7 @@ export const ListTransactionsQueryParams = zod.object({
 
 export const ListTransactionsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['deposit', 'withdrawal', 'task_earning', 'commission', 'streak_bonus', 'daily_yield']),
+  "type": zod.enum(['deposit', 'withdrawal', 'task_earning', 'commission', 'streak_bonus', 'daily_yield', 'admin_adjustment']),
   "amount": zod.number(),
   "description": zod.string(),
   "status": zod.enum(['pending', 'completed', 'rejected']),
@@ -520,6 +551,79 @@ export const RejectWithdrawalParams = zod.object({
 
 export const RejectWithdrawalResponse = zod.object({
   "message": zod.string()
+})
+
+
+/**
+ * @summary List all users paginated (admin only)
+ */
+export const ListAdminUsersQueryParams = zod.object({
+  "page": zod.coerce.number().optional()
+})
+
+export const ListAdminUsersResponse = zod.object({
+  "users": zod.array(zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "mainBalance": zod.number(),
+  "isAdmin": zod.boolean(),
+  "createdAt": zod.string()
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "totalPages": zod.number()
+})
+
+
+/**
+ * @summary Get full detail for a single user (admin only)
+ */
+export const GetAdminUserParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetAdminUserResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "mainBalance": zod.number(),
+  "totalYield": zod.number(),
+  "totalDeposited": zod.number(),
+  "totalWithdrawn": zod.number(),
+  "referralCode": zod.string(),
+  "isAdmin": zod.boolean(),
+  "createdAt": zod.string(),
+  "activePackage": zod.string().nullish(),
+  "recentTransactions": zod.array(zod.object({
+  "id": zod.number(),
+  "type": zod.enum(['deposit', 'withdrawal', 'task_earning', 'commission', 'streak_bonus', 'daily_yield', 'admin_adjustment']),
+  "amount": zod.number(),
+  "description": zod.string(),
+  "status": zod.enum(['pending', 'completed', 'rejected']),
+  "createdAt": zod.string()
+})),
+  "totalCommissionsEarned": zod.number()
+})
+
+
+/**
+ * @summary Manually credit or debit a user's balance (admin only)
+ */
+export const AdjustUserBalanceParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdjustUserBalanceBody = zod.object({
+  "amount": zod.number(),
+  "reason": zod.string()
+})
+
+export const AdjustUserBalanceResponse = zod.object({
+  "message": zod.string(),
+  "newBalance": zod.number()
 })
 
 

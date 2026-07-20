@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter @workspace/birrstream run build",
+  "outputDirectory": "artifacts/birrstream/dist/public",
+  "installCommand": "pnpm install",
+  "framework": null
+}

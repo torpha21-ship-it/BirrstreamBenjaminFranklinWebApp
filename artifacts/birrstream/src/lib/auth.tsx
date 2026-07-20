@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { setAuthTokenGetter, useGetMe, getGetMeQueryKey, User } from "@workspace/api-client-react";
+import { setBaseUrl, setAuthTokenGetter, useGetMe, getGetMeQueryKey, User } from "@workspace/api-client-react";
+
+// Point the generated API client at the backend. On Vercel this is the
+// deployed Replit API URL (VITE_API_URL); locally it falls back to the dev
+// proxy at the same origin ("" => relative /api requests).
+setBaseUrl(import.meta.env.VITE_API_URL ?? "");
 
 interface AuthContextType {
   user: User | null;
