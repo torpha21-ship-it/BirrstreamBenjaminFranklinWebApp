@@ -66,10 +66,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const drizzle = err?.cause?.message || err?.message || "Internal server error";
   const status = err.statusCode || err.status || 500;
-  logger.error({ err, statusCode: status }, "Unhandled error");
+  logger.error({ err, drizzle, statusCode: status }, "Unhandled error");
   res.status(status).json({
-    error: err.message || "Internal server error",
+    error: drizzle,
     ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
   });
 });
