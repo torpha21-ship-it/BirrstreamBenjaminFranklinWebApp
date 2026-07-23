@@ -142,6 +142,75 @@ export interface ActivePackage {
   dailyEarningsToday: number;
 }
 
+export type PortfolioPackageTier = typeof PortfolioPackageTier[keyof typeof PortfolioPackageTier];
+
+
+export const PortfolioPackageTier = {
+  vip1: 'vip1',
+  vip2: 'vip2',
+  vip3: 'vip3',
+  vip4: 'vip4',
+  vip5: 'vip5',
+  elite: 'elite',
+  apex: 'apex',
+  titan: 'titan',
+  alpha: 'alpha',
+} as const;
+
+export interface PortfolioPackage {
+  id: number;
+  packageId: number;
+  name: string;
+  tier: PortfolioPackageTier;
+  cost: number;
+  dailyReturn: number;
+  projectedTotalYield: number;
+  projectedReturnRemaining: number;
+  totalEarned: number;
+  durationDays: number;
+  daysElapsed: number;
+  daysRemaining: number;
+  progressPercent: number;
+  purchasedAt: string;
+  expiresAt: string;
+  isActive: boolean;
+  /** @nullable */
+  fundingSourceId?: number | null;
+  /** @nullable */
+  fundingSourceSenderName?: string | null;
+  /** @nullable */
+  fundingSourceAmount?: number | null;
+  /** @nullable */
+  fundingSourceCreatedAt?: string | null;
+}
+
+export interface PortfolioFundingSource {
+  id: number;
+  amount: number;
+  senderName: string;
+  createdAt: string;
+}
+
+export interface PortfolioSummary {
+  availableBalance: number;
+  totalDeposited: number;
+  activeCapital: number;
+  totalInvested: number;
+  activePackagesCount: number;
+  completedPackagesCount: number;
+  totalEarnedAllTime: number;
+  totalProjectedYield: number;
+  totalProjectedReturnRemaining: number;
+}
+
+export interface PortfolioOverview {
+  summary: PortfolioSummary;
+  activePackages: PortfolioPackage[];
+  completedPackages: PortfolioPackage[];
+  fundingSources: PortfolioFundingSource[];
+  recentTransactions: Transaction[];
+}
+
 export type DailyTaskTaskType = typeof DailyTaskTaskType[keyof typeof DailyTaskTaskType];
 
 
@@ -338,6 +407,7 @@ export const TransactionType = {
   streak_bonus: 'streak_bonus',
   daily_yield: 'daily_yield',
   admin_adjustment: 'admin_adjustment',
+  package_purchase: 'package_purchase',
 } as const;
 
 export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];

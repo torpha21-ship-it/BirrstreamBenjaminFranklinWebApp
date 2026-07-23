@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import {
   LayoutDashboard, ListChecks, Plus, User as UserIcon,
   X, ArrowUpRight, ArrowDownRight, Package, Users, Receipt, ChevronRight,
-  Trophy, ShieldAlert, MessageCircle
+  Trophy, ShieldAlert, MessageCircle, BriefcaseBusiness
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
@@ -13,6 +13,7 @@ import quickActionsLower from "@/assets/decor/quick-actions-lower.svg";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/portfolio", icon: BriefcaseBusiness, label: "Portfolio" },
   { href: "/tasks", icon: ListChecks, label: "Daily Tasks" },
   { href: "/packages", icon: Package, label: "VIP Packages" },
   { href: "/referral", icon: Users, label: "Referrals" },
@@ -192,9 +193,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none"
               />
               {/* Buttons sit at the top; the wave fills the remaining space below them */}
-              <div className="relative z-10 grid grid-cols-3 gap-3 p-3">
+              <div className="relative z-10 grid grid-cols-2 gap-3 p-3">
                 {[
                   { href: "/packages", icon: Package, label: "Packages", color: "text-[#5B44BE]" },
+                  { href: "/portfolio", icon: BriefcaseBusiness, label: "Portfolio", color: "text-primary" },
                   { href: "/referral", icon: Users, label: "Referral", color: "text-[#2B7A4B]" },
                   { href: "/transactions", icon: Receipt, label: "History", color: "text-[#C0402E]" },
                 ].map(({ href, icon: Icon, label, color }) => (

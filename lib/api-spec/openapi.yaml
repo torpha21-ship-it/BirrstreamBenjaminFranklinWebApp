@@ -30,6 +30,8 @@ tags:
     description: Referral and affiliate operations
   - name: user
     description: User profile operations
+  - name: portfolio
+    description: Portfolio and investment tracking operations
 paths:
   /healthz:
     get:
@@ -242,6 +244,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivePackage"
+
+  /portfolio:
+    get:
+      operationId: getPortfolio
+      tags: [portfolio]
+      summary: Get the user's portfolio overview
+      responses:
+        "200":
+          description: Portfolio overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioOverview"
 
   /tasks:
     get:
@@ -1002,6 +1017,145 @@ components:
         - totalEarnedSoFar
         - dailyEarningsToday
 
+    PortfolioPackage:
+      type: object
+      properties:
+        id:
+          type: integer
+        packageId:
+          type: integer
+        name:
+          type: string
+        tier:
+          type: string
+          enum: [vip1, vip2, vip3, vip4, vip5, elite, apex, titan, alpha]
+        cost:
+          type: number
+        dailyReturn:
+          type: number
+        projectedTotalYield:
+          type: number
+        projectedReturnRemaining:
+          type: number
+        totalEarned:
+          type: number
+        durationDays:
+          type: integer
+        daysElapsed:
+          type: integer
+        daysRemaining:
+          type: integer
+        progressPercent:
+          type: integer
+        purchasedAt:
+          type: string
+        expiresAt:
+          type: string
+        isActive:
+          type: boolean
+        fundingSourceId:
+          type: ["integer", "null"]
+        fundingSourceSenderName:
+          type: ["string", "null"]
+        fundingSourceAmount:
+          type: ["number", "null"]
+        fundingSourceCreatedAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - packageId
+        - name
+        - tier
+        - cost
+        - dailyReturn
+        - projectedTotalYield
+        - projectedReturnRemaining
+        - totalEarned
+        - durationDays
+        - daysElapsed
+        - daysRemaining
+        - progressPercent
+        - purchasedAt
+        - expiresAt
+        - isActive
+
+    PortfolioFundingSource:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+        senderName:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - amount
+        - senderName
+        - createdAt
+
+    PortfolioSummary:
+      type: object
+      properties:
+        availableBalance:
+          type: number
+        totalDeposited:
+          type: number
+        activeCapital:
+          type: number
+        totalInvested:
+          type: number
+        activePackagesCount:
+          type: integer
+        completedPackagesCount:
+          type: integer
+        totalEarnedAllTime:
+          type: number
+        totalProjectedYield:
+          type: number
+        totalProjectedReturnRemaining:
+          type: number
+      required:
+        - availableBalance
+        - totalDeposited
+        - activeCapital
+        - totalInvested
+        - activePackagesCount
+        - completedPackagesCount
+        - totalEarnedAllTime
+        - totalProjectedYield
+        - totalProjectedReturnRemaining
+
+    PortfolioOverview:
+      type: object
+      properties:
+        summary:
+          $ref: "#/components/schemas/PortfolioSummary"
+        activePackages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioPackage"
+        completedPackages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioPackage"
+        fundingSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioFundingSource"
+        recentTransactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+      required:
+        - summary
+        - activePackages
+        - completedPackages
+        - fundingSources
+        - recentTransactions
+
     DailyTask:
       type: object
       properties:
@@ -1491,6 +1645,7 @@ components:
         type:
           type: string
           enum: [deposit, withdrawal, task_earning, commission, streak_bonus, daily_yield, admin_adjustment]
+      enum: [deposit, withdrawal, task_earning, commission, streak_bonus, daily_yield, admin_adjustment, package_purchase]
         amount:
           type: number
         description:

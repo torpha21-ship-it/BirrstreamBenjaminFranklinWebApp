@@ -19,3 +19,21 @@ export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTo
 
 export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
 export type PasswordResetToken = typeof passwordResetTokensTable.$inferSelect;
+
+export const emailVerificationTokensTable = pgTable("email_verification_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  used: boolean("used").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const insertEmailVerificationTokenSchema = createInsertSchema(emailVerificationTokensTable).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEmailVerificationToken = z.infer<typeof insertEmailVerificationTokenSchema>;
+export type EmailVerificationToken = typeof emailVerificationTokensTable.$inferSelect;
+

@@ -14,6 +14,7 @@ import ForgotPassword from "@/pages/forgot-password";
 import ResetPassword from "@/pages/reset-password";
 import Dashboard from "@/pages/dashboard";
 import Packages from "@/pages/packages";
+import Portfolio from "@/pages/portfolio";
 import Tasks from "@/pages/tasks";
 import Deposit from "@/pages/deposit";
 import Withdraw from "@/pages/withdraw";
@@ -74,6 +75,7 @@ function Router() {
         <Route path="/reset-password" component={() => <PublicRoute component={ResetPassword} />} />
         <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
         <Route path="/packages" component={() => <ProtectedRoute component={Packages} />} />
+        <Route path="/portfolio" component={() => <ProtectedRoute component={Portfolio} />} />
         <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
         <Route path="/deposit" component={() => <ProtectedRoute component={Deposit} />} />
         <Route path="/withdraw" component={() => <ProtectedRoute component={Withdraw} />} />

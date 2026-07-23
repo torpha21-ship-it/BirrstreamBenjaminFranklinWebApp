@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, passwordResetTokensTable } from "@workspace/db";
+import { usersTable, passwordResetTokensTable, emailVerificationTokensTable } from "@workspace/db";
 import { eq, or, and } from "drizzle-orm";
 import { generateToken, revokeToken, requireAuth } from "../middlewares/auth";
 import { loginLimiter, registerLimiter } from "../middlewares/rate-limit";
@@ -68,6 +68,8 @@ export function formatUser(user: any) {
     totalWithdrawn: parseFloat(user.totalWithdrawn),
     referralCode: user.referralCode,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified ?? false,
+    verifiedAt: user.verifiedAt ? (user.verifiedAt instanceof Date ? user.verifiedAt.toISOString() : new Date(user.verifiedAt).toISOString()) : null,
     createdAt: user.createdAt.toISOString(),
   };
 }
@@ -294,6 +296,132 @@ router.post("/auth/reset-password", async (req, res) => {
 
 router.get("/auth/me", requireAuth, (req, res) => {
   res.json(formatUser((req as any).user));
+});
+
+router.post("/auth/send-verification", async (req, res) => {
+  let userId: number | null = null;
+  let userEmail: string | null = null;
+
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const token = authHeader.substring(7);
+      // Optional: check session from requireAuth logic if attached
+      const authUser = (req as any).user;
+      if (authUser) {
+        userId = authUser.id;
+        userEmail = authUser.email;
+      }
+    } catch (_) {}
+  }
+
+  if (!userEmail && typeof req.body?.email === "string") {
+    userEmail = req.body.email;
+    const [user] = await db
+      .select({ id: usersTable.id, emailVerified: usersTable.emailVerified })
+      .from(usersTable)
+      .where(eq(usersTable.email, userEmail))
+      .limit(1);
+    if (user) {
+      userId = user.id;
+      if (user.emailVerified) {
+        res.json({ message: "Email is already verified." });
+        return;
+      }
+    }
+  }
+
+  if (!userId || !userEmail) {
+    res.status(400).json({ error: "User or email not found." });
+    return;
+  }
+
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await db
+    .update(emailVerificationTokensTable)
+    .set({ used: true })
+    .where(
+      and(
+        eq(emailVerificationTokensTable.userId, userId),
+        eq(emailVerificationTokensTable.used, false),
+      ),
+    );
+
+  await db.insert(emailVerificationTokensTable).values({
+    userId,
+    tokenHash,
+    expiresAt,
+  });
+
+  const frontendUrl = process.env["FRONTEND_URL"] ?? "";
+  const verifyLink = `${frontendUrl}/verify-email?token=${rawToken}`;
+
+  if (process.env["SMTP_HOST"] && process.env["SMTP_USER"]) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env["SMTP_HOST"],
+        port: Number(process.env["SMTP_PORT"] ?? 587),
+        secure: false,
+        auth: {
+          user: process.env["SMTP_USER"],
+          pass: process.env["SMTP_PASS"],
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"BirrStream" <${process.env["SMTP_USER"]}>`,
+        to: userEmail,
+        subject: "BirrStream — Verify Your Email Address",
+        text: `Click the link below to verify your email address:\n\n${verifyLink}`,
+        html: `<p>Click the link below to verify your email address:</p>
+               <p><a href="${verifyLink}">${verifyLink}</a></p>`,
+      });
+    } catch (err) {
+      req.log?.error({ err }, "Failed to send verification email");
+    }
+  } else {
+    console.log(`[Verification Email Link]: ${verifyLink}`);
+  }
+
+  res.json({ message: "Verification link has been sent to your email." });
+});
+
+router.post("/auth/verify-email", async (req, res) => {
+  const { token } = (req.body ?? {}) as { token?: unknown };
+  if (typeof token !== "string" || !token) {
+    res.status(400).json({ error: "Invalid or missing verification token." });
+    return;
+  }
+
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const [tokenRow] = await db
+    .select()
+    .from(emailVerificationTokensTable)
+    .where(eq(emailVerificationTokensTable.tokenHash, tokenHash))
+    .limit(1);
+
+  if (!tokenRow || tokenRow.used || new Date(tokenRow.expiresAt) < new Date()) {
+    res.status(400).json({ error: "Invalid or expired verification link." });
+    return;
+  }
+
+  const now = new Date();
+  await db.transaction(async (tx) => {
+    await tx
+      .update(usersTable)
+      .set({ emailVerified: true, verifiedAt: now })
+      .where(eq(usersTable.id, tokenRow.userId));
+
+    await tx
+      .update(emailVerificationTokensTable)
+      .set({ used: true })
+      .where(eq(emailVerificationTokensTable.id, tokenRow.id));
+  });
+
+  res.json({ message: "Email verified successfully!", emailVerified: true });
 });
 
 export default router;

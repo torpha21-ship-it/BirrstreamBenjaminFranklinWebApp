@@ -18,6 +18,8 @@ export const usersTable = pgTable("users", {
   lastLoginAt: timestamp("last_login_at"),
   isAdmin: boolean("is_admin").notNull().default(false),
   profilePhoto: text("profile_photo"),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  verifiedAt: timestamp("verified_at", { withTimezone: true }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
