@@ -35,10 +35,8 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
           {/* Logo + heading */}
-          <div className="text-center mb-10">
-<div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4 shadow-lg shadow-black/30">
-               <img src={logoNaomi} alt="Naomi Labs logo" className="w-10 h-10 object-contain" />
-             </div>
+<div className="text-center mb-10">
+              <img src={logoNaomi} alt="Naomi Labs logo" className="w-10 h-10 object-contain mx-auto" />
              <h1
                className="text-3xl text-foreground"
                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
