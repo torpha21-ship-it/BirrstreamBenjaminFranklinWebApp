@@ -6,7 +6,6 @@ import { useLocation } from "wouter";
 import { Settings2, Receipt, Trash2, ChevronRight, LogOut, ArrowLeft, Camera } from "lucide-react";
 import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
-import { UpperScreenBg } from "@/components/upper-screen-bg";
 import { BSLogo } from "@/components/bs-logo";
 import { useProfilePhoto } from "@/hooks/use-profile-photo";
 import mainBalanceIcon from "@/assets/decor/profile-main-balance-card.svg";
@@ -81,8 +80,6 @@ export default function Profile() {
 
   return (
     <div className="px-4 pt-0 pb-6 max-w-md mx-auto relative">
-      <UpperScreenBg />
-
       {/* Centred brand mark — no gap above or below */}
       <div className="flex justify-center mb-0 relative z-10">
         <BSLogo />

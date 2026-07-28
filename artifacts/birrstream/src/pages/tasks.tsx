@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, Circle, Tv, Globe, MessageCircle, Star, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { UpperScreenBg } from "@/components/upper-screen-bg";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import dailyTipBg from "@/assets/decor/daily-tip-card-bg.svg";
 
@@ -46,7 +45,6 @@ export default function Tasks() {
 
   return (
     <div className="px-4 py-6 max-w-md mx-auto relative">
-      <UpperScreenBg />
       <div className="flex items-center gap-3 mb-2 relative z-10">
         <Link href="/dashboard" className="w-9 h-9 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 shadow-sm">
           <ArrowLeft className="w-4 h-4" />

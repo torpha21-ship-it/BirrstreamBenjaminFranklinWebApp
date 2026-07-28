@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Send, Bot } from "lucide-react";
 import { Link } from "wouter";
-import { UpperScreenBg } from "@/components/upper-screen-bg";
 
 interface Message {
   id: string;
@@ -63,7 +62,6 @@ export default function Support() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-background z-[5]">
-      <UpperScreenBg />
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-border bg-background/80 backdrop-blur-sm flex-shrink-0 relative z-10">
         <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">

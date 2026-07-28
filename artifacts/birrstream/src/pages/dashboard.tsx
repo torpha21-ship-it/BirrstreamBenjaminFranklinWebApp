@@ -5,7 +5,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { ArrowDownRight, ArrowUpRight, Package, ListChecks, Users, ChevronRight, Flame, TrendingUp } from "lucide-react";
-import { UpperScreenBg } from "@/components/upper-screen-bg";
 import { BSLogo } from "@/components/bs-logo";
 import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
@@ -127,8 +126,6 @@ export default function Dashboard() {
 
   return (
     <div className="px-4 pt-0 pb-6 space-y-4 max-w-md mx-auto relative">
-      <UpperScreenBg />
-
       {/* Centred brand mark — pulled to very top, cancels space-y-4 gap */}
       <div className="flex justify-center -mb-3 -mt-4 relative z-10">
         <BSLogo />
