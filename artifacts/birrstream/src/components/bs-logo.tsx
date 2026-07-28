@@ -6,7 +6,7 @@ export function BSLogo({ className = "" }: { className?: string }) {
       <img
         src={logoNaomi}
         alt="Naomi Labs"
-        className="w-10 h-10 object-contain flex-shrink-0 border border-black"
+        className="w-10 h-10 object-contain flex-shrink-0"
       />
       <span
         style={{
