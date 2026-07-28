@@ -127,7 +127,7 @@ export default function Dashboard() {
   return (
     <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative">
       {/* Centred brand mark — pulled to very top, cancels space-y-4 gap */}
-      <div className="flex justify-center -mb-3 -mt-4 relative z-20">
+      <div className="flex justify-center -mt-4 relative z-20">
         <BSLogo />
       </div>
 
