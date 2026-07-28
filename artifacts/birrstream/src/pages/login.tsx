@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useLogin } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
-import bsLogo from "@/assets/BS-logo.svg";
+import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 import jesterImg from "@/assets/jester.png";
 
 export default function Login() {
@@ -36,15 +36,15 @@ export default function Login() {
         <div className="w-full max-w-sm">
           {/* Logo + heading */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4 shadow-lg shadow-black/30">
-              <img src={bsLogo} alt="BirrStream logo" className="w-10 h-10 object-contain" style={{ filter: "invert(1)" }} />
-            </div>
-            <h1
-              className="text-3xl text-foreground"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
-            >
-              BirrStream
-            </h1>
+<div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4 shadow-lg shadow-black/30">
+               <img src={logoNaomi} alt="Naomi Labs logo" className="w-10 h-10 object-contain" />
+             </div>
+             <h1
+               className="text-3xl text-foreground"
+               style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+             >
+               Naomi Labs
+             </h1>
             <p
               className="text-muted-foreground mt-1 text-sm"
               style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}

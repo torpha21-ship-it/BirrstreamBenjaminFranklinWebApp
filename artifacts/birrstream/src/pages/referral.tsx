@@ -89,7 +89,7 @@ export default function Referral() {
         </div>
         {navigator.share && (
           <button
-            onClick={() => info?.referralLink && navigator.share({ title: "BirrStream", url: info.referralLink })}
+            onClick={() => info?.referralLink && navigator.share({ title: "Naomi Labs", url: info.referralLink })}
             className="w-full mt-3 flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
           >
             <Share2 className="w-4 h-4" />

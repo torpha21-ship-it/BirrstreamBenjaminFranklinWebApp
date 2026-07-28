@@ -21,7 +21,7 @@ const BOT_RESPONSES: Record<string, string> = {
   "Why is my withdrawal pending?": "Withdrawals are reviewed manually by our team within 24 hours. Once approved, funds are sent to your registered bank/wallet. If it's been more than 24 hours, please contact us directly.",
   "How to complete daily tasks?": "Navigate to the Tasks page using the calendar icon in the navigation bar. Tap on any uncompleted task and follow the instructions. Each task earns you a fixed ETB reward credited instantly to your balance.",
   "How does the 40% reserve rule work?": "When you have an active VIP package, you must keep at least 40% of the package cost in your account at all times. For example, a VIP 1 package (500 ETB) requires a minimum balance of 200 ETB. This ensures platform stability.",
-  "How do I earn referral commissions?": "Share your unique referral code with others. When they deposit and activate a VIP package, you earn a commission. BirrStream uses a 3-tier commission system — you earn from your direct referrals (Level 1) and their referrals (Levels 2 & 3).",
+  "How do I earn referral commissions?": "Share your unique referral code with others. When they deposit and activate a VIP package, you earn a commission. Naomi Labs uses a 3-tier commission system — you earn from your direct referrals (Level 1) and their referrals (Levels 2 & 3).",
   "When does my VIP package expire?": "Each VIP package runs for exactly 7 days. You can check your active package's expiry date on the Dashboard or the Packages page. After expiry, you'll need to reinvest to continue earning daily returns.",
 };
 
@@ -29,7 +29,7 @@ const DEFAULT_RESPONSE = "Thank you for your question! Our support team will get
 
 export default function Support() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: "welcome", from: "bot", text: "Hi! I'm the BirrStream assistant. How can I help you today? Tap a quick question below or type your own.", ts: new Date() },
+    { id: "welcome", from: "bot", text: "Hi! I'm the Naomi Labs assistant. How can I help you today? Tap a quick question below or type your own.", ts: new Date() },
   ]);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -72,7 +72,7 @@ export default function Support() {
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="font-bold text-[28px] text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>BirrStream Support</p>
+            <p className="font-bold text-[28px] text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Naomi Labs Support</p>
             <p className="text-xs text-[#2B7A4B]">Online</p>
           </div>
         </div>

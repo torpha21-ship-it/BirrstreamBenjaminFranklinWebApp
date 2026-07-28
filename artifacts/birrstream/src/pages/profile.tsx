@@ -137,7 +137,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* ── BIRRSTREAM MEMBER CARD ── */}
+      {/* ── NAOMI LABS MEMBER CARD ── */}
       {/*
         The two cartoon-hand SVGs act as left/right holders framing the card content.
           • hand2 (viewBox 0 0 38 84) — concave opens RIGHT  → placed on the LEFT  side
@@ -168,7 +168,7 @@ export default function Profile() {
         {/* Centred card content, padded so the hands don't overlap text */}
         <div className="relative z-10 flex flex-col items-center text-center px-14 pt-5 pb-5">
           <p className="text-[#2B7A4B] text-[20px] font-bold uppercase mb-3" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.12em" }}>
-            BirrStream Member
+            Naomi Labs Member
           </p>
           <div className="bg-[#2B7A4B]/15 rounded-2xl px-4 py-2 w-full mb-2">
             <p className="font-bold text-[#2B7A4B] text-[28px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.15em" }}>

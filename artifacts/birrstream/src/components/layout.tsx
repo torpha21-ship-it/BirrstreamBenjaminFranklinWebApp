@@ -84,7 +84,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm shadow-primary/30">
               <span className="text-white text-sm font-bold">B</span>
             </div>
-            <h1 className="text-xl font-bold text-foreground">BirrStream</h1>
+            <h1 className="text-xl font-bold text-foreground">Naomi Labs</h1>
           </div>
         </div>
 
