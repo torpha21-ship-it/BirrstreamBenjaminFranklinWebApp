@@ -125,9 +125,9 @@ export default function Dashboard() {
   }, [streak]);
 
   return (
-    <div className="px-4 pt-0 pb-6 space-y-4 max-w-md mx-auto relative">
+    <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative">
       {/* Centred brand mark — pulled to very top, cancels space-y-4 gap */}
-      <div className="flex justify-center -mb-3 -mt-4 relative z-10">
+      <div className="flex justify-center -mb-3 -mt-4 relative z-20">
         <BSLogo />
       </div>
 
