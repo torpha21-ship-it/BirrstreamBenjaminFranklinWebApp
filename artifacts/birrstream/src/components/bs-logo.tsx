@@ -2,11 +2,11 @@ import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 
 export function BSLogo({ className = "" }: { className?: string }) {
   return (
-    <div className={`inline-flex items-center gap-1 select-none pointer-events-none ${className}`}>
+    <div className={`inline-flex items-center select-none pointer-events-none ${className}`}>
       <img
         src={logoNaomi}
         alt="Naomi Labs"
-        className="w-10 h-10 object-contain flex-shrink-0"
+        className="h-10 w-auto object-cover flex-shrink-0"
       />
       <span
         style={{
