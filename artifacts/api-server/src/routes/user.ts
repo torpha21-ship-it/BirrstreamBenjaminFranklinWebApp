@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
 import { UpdateUserProfileBody, DeleteAccountBody } from "@workspace/api-zod";
 
 const router = Router();
+
+function normalizeEmail(value: string): string {
+  return value.trim().toLowerCase();
+}
 
 function formatUser(user: any) {
   return {
@@ -36,8 +40,39 @@ router.patch("/user/profile", requireAuth, async (req, res) => {
   }
   const user = (req as any).user;
   const updates: Record<string, string> = {};
-  if (parsed.data.fullName) updates.fullName = parsed.data.fullName;
-  if (parsed.data.email) updates.email = parsed.data.email;
+  if (parsed.data.fullName) {
+    const fullName = parsed.data.fullName.trim();
+    if (!fullName) {
+      res.status(400).json({ error: "Invalid input" });
+      return;
+    }
+    updates.fullName = fullName;
+  }
+  if (parsed.data.email) {
+    const email = normalizeEmail(parsed.data.email);
+    if (!email) {
+      res.status(400).json({ error: "Invalid input" });
+      return;
+    }
+
+    const [existing] = await db
+      .select({ id: usersTable.id })
+      .from(usersTable)
+      .where(
+        and(
+          sql`lower(${usersTable.email}) = ${email}`,
+          sql`${usersTable.id} <> ${user.id}`,
+        ),
+      )
+      .limit(1);
+
+    if (existing) {
+      res.status(400).json({ error: "Email already in use" });
+      return;
+    }
+
+    updates.email = email;
+  }
 
   const [updated] = await db.update(usersTable).set(updates).where(eq(usersTable.id, user.id)).returning();
   res.json(formatUser(updated));

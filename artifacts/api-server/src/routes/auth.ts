@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, passwordResetTokensTable } from "@workspace/db";
-import { eq, or, and } from "drizzle-orm";
+import { eq, or, and, sql } from "drizzle-orm";
 import { generateToken, revokeToken, requireAuth } from "../middlewares/auth";
 import { loginLimiter, registerLimiter } from "../middlewares/rate-limit";
 import {
@@ -16,6 +16,24 @@ import nodemailer from "nodemailer";
 const scryptAsync = promisify(crypto.scrypt);
 const router = Router();
 
+type PasswordVerificationResult = {
+  valid: boolean;
+  algorithm: "scrypt" | "legacy_sha256";
+  reason?: "invalid_scrypt_shape" | "invalid_legacy_shape" | "length_mismatch";
+};
+
+function normalizeIdentifier(value: string): string {
+  return value.trim();
+}
+
+function normalizeEmail(value: string): string {
+  return normalizeIdentifier(value).toLowerCase();
+}
+
+function isHex(value: string): boolean {
+  return /^[0-9a-f]+$/i.test(value);
+}
+
 // ---------------------------------------------------------------------------
 // Password hashing — scrypt via Node.js built-in crypto (no external deps).
 // Format: "scrypt:<hex-salt>:<hex-hash>"
@@ -28,16 +46,36 @@ async function hashPassword(password: string): Promise<string> {
   return `scrypt:${salt}:${hash.toString("hex")}`;
 }
 
-async function verifyPassword(password: string, stored: string): Promise<boolean> {
+async function verifyPassword(password: string, stored: string): Promise<PasswordVerificationResult> {
   if (stored.startsWith("scrypt:")) {
     const [, salt, key] = stored.split(":");
+    if (!salt || !key || !isHex(salt) || !isHex(key)) {
+      return { valid: false, algorithm: "scrypt", reason: "invalid_scrypt_shape" };
+    }
+
+    const expected = Buffer.from(key, "hex");
     const hash = (await scryptAsync(password, salt, 64)) as Buffer;
+    if (expected.length !== hash.length) {
+      return { valid: false, algorithm: "scrypt", reason: "length_mismatch" };
+    }
+
     // timingSafeEqual prevents timing attacks
-    return crypto.timingSafeEqual(Buffer.from(key, "hex"), hash);
+    return {
+      valid: crypto.timingSafeEqual(expected, hash),
+      algorithm: "scrypt",
+    };
   }
+
+  if (stored.length !== 64 || !isHex(stored)) {
+    return { valid: false, algorithm: "legacy_sha256", reason: "invalid_legacy_shape" };
+  }
+
   // Legacy SHA-256 path — still works, will be upgraded to scrypt on next login
   const sha256 = crypto.createHash("sha256").update(password + "birrstream_salt").digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(sha256, "hex"), Buffer.from(stored, "hex"));
+  return {
+    valid: crypto.timingSafeEqual(Buffer.from(sha256, "hex"), Buffer.from(stored, "hex")),
+    algorithm: "legacy_sha256",
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -78,7 +116,16 @@ router.post("/auth/register", registerLimiter, async (req, res) => {
     res.status(400).json({ error: "Invalid input" });
     return;
   }
-  const { fullName, username, email, password, confirmPassword, referralCode } = parsed.data;
+  const { password, confirmPassword, referralCode } = parsed.data;
+  const fullName = parsed.data.fullName.trim();
+  const username = normalizeIdentifier(parsed.data.username);
+  const email = normalizeEmail(parsed.data.email);
+
+  if (!fullName || !username || !email) {
+    res.status(400).json({ error: "Invalid input" });
+    return;
+  }
+
   if (password !== confirmPassword) {
     res.status(400).json({ error: "Passwords do not match" });
     return;
@@ -86,7 +133,12 @@ router.post("/auth/register", registerLimiter, async (req, res) => {
   const existing = await db
     .select()
     .from(usersTable)
-    .where(or(eq(usersTable.username, username), eq(usersTable.email, email)));
+    .where(
+      or(
+        sql`lower(${usersTable.username}) = lower(${username})`,
+        sql`lower(${usersTable.email}) = ${email}`,
+      ),
+    );
   if (existing.length > 0) {
     res.status(400).json({ error: "Username or email already in use" });
     return;
@@ -133,23 +185,51 @@ router.post("/auth/login", loginLimiter, async (req, res) => {
     res.status(400).json({ error: "Invalid input" });
     return;
   }
-  const { usernameOrEmail, password } = parsed.data;
+  const { password } = parsed.data;
+  const usernameOrEmail = normalizeIdentifier(parsed.data.usernameOrEmail);
+  const normalizedIdentifier = usernameOrEmail.toLowerCase();
+
+  if (!usernameOrEmail) {
+    res.status(400).json({ error: "Invalid input" });
+    return;
+  }
+
   const [user] = await db
     .select()
     .from(usersTable)
-    .where(or(eq(usersTable.username, usernameOrEmail), eq(usersTable.email, usernameOrEmail)));
+    .where(
+      or(
+        sql`lower(${usersTable.username}) = ${normalizedIdentifier}`,
+        sql`lower(${usersTable.email}) = ${normalizedIdentifier}`,
+      ),
+    );
   if (!user) {
+    req.log?.warn(
+      { authFlow: "custom-db", failure: "user_not_found", identifierType: usernameOrEmail.includes("@") ? "email" : "username" },
+      "Login failed",
+    );
     res.status(401).json({ error: "Invalid credentials" });
     return;
   }
-  const valid = await verifyPassword(password, user.passwordHash);
-  if (!valid) {
+  const passwordResult = await verifyPassword(password, user.passwordHash);
+  if (!passwordResult.valid) {
+    req.log?.warn(
+      {
+        authFlow: "custom-db",
+        failure: "password_verification_failed",
+        userId: user.id,
+        accountCreatedAt: user.createdAt,
+        algorithm: passwordResult.algorithm,
+        reason: passwordResult.reason ?? "mismatch",
+      },
+      "Login failed",
+    );
     res.status(401).json({ error: "Invalid credentials" });
     return;
   }
 
   // Transparently upgrade legacy SHA-256 hash to scrypt on successful login
-  const needsUpgrade = !user.passwordHash.startsWith("scrypt:");
+  const needsUpgrade = passwordResult.algorithm === "legacy_sha256";
   if (needsUpgrade) {
     const newHash = await hashPassword(password);
     await db
@@ -162,6 +242,17 @@ router.post("/auth/login", loginLimiter, async (req, res) => {
       .set({ lastLoginAt: new Date() })
       .where(eq(usersTable.id, user.id));
   }
+
+  req.log?.info(
+    {
+      authFlow: "custom-db",
+      success: true,
+      userId: user.id,
+      algorithm: passwordResult.algorithm,
+      upgradedLegacyHash: needsUpgrade,
+    },
+    "Login succeeded",
+  );
 
   const token = generateToken(user.id);
   res.json({ user: formatUser(user), token });
@@ -180,14 +271,14 @@ router.post("/auth/forgot-password", async (req, res) => {
     res.status(400).json({ error: "Invalid input" });
     return;
   }
-  const { email } = parsed.data;
+  const email = normalizeEmail(parsed.data.email);
 
   // Always return 200 with the same message — never reveal whether an email
   // is registered (prevents account enumeration).
   const [user] = await db
     .select({ id: usersTable.id })
     .from(usersTable)
-    .where(eq(usersTable.email, email))
+    .where(sql`lower(${usersTable.email}) = ${email}`)
     .limit(1);
 
   if (user) {
