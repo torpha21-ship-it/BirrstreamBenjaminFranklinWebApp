@@ -133,11 +133,15 @@ export function SpecialVipCardSlider() {
     if (!cardEl) return;
     const ghoulImg = cardEl.querySelector(".card-ghoul-path");
     const logoUse = cardEl.querySelector(".name");
+    const numberUse = cardEl.querySelector(".number");
+    const qrUse = cardEl.querySelector(".qr");
     const descEl = cardEl.querySelector(".description");
     const risers = cardEl.querySelectorAll(".riser");
 
     if (ghoulImg) ghoulImg.setAttribute("href", data.ghoulPath);
     if (logoUse) logoUse.setAttribute("href", data.logo);
+    if (numberUse) numberUse.setAttribute("href", data.number);
+    if (qrUse) qrUse.setAttribute("href", data.qr);
     if (descEl) descEl.innerHTML = data.description;
 
     gsap.set(cardEl, {
@@ -499,12 +503,12 @@ export function SpecialVipCardSlider() {
           <ChevronRight className="w-6 h-6 text-foreground" />
         </button>
 
-        {/* Scaled 3D Card Wrapper — Mobile Optimized (max 310px width) */}
+        {/* Scaled 3D Card Wrapper — Preserving Original Ghoul NFT Proportions */}
         <div
           className="card-wrapper relative"
           style={{
-            width: "300px",
-            height: "440px",
+            width: "320px",
+            height: "490px",
             transformStyle: "preserve-3d",
             perspective: "2000px",
             margin: "0 auto",
@@ -513,7 +517,7 @@ export function SpecialVipCardSlider() {
           {/* Card Buffer 0 */}
           <div
             ref={(el) => { cardRefs.current[0] = el; }}
-            className="card front absolute inset-0 rounded-[22px] p-4 flex flex-col justify-between shadow-2xl overflow-hidden border border-white/20"
+            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl overflow-hidden"
             style={{
               transformStyle: "preserve-3d",
               willChange: "transform",
@@ -522,62 +526,74 @@ export function SpecialVipCardSlider() {
             }}
           >
             {/* 3D Ghoul Image Box & Risers */}
-            <div className="front-ghoul relative w-full aspect-square bg-[#1A1A1A] rounded-xl overflow-hidden shadow-md">
+            <div className="ghoul relative w-full aspect-square rounded-xl overflow-hidden shadow-md">
               <div className="riser riser--1" />
               <div className="riser riser--2" />
               <div className="riser riser--3" />
               <div className="riser riser--4" />
               <div className="riser shadow" />
-              <svg viewBox="0 0 1600 1600" className="ghoul-image absolute inset-0 w-full h-full">
+              <svg viewBox="0 0 1600 1600" className="ghoul-image">
                 <use className="card-ghoul-path" href={CARDS_DATA[0].ghoulPath} />
               </svg>
             </div>
 
             {/* Logo Header */}
-            <div className="logo-wrapper relative -mt-3 text-center">
-              <svg className="ghoul-logo w-full h-10 mx-auto" viewBox="0 0 400 115">
+            <div className="logo-wrapper">
+              <svg className="ghoul-logo" viewBox="0 0 400 115">
                 <use href="#ghoul-logo" />
               </svg>
-              <svg className="card-name w-3/4 h-8 mx-auto mt-1">
+              <svg className="card-name" viewBox="0 0 217 80">
                 <use className="name" href={CARDS_DATA[0].logo} />
               </svg>
             </div>
 
-            {/* Bottom Content & Highstories Font Description */}
-            <div className="bottom-wrapper flex flex-col gap-2 mt-auto">
-              <p
-                className="description text-center text-white text-base leading-snug drop-shadow-md px-1"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.04em" }}
-              >
-                {CARDS_DATA[0].description}
-              </p>
+            {/* Bottom Content & Highstories Font Description + QR & Number Badges */}
+            <div className="bottom-wrapper">
+              <div className="bottom-row">
+                <div className="number-wrapper">
+                  <svg viewBox="0 0 97 49">
+                    <use className="number" href={CARDS_DATA[0].number} />
+                  </svg>
+                </div>
+                <p
+                  className="description"
+                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                >
+                  {CARDS_DATA[0].description}
+                </p>
+                <div className="qr-wrapper">
+                  <svg viewBox="0 0 60 60">
+                    <use className="qr" href={CARDS_DATA[0].qr} />
+                  </svg>
+                </div>
+              </div>
 
               {/* Special Activate Button (Highstories Font) */}
               <button
                 onClick={handleActivateClick}
                 disabled={!isActivated}
-                className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
+                className={`w-full py-2 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
                   isActivated
                     ? "bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
-                    : "bg-black/30 text-white/60 border border-white/20 cursor-not-allowed pointer-events-none"
+                    : "bg-black/40 text-white/70 border border-white/20 cursor-not-allowed pointer-events-none"
                 }`}
                 style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-4 h-4 text-green-600 inline-block" /> Activate
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> Activate
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3.5 h-3.5 opacity-60 inline-block" /> Activate
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> Activate
                   </>
                 )}
               </button>
             </div>
 
             {/* Card Back 3D Layer */}
-            <div className="back absolute inset-0 rounded-[22px] bg-[#ffe14b] flex items-center justify-center">
-              <svg viewBox="0 0 180 244" className="w-36">
+            <div className="back">
+              <svg viewBox="0 0 180 244">
                 <use href="#back-logo" />
               </svg>
             </div>
@@ -586,7 +602,7 @@ export function SpecialVipCardSlider() {
           {/* Card Buffer 1 */}
           <div
             ref={(el) => { cardRefs.current[1] = el; }}
-            className="card front absolute inset-0 rounded-[22px] p-4 flex flex-col justify-between shadow-2xl overflow-hidden border border-white/20"
+            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl overflow-hidden"
             style={{
               transformStyle: "preserve-3d",
               willChange: "transform",
@@ -595,62 +611,74 @@ export function SpecialVipCardSlider() {
             }}
           >
             {/* 3D Ghoul Image Box & Risers */}
-            <div className="front-ghoul relative w-full aspect-square bg-[#1A1A1A] rounded-xl overflow-hidden shadow-md">
+            <div className="ghoul relative w-full aspect-square rounded-xl overflow-hidden shadow-md">
               <div className="riser riser--1" />
               <div className="riser riser--2" />
               <div className="riser riser--3" />
               <div className="riser riser--4" />
               <div className="riser shadow" />
-              <svg viewBox="0 0 1600 1600" className="ghoul-image absolute inset-0 w-full h-full">
+              <svg viewBox="0 0 1600 1600" className="ghoul-image">
                 <use className="card-ghoul-path" href={CARDS_DATA[1].ghoulPath} />
               </svg>
             </div>
 
             {/* Logo Header */}
-            <div className="logo-wrapper relative -mt-3 text-center">
-              <svg className="ghoul-logo w-full h-10 mx-auto" viewBox="0 0 400 115">
+            <div className="logo-wrapper">
+              <svg className="ghoul-logo" viewBox="0 0 400 115">
                 <use href="#ghoul-logo" />
               </svg>
-              <svg className="card-name w-3/4 h-8 mx-auto mt-1">
+              <svg className="card-name" viewBox="0 0 217 80">
                 <use className="name" href={CARDS_DATA[1].logo} />
               </svg>
             </div>
 
-            {/* Bottom Content & Highstories Font Description */}
-            <div className="bottom-wrapper flex flex-col gap-2 mt-auto">
-              <p
-                className="description text-center text-white text-base leading-snug drop-shadow-md px-1"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.04em" }}
-              >
-                {CARDS_DATA[1].description}
-              </p>
+            {/* Bottom Content & Highstories Font Description + QR & Number Badges */}
+            <div className="bottom-wrapper">
+              <div className="bottom-row">
+                <div className="number-wrapper">
+                  <svg viewBox="0 0 97 49">
+                    <use className="number" href={CARDS_DATA[1].number} />
+                  </svg>
+                </div>
+                <p
+                  className="description"
+                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                >
+                  {CARDS_DATA[1].description}
+                </p>
+                <div className="qr-wrapper">
+                  <svg viewBox="0 0 60 60">
+                    <use className="qr" href={CARDS_DATA[1].qr} />
+                  </svg>
+                </div>
+              </div>
 
               {/* Special Activate Button (Highstories Font) */}
               <button
                 onClick={handleActivateClick}
                 disabled={!isActivated}
-                className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
+                className={`w-full py-2 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
                   isActivated
                     ? "bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
-                    : "bg-black/30 text-white/60 border border-white/20 cursor-not-allowed pointer-events-none"
+                    : "bg-black/40 text-white/70 border border-white/20 cursor-not-allowed pointer-events-none"
                 }`}
                 style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-4 h-4 text-green-600 inline-block" /> Activate
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> Activate
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3.5 h-3.5 opacity-60 inline-block" /> Activate
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> Activate
                   </>
                 )}
               </button>
             </div>
 
             {/* Card Back 3D Layer */}
-            <div className="back absolute inset-0 rounded-[22px] bg-[#ffe14b] flex items-center justify-center">
-              <svg viewBox="0 0 180 244" className="w-36">
+            <div className="back">
+              <svg viewBox="0 0 180 244">
                 <use href="#back-logo" />
               </svg>
             </div>
