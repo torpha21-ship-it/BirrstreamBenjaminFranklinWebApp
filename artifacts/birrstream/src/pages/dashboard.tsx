@@ -14,6 +14,7 @@ import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
 import totalWithdrawnCard from "@/assets/decor/total-withdrawn-card.png";
 import totalYieldCard from "@/assets/decor/total-yield-card.png";
 import streakImg from "@/assets/decor/173.png";
+import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -350,6 +351,12 @@ export default function Dashboard() {
           </Link>
         ))}
       </div>
+
+      {/* Special 3D VIP Upgrade Cards Slider */}
+      <div className="relative z-10 -mx-4">
+        <SpecialVipCardSlider />
+      </div>
     </div>
   );
 }
+

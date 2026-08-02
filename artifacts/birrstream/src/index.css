@@ -165,3 +165,62 @@
     scrollbar-width: none;
   }
 }
+
+/* 3D Ghoul Card Slider Utilities */
+.card-wrapper {
+  --riser: 20px;
+}
+.front {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.front-ghoul {
+  transform-style: preserve-3d;
+}
+.front .riser {
+  position: absolute;
+  backface-visibility: hidden;
+  width: 100%;
+  height: var(--riser, 20px);
+}
+.front .riser--1 {
+  left: 0px;
+  top: 0px;
+  transform-origin: top center;
+  transform: rotateX(90deg);
+}
+.front .riser--2 {
+  right: 0px;
+  top: 0px;
+  transform-origin: top right;
+  transform: translateZ(var(--riser, 20px)) rotate(-90deg) rotateX(-90deg);
+}
+.front .riser--3 {
+  left: 0px;
+  bottom: 0px;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg);
+}
+.front .riser--4 {
+  left: 0px;
+  top: 0px;
+  transform-origin: top left;
+  transform: translateZ(var(--riser, 20px)) rotate(90deg) rotateX(-90deg);
+}
+.front .shadow {
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+  bottom: -30px;
+  left: 0;
+  filter: blur(15px);
+}
+.front .ghoul-image {
+  transform: translateZ(var(--riser, 20px));
+  backface-visibility: hidden;
+}
+.back {
+  transform: translateZ(-2px) rotateY(180deg);
+  backface-visibility: hidden;
+}
+
