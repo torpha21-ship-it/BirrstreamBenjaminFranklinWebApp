@@ -8,6 +8,7 @@ import { ArrowDownRight, ArrowUpRight, Package, ListChecks, Users, ChevronRight,
 import { BSLogo } from "@/components/bs-logo";
 import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
+import { AdSlider } from "@/components/ad-slider";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
 import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
@@ -213,6 +214,9 @@ export default function Dashboard() {
         )}
         </div>
       </div>
+
+      {/* Video Ad Slider */}
+      <AdSlider />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
