@@ -14,7 +14,7 @@ import totalYieldIcon from "@/assets/decor/profile-total-yield-card.svg";
 import withdrawnIcon from "@/assets/decor/profile-withdrawn-card.svg";
 // hand2 = "(" shape → left side   |   hand1 = ")" shape → right side
 import hand2 from "@/assets/decor/member-hand-2.svg";
-import hand1 from "@/assets/decor/member-hand-1.svg";
+import { CalendarCard } from "@/components/calendar-card";
 
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
@@ -136,6 +136,9 @@ export default function Profile() {
           <p className="text-muted-foreground text-xs">{user?.email}</p>
         </div>
       </div>
+
+      {/* ── 6-MONTH PLATFORM CALENDAR & COUNTDOWN ── */}
+      <CalendarCard userCreatedAt={user?.createdAt} />
 
       {/* ── NAOMI LABS MEMBER CARD ── */}
       {/*
