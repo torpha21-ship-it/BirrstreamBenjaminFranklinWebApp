@@ -1,8 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
-import { Gamepad2, Sparkles, Trophy, Flame, Zap, Lock, Coins, RefreshCw, ArrowLeft, Play, X } from "lucide-react";
+import { Coins, RefreshCw, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+/* ================================================================
+   SPRITE DATA — Each character's sprite sheet dimensions & frames.
+   This is the SAME data from the original style.css, ported to JS
+   so we can drive the walk animation via requestAnimationFrame.
+   ================================================================ */
+interface SpriteData {
+  imageUrl: string;      // sprite sheet URL
+  columns: number;       // columns in the sheet
+  sheetWidth: number;    // original sheet width px
+  sheetHeight: number;   // original sheet height px
+  totalFrames: number;   // total frames in the sheet
+}
 
 interface MobData {
   id: string;
@@ -15,33 +28,163 @@ interface MobData {
   agility: string;
   previewUrl: string;
   rotClass: string;
+  sprite: SpriteData;
 }
 
 const MOBS: MobData[] = [
-  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 150, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1" },
-  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -75, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10" },
-  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 100, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1" },
-  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500 animate-pulse", amount: -150, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20" },
-  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 400, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1" },
-  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500 animate-pulse", amount: -200, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10" },
-  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 300, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10" },
-  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 250, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2" },
-  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 180, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-15 translate-x-2 z-20" },
-  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 500, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30" },
-  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -100, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2" },
-  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 220, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10" },
-  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 80, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-10 translate-y-1" },
-  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 350, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10" },
-  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 200, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1" }
+  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 150, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/cat.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5364, totalFrames: 42 } },
+  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -75, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/spider.webp", columns: 5, sheetWidth: 2980, sheetHeight: 3576, totalFrames: 28 } },
+  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 100, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/cow.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 60 } },
+  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500", amount: -150, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/creeper.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
+  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 400, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/enderman.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
+  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500", amount: -200, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/evoker.webp", columns: 5, sheetWidth: 2980, sheetHeight: 11920, totalFrames: 99 } },
+  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 300, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/golem.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8940, totalFrames: 72 } },
+  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 250, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/horse.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5960, totalFrames: 47 } },
+  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 180, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-[15deg] translate-x-2 z-20",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/ocelot.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } },
+  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 500, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/panda.webp", columns: 5, sheetWidth: 2980, sheetHeight: 10728, totalFrames: 88 } },
+  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -100, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/skeleton.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7748, totalFrames: 65 } },
+  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 220, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/wolf.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 58 } },
+  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 80, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-[10deg] translate-y-1",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/squid.webp", columns: 5, sheetWidth: 2980, sheetHeight: 12516, totalFrames: 104 } },
+  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 350, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/fox.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8344, totalFrames: 69 } },
+  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 200, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1",
+    sprite: { imageUrl: "https://assets.codepen.io/36869/villager.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } }
 ];
 
+/* ================================================================
+   SPRITE WALK ANIMATION COMPONENT
+   Replicates the original CSS sprite animation from style.css:
+   - Uses background-image with the sprite sheet
+   - Calculates background-position per frame
+   - Cycles frames via requestAnimationFrame at 48 FPS
+   ================================================================ */
+function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteData; displayWidth?: number }) {
+  const divRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef(0);
+  const lastTimeRef = useRef(0);
+
+  const FPS = 48;
+  const frameDuration = 1000 / FPS;
+
+  // Calculate dimensions (mirroring the original CSS math)
+  const frameWidthOriginal = sprite.sheetWidth / sprite.columns;
+  const scaleFactor = displayWidth / frameWidthOriginal;
+  const scaledSheetWidth = sprite.sheetWidth * scaleFactor;
+  const scaledSheetHeight = sprite.sheetHeight * scaleFactor;
+  const rows = Math.ceil(sprite.totalFrames / sprite.columns);
+  const frameHeight = scaledSheetHeight / rows;
+
+  const animate = useCallback((timestamp: number) => {
+    if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+    const elapsed = timestamp - lastTimeRef.current;
+
+    if (elapsed >= frameDuration) {
+      lastTimeRef.current = timestamp - (elapsed % frameDuration);
+      frameRef.current = (frameRef.current + 1) % sprite.totalFrames;
+
+      if (divRef.current) {
+        const f = frameRef.current;
+        const col = f % sprite.columns;
+        const row = Math.floor(f / sprite.columns);
+        const x = col * displayWidth;
+        const y = row * frameHeight;
+        divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }, [sprite, displayWidth, frameHeight, frameDuration]);
+
+  useEffect(() => {
+    const handle = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(handle);
+  }, [animate]);
+
+  return (
+    <div
+      ref={divRef}
+      style={{
+        width: displayWidth,
+        height: frameHeight,
+        backgroundImage: `url(${sprite.imageUrl})`,
+        backgroundSize: `${scaledSheetWidth}px ${scaledSheetHeight}px`,
+        backgroundPosition: "0px 0px",
+        backgroundRepeat: "no-repeat",
+        imageRendering: "pixelated",
+        filter: "drop-shadow(0 0 12px rgba(250, 204, 21, 0.7)) drop-shadow(2px 4px 8px rgba(0,0,0,0.8))",
+      }}
+    />
+  );
+}
+
+/* ================================================================
+   STICKER COLLAGE COMPONENT
+   Duplicated characters, full-opacity white borders, overlapping
+   ================================================================ */
+function StickerCollage() {
+  // Duplicate the mobs array so characters fill the space with overlap
+  const doubled = [...MOBS, ...MOBS];
+
+  return (
+    <div className="relative min-h-[200px] bg-black/40 rounded-2xl border border-white/10 overflow-hidden flex flex-wrap items-center justify-center shadow-inner"
+      style={{ gap: 0, padding: "8px 4px" }}
+    >
+      {doubled.map((mob, idx) => (
+        <div
+          key={`${mob.id}-${idx}`}
+          className={`relative inline-block transition-transform hover:scale-125 hover:z-50 cursor-pointer`}
+          title={`${mob.name} (${mob.amount >= 0 ? '+' : ''}${mob.amount} ETB)`}
+          style={{
+            margin: "-4px -2px",
+            transform: `rotate(${(idx % 7 - 3) * 5}deg)`,
+            zIndex: idx % 5 + 1,
+          }}
+        >
+          <img
+            src={mob.previewUrl}
+            alt={mob.name}
+            className="w-11 h-11 object-contain"
+            style={{
+              filter: "drop-shadow(0px 0px 0px #ffffff) drop-shadow(0px 1px 0px #ffffff) drop-shadow(0px -1px 0px #ffffff) drop-shadow(1px 0px 0px #ffffff) drop-shadow(-1px 0px 0px #ffffff) drop-shadow(1px 1px 0px #ffffff) drop-shadow(-1px -1px 0px #ffffff) drop-shadow(1px -1px 0px #ffffff) drop-shadow(-1px 1px 0px #ffffff) drop-shadow(2px 3px 5px rgba(0,0,0,0.9))"
+            }}
+          />
+        </div>
+      ))}
+
+      {/* Sticker Doodle Floating Badges */}
+      <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold rotate-12 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
+        💎 +500 ETB
+      </div>
+      <div className="absolute bottom-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold -rotate-6 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
+        💣 TNT TRAPS
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================
+   MAIN COMPONENT
+   ================================================================ */
 export default function Games() {
   const { user } = useAuth();
   const [balance, setBalance] = useState<number>(() => parseFloat((user as any)?.mainBalance || "1000"));
   const [isFullPageGame, setIsFullPageGame] = useState(false);
 
   // Full-page game state
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(() => Math.floor(Math.random() * MOBS.length));
   const [isSpinning, setIsSpinning] = useState(false);
   const [modalResult, setModalResult] = useState<MobData | null>(null);
 
@@ -126,33 +269,25 @@ export default function Games() {
 
   const currentMob = MOBS[selectedIndex];
 
-  // Full-Page Clean Game View (No background cards wrapper)
+  const HS = { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" } as const;
+  const HSsm = { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" } as const;
+
+  /* ================================================================
+     FULL-PAGE GAME VIEW
+     Fixed: 100vw/100vh, no scroll, perfectly centered, no extra space
+     ================================================================ */
   if (isFullPageGame) {
     return (
-      <div className="min-h-screen bg-[#1A1A1A] text-white p-4 md:p-6 flex flex-col justify-between -mx-4 md:mx-0">
-        {/* Keyframe style for active stuck-in-hover character movement */}
-        <style>{`
-          @keyframes activeMobHover {
-            0%, 100% {
-              transform: translateY(0px) scale(1.12);
-              filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.8)) drop-shadow(0 0 25px rgba(74, 222, 128, 0.6));
-            }
-            50% {
-              transform: translateY(-10px) scale(1.22);
-              filter: drop-shadow(0 0 18px rgba(74, 222, 128, 0.9)) drop-shadow(0 0 35px rgba(250, 204, 21, 0.9));
-            }
-          }
-          .animate-active-mob {
-            animation: activeMobHover 1.5s ease-in-out infinite;
-          }
-        `}</style>
-
-        {/* Full-Page Top Navigation Bar */}
-        <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-4 mb-4">
-          <button 
+      <div
+        className="fixed inset-0 bg-[#1A1A1A] text-white flex flex-col overflow-hidden"
+        style={{ zIndex: 30 }}
+      >
+        {/* Top Nav Bar */}
+        <div className="flex items-center justify-between bg-white/5 border-b border-white/10 px-4 py-3 flex-shrink-0">
+          <button
             onClick={() => setIsFullPageGame(false)}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+            style={HS}
           >
             <ArrowLeft className="w-5 h-5 text-primary" />
             <span className="text-base font-semibold">Back to Arcade</span>
@@ -160,118 +295,116 @@ export default function Games() {
 
           <div className="flex items-center gap-2 bg-black/60 px-4 py-1.5 rounded-xl border border-yellow-500/30">
             <Coins className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-semibold text-yellow-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+            <span className="text-sm font-semibold text-yellow-400" style={HS}>
               {balance.toLocaleString()} ETB
             </span>
           </div>
         </div>
 
-        {/* Full-Page Main Game Screen */}
-        <div className="space-y-6 flex-1 max-w-2xl mx-auto w-full">
-          {/* Header Title */}
-          <div className="text-center">
-            <h1 className="text-[28px] font-bold text-white mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-              🎮 MINECRAFT MOB SPINNER
-            </h1>
-            <p className="text-xs text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-              Spin to select 1 of 15 mobs. Win up to +500 ETB or dodge traps!
-            </p>
-          </div>
+        {/* Scrollable game content area — takes all remaining space */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="max-w-lg mx-auto w-full px-4 py-4 space-y-5">
+            {/* Header Title */}
+            <div className="text-center">
+              <h1 className="text-[26px] font-bold text-white mb-1" style={HS}>
+                🎮 MINECRAFT MOB SPINNER
+              </h1>
+              <p className="text-xs text-gray-400" style={HSsm}>
+                Spin to select 1 of 15 mobs. Win up to +500 ETB or dodge traps!
+              </p>
+            </div>
 
-          {/* Action Spin Button */}
-          <div className="flex justify-center">
-            <Button
-              onClick={startSpin}
-              disabled={isSpinning}
-              className={`w-full max-w-sm py-6 rounded-2xl text-lg font-bold shadow-xl transition-all ${
-                isSpinning
-                  ? "bg-amber-500 text-black animate-pulse"
-                  : "bg-primary text-[#1A1A1A] hover:bg-primary/90 shadow-primary/30"
-              }`}
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
-            >
-              <RefreshCw className={`w-5 h-5 mr-2 ${isSpinning ? "animate-spin" : ""}`} />
-              {isSpinning ? "SPINNING AUTO-PICKER..." : "START AUTO-PICKER (SPIN)"}
-            </Button>
-          </div>
+            {/* Spin Button */}
+            <div className="flex justify-center">
+              <Button
+                onClick={startSpin}
+                disabled={isSpinning}
+                className={`w-full max-w-sm py-6 rounded-2xl text-lg font-bold shadow-xl transition-all ${
+                  isSpinning
+                    ? "bg-amber-500 text-black animate-pulse"
+                    : "bg-primary text-[#1A1A1A] hover:bg-primary/90 shadow-primary/30"
+                }`}
+                style={{ ...HS, letterSpacing: "0.08em" }}
+              >
+                <RefreshCw className={`w-5 h-5 mr-2 ${isSpinning ? "animate-spin" : ""}`} />
+                {isSpinning ? "SPINNING AUTO-PICKER..." : "START AUTO-PICKER (SPIN)"}
+              </Button>
+            </div>
 
-          {/* Character Selector Row */}
-          <div>
-            <p className="text-xs text-gray-400 mb-2 uppercase" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-              Selected Mob Roster (15 Mobs)
-            </p>
-            <div className="grid grid-cols-5 gap-2">
-              {MOBS.map((mob, idx) => {
-                const isSelected = idx === selectedIndex;
-                const isGain = mob.amount >= 0;
-                return (
-                  <button
-                    key={mob.id}
-                    onClick={() => !isSpinning && setSelectedIndex(idx)}
-                    className={`relative p-2 rounded-2xl border flex flex-col items-center justify-center transition-all ${
-                      isSelected
-                        ? "bg-primary/20 border-primary ring-2 ring-primary/60 scale-110 z-10"
-                        : "bg-white/5 border-white/10 hover:border-white/20 opacity-75"
-                    }`}
-                  >
-                    <img 
-                      src={mob.previewUrl} 
-                      alt={mob.name} 
-                      className={`w-10 h-10 object-contain mb-1 ${isSelected ? "animate-pulse" : ""}`} 
-                    />
-                    <span 
-                      className={`text-[11px] font-semibold ${isGain ? "text-emerald-400" : "text-red-400"}`}
-                      style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.04em" }}
+            {/* Character Selector Grid */}
+            <div>
+              <p className="text-xs text-gray-400 mb-2 uppercase" style={HS}>
+                Selected Mob Roster (15 Mobs)
+              </p>
+              <div className="grid grid-cols-5 gap-2">
+                {MOBS.map((mob, idx) => {
+                  const isSelected = idx === selectedIndex;
+                  const isGain = mob.amount >= 0;
+                  return (
+                    <button
+                      key={mob.id}
+                      onClick={() => !isSpinning && setSelectedIndex(idx)}
+                      className={`relative p-2 rounded-2xl border flex flex-col items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-primary/20 border-primary ring-2 ring-primary/60 scale-110 z-10"
+                          : "bg-white/5 border-white/10 hover:border-white/20 opacity-75"
+                      }`}
                     >
-                      {isGain ? `+${mob.amount}` : mob.amount}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Active Moving Character & Gamified RPG Stats (Stuck in active hover animation state!) */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col sm:flex-row gap-6 items-center shadow-2xl">
-            {/* Active Moving Mob Showcase */}
-            <div className="w-32 h-32 bg-black/60 rounded-3xl border border-white/20 flex items-center justify-center p-3 flex-shrink-0 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-yellow-500/10 pointer-events-none" />
-              <img 
-                src={currentMob.previewUrl} 
-                alt={currentMob.name} 
-                className="w-24 h-24 object-contain animate-active-mob" 
-              />
+                      <img
+                        src={mob.previewUrl}
+                        alt={mob.name}
+                        className="w-10 h-10 object-contain mb-1"
+                      />
+                      <span
+                        className={`text-[11px] font-semibold ${isGain ? "text-emerald-400" : "text-red-400"}`}
+                        style={HSsm}
+                      >
+                        {isGain ? `+${mob.amount}` : mob.amount}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* RPG Gamified Stats */}
-            <div className="flex-1 w-full space-y-3 text-left">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <h3 className="font-bold text-white text-2xl" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-                  {currentMob.name}
-                </h3>
-                <Badge className={currentMob.rarityColor} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-                  {currentMob.rarity}
-                </Badge>
+            {/* Active Character with REAL SPRITE WALK ANIMATION + RPG Stats */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 items-center shadow-2xl">
+              {/* Sprite Walk Animation Showcase */}
+              <div className="w-40 h-40 bg-black/60 rounded-3xl border border-white/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-yellow-500/10 pointer-events-none" />
+                <SpriteWalkAnimation sprite={currentMob.sprite} displayWidth={120} />
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Power Rating:</span>
-                  <span className="font-semibold text-yellow-400 text-base" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.power}</span>
+              {/* RPG Stats */}
+              <div className="flex-1 w-full space-y-3 text-left">
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <h3 className="font-bold text-white text-xl" style={HS}>
+                    {currentMob.name}
+                  </h3>
+                  <Badge className={currentMob.rarityColor} style={HSsm}>
+                    {currentMob.rarity}
+                  </Badge>
                 </div>
-                <div>
-                  <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Agility Stat:</span>
-                  <span className="font-semibold text-cyan-400 text-base" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.agility}</span>
-                </div>
-                <div>
-                  <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Birr Potential:</span>
-                  <span className={`font-bold text-base ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-                    {currentMob.amount >= 0 ? `+${currentMob.amount} ETB` : `${currentMob.amount} ETB`}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Special Skill:</span>
-                  <span className="font-semibold text-gray-200 text-sm" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.ability}</span>
+
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-400 text-xs block" style={HSsm}>Power Rating:</span>
+                    <span className="font-semibold text-yellow-400 text-base" style={HSsm}>{currentMob.power}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs block" style={HSsm}>Agility Stat:</span>
+                    <span className="font-semibold text-cyan-400 text-base" style={HSsm}>{currentMob.agility}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs block" style={HSsm}>Birr Potential:</span>
+                    <span className={`font-bold text-base ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HSsm}>
+                      {currentMob.amount >= 0 ? `+${currentMob.amount} ETB` : `${currentMob.amount} ETB`}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-xs block" style={HSsm}>Special Skill:</span>
+                    <span className="font-semibold text-gray-200 text-sm" style={HSsm}>{currentMob.ability}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -285,19 +418,19 @@ export default function Games() {
               <div className="text-5xl">
                 {modalResult.amount >= 400 ? "💎" : modalResult.amount >= 0 ? "🎉" : "💣"}
               </div>
-              <h3 className={`text-2xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+              <h3 className={`text-2xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>
                 {modalResult.amount >= 400 ? "JACKPOT REWARD!" : modalResult.amount >= 0 ? "YOU WON BIRR!" : "PENALTY TRAP!"}
               </h3>
-              <p className="text-sm text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+              <p className="text-sm text-gray-300" style={HSsm}>
                 Landed on <strong className="text-white">{modalResult.name}</strong> ({modalResult.ability})
               </p>
-              <div className={`text-3xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+              <div className={`text-3xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>
                 {modalResult.amount >= 0 ? `+${modalResult.amount} ETB` : `${modalResult.amount} ETB`}
               </div>
-              <Button 
+              <Button
                 onClick={() => setModalResult(null)}
                 className="w-full bg-primary text-[#1A1A1A] font-semibold py-3 rounded-xl"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+                style={{ ...HS, letterSpacing: "0.08em" }}
               >
                 CONTINUE PLAYING
               </Button>
@@ -308,100 +441,76 @@ export default function Games() {
     );
   }
 
-  // Standard Arcade Hub View: Cards styled like Main Balance card (Double length downward)
+  /* ================================================================
+     ARCADE HUB VIEW
+     ================================================================ */
   return (
     <div className="space-y-6 max-w-md mx-auto md:max-w-none">
       {/* Top Header */}
-      <div className="flex items-center justify-between -mx-4 px-6 pt-2">
+      <div className="flex items-center justify-between px-2 pt-2">
         <div>
-          <h1 className="text-[28px] text-[#2B7A4B] font-bold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}>
+          <h1 className="text-[28px] text-[#2B7A4B] font-bold" style={{ ...HS, letterSpacing: "0.08em" }}>
             NAOMI ARCADE
           </h1>
-          <p className="text-gray-400 text-[18px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+          <p className="text-gray-400 text-[18px]" style={HSsm}>
             Play games & earn Birr rewards
           </p>
         </div>
         <div className="bg-[#1A1A1A] px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-2">
           <Coins className="w-4 h-4 text-yellow-400" />
-          <span className="text-sm font-semibold text-white" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+          <span className="text-sm font-semibold text-white" style={HS}>
             {balance.toLocaleString()} ETB
           </span>
         </div>
       </div>
 
-      {/* Main Game Card — Designed like Main Balance Card, double length downward */}
-      <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-2xl relative overflow-hidden -mx-4 flex flex-col min-h-[580px]">
-        
-        {/* FIRST HALF (Top): DOODLE STICKER COLLAGE of every character */}
+      {/* Main Game Card — Styled like Main Balance card, double length */}
+      <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-2xl relative overflow-hidden flex flex-col min-h-[580px]">
+
+        {/* FIRST HALF: DOODLE STICKER COLLAGE */}
         <div className="flex-1 space-y-3 pb-4 border-b border-white/10 relative">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[24px] text-gray-400 font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+            <p className="text-[22px] text-gray-400 font-semibold" style={HS}>
               Minecraft Mob Sticker Roster
             </p>
-            <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+            <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full font-semibold" style={HSsm}>
               15 Mob Stickers
             </span>
           </div>
 
-          {/* Doodle Sticker Art Canvas: Overlapping character stickers with white outlines & random rotations */}
-          <div className="relative min-h-[220px] bg-black/40 rounded-2xl border border-white/10 p-3 overflow-hidden flex flex-wrap items-center justify-center gap-1.5 shadow-inner">
-            {MOBS.map((mob) => (
-              <div 
-                key={mob.id}
-                className={`relative inline-block transition-transform hover:scale-125 hover:z-40 cursor-pointer ${mob.rotClass}`}
-                title={`${mob.name} (${mob.amount >= 0 ? '+' : ''}${mob.amount} ETB)`}
-              >
-                <img 
-                  src={mob.previewUrl} 
-                  alt={mob.name} 
-                  className="w-12 h-12 object-contain"
-                  style={{
-                    filter: "drop-shadow(0px 0px 2px #ffffff) drop-shadow(0px 0px 4px #ffffff) drop-shadow(2px 3px 6px rgba(0,0,0,0.9))"
-                  }}
-                />
-              </div>
-            ))}
-
-            {/* Sticker Doodle Floating Badges */}
-            <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold rotate-12 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
-              💎 +500 ETB
-            </div>
-            <div className="absolute bottom-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold -rotate-6 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
-              💣 TNT TRAPS
-            </div>
-          </div>
+          <StickerCollage />
         </div>
 
-        {/* SECOND HALF (Bottom): Concise Game Info Text + Start Game Button */}
+        {/* SECOND HALF: Game Info + Start Button */}
         <div className="pt-5 space-y-4 flex flex-col justify-between">
           <div>
-            <h2 className="text-[26px] font-bold text-white mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+            <h2 className="text-[24px] font-bold text-white mb-1" style={HS}>
               Minecraft Mob Spinner
             </h2>
-            <p className="text-gray-300 text-sm leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+            <p className="text-gray-300 text-sm leading-snug" style={HSsm}>
               Spin the auto-picker to randomly land on 1 of 15 mobs. Win up to +500 ETB with Diamond Panda or dodge Creeper TNT traps!
             </p>
           </div>
 
-          {/* Concise Info Badges */}
+          {/* Info Badges */}
           <div className="flex flex-wrap gap-2">
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>
               Jackpot: +500 ETB
             </span>
-            <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+            <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold" style={HSsm}>
               Danger Traps Included
             </span>
-            <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+            <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold" style={HSsm}>
               RPG Power Grades
             </span>
           </div>
 
-          {/* Streamlined Start Game Button */}
+          {/* Start Game Button */}
           <div className="pt-2">
             <Button
               onClick={() => setIsFullPageGame(true)}
               className="w-full bg-primary text-[#1A1A1A] hover:bg-primary/90 font-bold text-lg py-6 rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+              style={{ ...HS, letterSpacing: "0.08em" }}
             >
               <Play className="w-5 h-5 fill-current mr-2" />
               START GAME
@@ -412,56 +521,56 @@ export default function Games() {
 
       {/* Coming Soon Section */}
       <div className="space-y-4 pt-2">
-        <p className="text-[22px] text-gray-400 font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+        <p className="text-[22px] text-gray-400 font-semibold" style={HS}>
           Upcoming Arcade Games
         </p>
 
         {/* Coming Soon Card 1 */}
-        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden -mx-4 flex flex-col justify-between min-h-[300px]">
+        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[260px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <Flame className="w-5 h-5" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
               </div>
-              <h3 className="text-[22px] font-bold text-white" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+              <h3 className="text-[20px] font-bold text-white" style={HS}>
                 Birr Mine Sweeper
               </h3>
             </div>
-            <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-              <Lock className="w-3 h-3 inline mr-1" /> SOON
+            <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-semibold" style={HSsm}>
+              🔒 SOON
             </span>
           </div>
 
-          <p className="text-gray-300 text-sm my-4" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+          <p className="text-gray-300 text-sm my-4" style={HSsm}>
             Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!
           </p>
 
-          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
             Coming Soon
           </Button>
         </div>
 
         {/* Coming Soon Card 2 */}
-        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden -mx-4 flex flex-col justify-between min-h-[300px]">
+        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[260px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <Zap className="w-5 h-5" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               </div>
-              <h3 className="text-[22px] font-bold text-white" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+              <h3 className="text-[20px] font-bold text-white" style={HS}>
                 Diamond Crash
               </h3>
             </div>
-            <span className="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-              <Lock className="w-3 h-3 inline mr-1" /> SOON
+            <span className="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-semibold" style={HSsm}>
+              🔒 SOON
             </span>
           </div>
 
-          <p className="text-gray-300 text-sm my-4" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+          <p className="text-gray-300 text-sm my-4" style={HSsm}>
             Watch the diamond rocket soar up to 50x multiplier before it crashes down.
           </p>
 
-          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
             Coming Soon
           </Button>
         </div>
