@@ -63,7 +63,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full flex flex-col items-center justify-center pt-10 pb-0 relative overflow-visible" style={{ marginBottom: "-110px" }}>
+    <div className="w-full -mx-4 px-4 flex flex-col items-center justify-center pt-6 pb-0 relative overflow-visible" style={{ marginBottom: "-110px" }}>
       {/* Exact CSS from calendar/dist/style.css, scaled 30% smaller (scale 0.7) */}
       <style>{`
         .orig-calendar-wrapper {
@@ -385,19 +385,24 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           margin: 25px auto 10px;
           position: relative;
           z-index: 9;
+          width: 100%;
         }
 
         .orig-calendar-wrapper .funcBox .timer {
-          padding: 10px 20px;
-          font-size: 18px;
+          padding: 14px 18px;
+          font-size: 17px;
+          line-height: 1.5;
           font-weight: bold;
-          font-family: "Roboto Mono", monospace;
+          font-family: "Highstories", sans-serif;
+          letter-spacing: 0.05em;
           color: #139AB4;
           background: #1A1A1A;
-          border-radius: 12px;
+          border-radius: 16px;
           border: 2px solid #139AB4;
-          box-shadow: 0 0 15px rgba(19, 154, 180, 0.3);
+          box-shadow: 0 0 20px rgba(19, 154, 180, 0.35);
           text-align: center;
+          width: 100%;
+          max-width: 420px;
         }
       `}</style>
 
@@ -456,8 +461,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
 
         {/* funcBox with 6-Month Timer (No lightBtn / no Chinese text) */}
         <div className="funcBox">
-          <div className="timer" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em", fontSize: "14px", lineHeight: "1.4" }}>
-            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users: {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
+          <div className="timer">
+            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users: <span className="text-cyan-400 font-extrabold font-mono tracking-wider text-lg block sm:inline mt-1 sm:mt-0">{diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}</span>
           </div>
         </div>
       </div>

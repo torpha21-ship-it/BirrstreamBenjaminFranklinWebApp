@@ -294,11 +294,11 @@ export default function Games() {
         <div className="flex items-center justify-between bg-white/5 border-b border-white/10 px-4 py-3 flex-shrink-0">
           <button
             onClick={() => setIsFullPageGame(false)}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-white hover:text-white transition-colors"
             style={HS}
           >
-            <ArrowLeft className="w-5 h-5 text-primary" />
-            <span className="text-base font-semibold">Back to Arcade</span>
+            <ArrowLeft className="w-5 h-5 text-white" />
+            <span className="text-base font-semibold text-white">Back to Arcade</span>
           </button>
 
           <div className="flex items-center gap-2 bg-black/60 px-4 py-1.5 rounded-xl border border-yellow-500/30">
@@ -560,31 +560,6 @@ export default function Games() {
               Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!
             </p>
           </div>
-
-          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
-            Coming Soon
-          </Button>
-        </div>
-
-        {/* Coming Soon Card 2 */}
-        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[260px]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              </div>
-              <h3 className="text-[20px] font-bold text-white" style={HS}>
-                Diamond Crash
-              </h3>
-            </div>
-            <span className="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-semibold" style={HSsm}>
-              🔒 SOON
-            </span>
-          </div>
-
-          <p className="text-gray-300 text-sm my-4" style={HSsm}>
-            Watch the diamond rocket soar up to 50x multiplier before it crashes down.
-          </p>
 
           <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
             Coming Soon

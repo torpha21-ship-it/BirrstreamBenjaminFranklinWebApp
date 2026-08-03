@@ -2,7 +2,7 @@ import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 
 export function BSLogo({ className = "" }: { className?: string }) {
   return (
-    <div className={`inline-flex items-center select-none pointer-events-none ${className}`}>
+    <div className={`inline-flex items-center gap-2 select-none pointer-events-none ${className}`}>
       <img
         src={logoNaomi}
         alt="Naomi Labs"
