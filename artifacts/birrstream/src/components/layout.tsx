@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
+import { NightDayToggle } from "@/components/night-day-toggle";
 import quickActionsLower from "@/assets/decor/quick-actions-lower.svg";
 
 const NAV_ITEMS = [
@@ -79,13 +80,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 bg-card border-r border-border overflow-y-auto">
         {/* Logo */}
-        <div className="p-6 flex-shrink-0">
+        <div className="p-6 flex-shrink-0 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm shadow-primary/30">
               <span className="text-white text-sm font-bold">B</span>
             </div>
             <h1 className="text-xl font-bold text-foreground">Naomi Labs</h1>
           </div>
+          <NightDayToggle size={64} />
         </div>
 
         {/* Balance pill */}

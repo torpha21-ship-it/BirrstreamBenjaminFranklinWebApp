@@ -15,6 +15,7 @@ import totalWithdrawnCard from "@/assets/decor/total-withdrawn-card.png";
 import totalYieldCard from "@/assets/decor/total-yield-card.png";
 import streakImg from "@/assets/decor/173.png";
 import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
+import { NightDayToggle } from "@/components/night-day-toggle";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -132,8 +133,8 @@ export default function Dashboard() {
         <BSLogo />
       </div>
 
-      {/* Header: welcome text + profile avatar — single white card */}
-      <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
+      {/* Header: welcome text + toggle + profile avatar */}
+      <div className="flex items-center justify-between bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
         <div>
           <p className="text-xs text-foreground/70 font-medium">Welcome back</p>
           <h1
@@ -143,6 +144,10 @@ export default function Dashboard() {
             {user?.fullName?.split(" ")[0]}
           </h1>
         </div>
+
+        {/* Night-Day Animated Toggle placed right between Welcome Text and Profile Avatar */}
+        <NightDayToggle size={76} />
+
         <Link
           href="/profile"
           className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shadow-primary/30 overflow-hidden flex-shrink-0"

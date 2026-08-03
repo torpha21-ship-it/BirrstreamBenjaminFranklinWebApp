@@ -1,0 +1,250 @@
+body {
+  height: 100vh;
+  width: 100%;
+}
+.credits {
+  color: #333;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 0;
+}
+
+.ghoul-grid {
+  display: flex;
+  justify-content: center;
+}
+
+.ghoul-grid-ghoul {
+  height: 100px;
+  width: 100px;
+  background: #aaa;
+  position: relative;
+  margin: 20px;
+  cursor: pointer;
+
+  svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+}
+
+.modal {
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  z-index: 5;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid #222;
+  color: #222;
+  border-radius: 100px;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  z-index: 999;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  height: 50px;
+  width: 50px;
+  border: 1px solid #222;
+  color: #222;
+  border-radius: 100px;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  z-index: 999;
+
+  &--prev {
+    left: 20px;
+  }
+
+  &--next {
+    right: 20px;
+  }
+}
+
+.card-wrapper {
+  width: 450px;
+  height: 650px;
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 3000px;
+  --riser: 25px;
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  transform: rotateY(180deg);
+  visibility: hidden;
+  --ghoul-logo-fill: rgba(255, 255, 255, 0.3);
+}
+
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  transform: translateZ(-2px) rotateY(180deg);
+  background: #ffe14b;
+  display: grid;
+  place-content: center;
+
+  svg {
+    width: 180px;
+  }
+}
+
+.front {
+  z-index: 2;
+  background: #4ba877;
+  padding: 22px;
+  transform-style: preserve-3d;
+  will-change: transform;
+
+  .ghoul {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding-bottom: 100%;
+    will-change: transform;
+    background: #333;
+    transform-style: preserve-3d;
+    z-index: 5;
+  }
+
+  .riser {
+    position: absolute;
+    backface-visibility: hidden;
+    width: 100%;
+    height: var(--riser);
+    background: #736673;
+
+    &--1 {
+      left: 0px;
+      top: 0px;
+      transform-origin: top center;
+      transform: rotateX(90deg);
+    }
+
+    &--2 {
+      right: 0px;
+      top: 0px;
+      transform-origin: top right;
+      transform: translateZ(var(--riser)) rotate(-90deg) rotateX(-90deg);
+    }
+
+    &--3 {
+      left: 0px;
+      bottom: 0px;
+      transform-origin: bottom center;
+      transform: rotateX(-90deg);
+    }
+    &--4 {
+      left: 0px;
+      top: 0px;
+      transform-origin: top left;
+      transform: translateZ(var(--riser)) rotate(90deg) rotateX(-90deg);
+    }
+  }
+
+  .shadow {
+    height: 100%;
+    background: #000;
+    opacity: 0.5;
+    bottom: -40px;
+    left: 0;
+    filter: blur(20px);
+  }
+
+  .ghoul-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    transform: translateZ(var(--riser));
+    backface-visibility: hidden;
+  }
+
+  .logo-wrapper {
+    position: relative;
+    margin-top: -22px;
+
+    .card-name {
+      width: 80%;
+      position: absolute;
+      top: 70px;
+      height: 100px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+  .bottom-wrapper {
+    position: absolute;
+    width: calc(100% - 40px);
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    .qr-wrapper {
+      max-width: 60px;
+      max-height: 60px;
+      position: relative;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .number-wrapper {
+      max-width: 120px;
+      max-height: 60px;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .description {
+      color: #fff;
+      font-size: 14px;
+      font-family: sans-serif;
+      width: calc(100% - 100px);
+      margin: 0 20px;
+      padding: 0;
+    }
+  }
+}
