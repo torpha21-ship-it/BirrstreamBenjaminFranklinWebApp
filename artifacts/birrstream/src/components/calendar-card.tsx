@@ -63,7 +63,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full relative z-10 flex flex-col items-center pt-8">
+    <div className="w-full relative z-10 flex flex-col items-center pt-16">
       {/* Exact CSS from calendar/dist/style.css */}
       <style>{`
         .orig-calendar-wrapper {
