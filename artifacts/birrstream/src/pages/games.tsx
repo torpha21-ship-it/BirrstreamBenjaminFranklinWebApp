@@ -125,7 +125,7 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
         backgroundPosition: "0px 0px",
         backgroundRepeat: "no-repeat",
         imageRendering: "pixelated",
-        filter: "drop-shadow(0 0 12px rgba(250, 204, 21, 1)) drop-shadow(2px 4px 8px rgba(0,0,0,0.8))",
+        filter: "drop-shadow(0px 1px 0px #ffda0e) drop-shadow(-1px 0px 0px #ffda0e) drop-shadow(1px 0px 0px #ffda0e) drop-shadow(0px -1px 0px #ffda0e) drop-shadow(1px 1px 0px #ffda0e) drop-shadow(-1px -1px 0px #ffda0e) drop-shadow(2px 4px 6px black)",
       }}
     />
   );
@@ -185,6 +185,19 @@ export default function Games() {
   const [balance, setBalance] = useState<number>(() => parseFloat((user as any)?.mainBalance || "1000"));
   const [isFullPageGame, setIsFullPageGame] = useState(false);
 
+  // Audio Context singleton ref to eliminate lag from audio creation
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Preload all sprite images into browser memory on mount
+  useEffect(() => {
+    MOBS.forEach((mob) => {
+      const img = new Image();
+      img.src = mob.sprite.imageUrl;
+      const prev = new Image();
+      prev.src = mob.previewUrl;
+    });
+  }, []);
+
   // Full-page game state
   const [selectedIndex, setSelectedIndex] = useState(() => Math.floor(Math.random() * MOBS.length));
   const [isSpinning, setIsSpinning] = useState(false);
@@ -198,9 +211,14 @@ export default function Games() {
 
   function playArcadeSound(type: 'tick' | 'win' | 'loss') {
     try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
+      if (!audioCtxRef.current) {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume();
+
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
