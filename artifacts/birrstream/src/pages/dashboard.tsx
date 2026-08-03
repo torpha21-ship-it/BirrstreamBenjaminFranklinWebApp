@@ -134,8 +134,8 @@ export default function Dashboard() {
       </div>
 
       {/* Header: welcome text + toggle + profile avatar */}
-      <div className="flex items-center justify-between bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
-        <div>
+      <div className="flex items-center bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
+        <div className="flex-1 min-w-0">
           <p className="text-xs text-foreground/70 font-medium">Welcome back</p>
           <h1
             className="text-lg font-bold text-foreground"
@@ -145,17 +145,21 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        {/* Night-Day Animated Toggle placed right between Welcome Text and Profile Avatar */}
-        <NightDayToggle size={76} />
+        {/* Night-Day Animated Toggle — perfectly centered */}
+        <div className="flex items-center justify-center px-3">
+          <NightDayToggle size={76} />
+        </div>
 
-        <Link
-          href="/profile"
-          className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shadow-primary/30 overflow-hidden flex-shrink-0"
-        >
-          {(profileData as any)?.profilePhoto
-            ? <img src={(profileData as any).profilePhoto} alt="Profile" className="w-full h-full object-cover" />
-            : (user?.fullName?.[0] ?? "U")}
-        </Link>
+        <div className="flex-1 flex justify-end min-w-0">
+          <Link
+            href="/profile"
+            className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shadow-primary/30 overflow-hidden flex-shrink-0"
+          >
+            {(profileData as any)?.profilePhoto
+              ? <img src={(profileData as any).profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+              : (user?.fullName?.[0] ?? "U")}
+          </Link>
+        </div>
       </div>
 
       {/* Main Balance Card */}

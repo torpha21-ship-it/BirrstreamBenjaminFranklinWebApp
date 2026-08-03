@@ -65,7 +65,7 @@
 }
 
 :root {
-  --background: 0 0% 97%; /* #F7F7F7 — clean neutral off-white */
+  --background: 0 0% 100%; /* #FFFFFF — pure white */
   --foreground: 0 0% 10%; /* #1A1A1A */
   
   --card: 0 0% 100%; /* #FFFFFF — pure white cards */
