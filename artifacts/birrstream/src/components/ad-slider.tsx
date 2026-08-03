@@ -17,20 +17,18 @@ export function AdSlider() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [nextSlideIdx, setNextSlideIdx] = useState<number | null>(null);
   const [animating, setAnimating] = useState(false);
-  const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map());
+  const [loading, setLoading] = useState(true);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const total = AD_VIDEOS.length;
 
   const slideToNext = useCallback(
     (targetIdx: number) => {
       if (animating) return;
-      // Stage the next slide off-screen, then trigger animation
       setNextSlideIdx(targetIdx);
-      // Force a layout read before animating so the next slide is positioned off-screen
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setAnimating(true);
-          // After transition completes, commit
           setTimeout(() => {
             setActiveIdx(targetIdx);
             setNextSlideIdx(null);
@@ -47,61 +45,79 @@ export function AdSlider() {
     slideToNext(next);
   }, [activeIdx, total, slideToNext]);
 
-  // Auto-play the active video whenever the index changes
+  // Play the active video whenever the index changes
   useEffect(() => {
-    const vid = videoRefs.current.get(activeIdx);
-    if (vid) {
+    const vid = videoRefs.current[activeIdx];
+    if (!vid) return;
+
+    // Show loading spinner until this video has enough data
+    const canPlay = () => setLoading(false);
+
+    if (vid.readyState >= 3) {
+      // HAVE_FUTURE_DATA or better — already buffered
+      setLoading(false);
+      vid.currentTime = 0;
+      vid.play().catch(() => {});
+    } else {
+      setLoading(true);
+      vid.addEventListener("canplay", canPlay, { once: true });
       vid.currentTime = 0;
       vid.play().catch(() => {});
     }
+
+    return () => vid.removeEventListener("canplay", canPlay);
   }, [activeIdx]);
 
   return (
     <div
-      className="relative z-10 -mx-4 rounded-3xl overflow-hidden bg-black"
+      className="relative z-10 -mx-4 rounded-3xl overflow-hidden bg-[#1A1A1A]"
       style={{ aspectRatio: "16 / 9" }}
     >
-      {/* Current (active) video */}
-      <div
-        className="absolute inset-0 w-full h-full"
-        style={{
-          transform: animating ? "translateX(-100%)" : "translateX(0)",
-          transition: animating
-            ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
-            : "none",
-        }}
-      >
-        <video
-          ref={(el) => { if (el) videoRefs.current.set(activeIdx, el); }}
-          key={`active-${activeIdx}`}
-          src={AD_VIDEOS[activeIdx]}
-          className="w-full h-full object-cover"
-          muted
-          playsInline
-          autoPlay
-          onEnded={handleVideoEnded}
-        />
-      </div>
+      {/* All videos are pre-mounted and preloaded; only the active one is visible */}
+      {AD_VIDEOS.map((src, i) => {
+        const isActive = i === activeIdx;
+        const isNext = i === nextSlideIdx;
+        const visible = isActive || isNext;
 
-      {/* Next video — starts at 100% (off-screen right), slides to 0 */}
-      {nextSlideIdx !== null && (
-        <div
-          className="absolute inset-0 w-full h-full"
-          style={{
-            transform: animating ? "translateX(0)" : "translateX(100%)",
-            transition: animating
-              ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
-              : "none",
-          }}
-        >
-          <video
-            ref={(el) => { if (el) videoRefs.current.set(nextSlideIdx, el); }}
-            key={`next-${nextSlideIdx}`}
-            src={AD_VIDEOS[nextSlideIdx]}
-            className="w-full h-full object-cover"
-            muted
-            playsInline
-          />
+        let transform = "translateX(100%)"; // hidden off-screen right
+        if (isActive) {
+          transform = animating ? "translateX(-100%)" : "translateX(0)";
+        } else if (isNext) {
+          transform = animating ? "translateX(0)" : "translateX(100%)";
+        }
+
+        return (
+          <div
+            key={i}
+            className="absolute inset-0 w-full h-full"
+            style={{
+              transform,
+              transition: visible && animating
+                ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                : "none",
+              visibility: visible ? "visible" : "hidden",
+            }}
+          >
+            <video
+              ref={(el) => { videoRefs.current[i] = el; }}
+              src={src}
+              className="w-full h-full object-cover"
+              muted
+              playsInline
+              preload={i <= 1 ? "auto" : "metadata"}
+              onEnded={isActive ? handleVideoEnded : undefined}
+            />
+          </div>
+        );
+      })}
+
+      {/* Preload the next video aggressively once current is playing */}
+      <PreloadNext videoRefs={videoRefs} activeIdx={activeIdx} total={total} />
+
+      {/* Loading spinner overlay */}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center z-10 bg-[#1A1A1A]">
+          <div className="w-8 h-8 border-3 border-white/20 border-t-primary rounded-full animate-spin" />
         </div>
       )}
 
@@ -130,4 +146,25 @@ export function AdSlider() {
       </div>
     </div>
   );
+}
+
+/** Eagerly sets preload="auto" on the next video so it buffers ahead of time */
+function PreloadNext({
+  videoRefs,
+  activeIdx,
+  total,
+}: {
+  videoRefs: React.RefObject<(HTMLVideoElement | null)[]>;
+  activeIdx: number;
+  total: number;
+}) {
+  useEffect(() => {
+    const nextIdx = (activeIdx + 1) % total;
+    const vid = videoRefs.current?.[nextIdx];
+    if (vid && vid.preload !== "auto") {
+      vid.preload = "auto";
+      vid.load();
+    }
+  }, [activeIdx, total, videoRefs]);
+  return null;
 }
