@@ -1,11 +1,19 @@
 @font-face {
+  font-family: 'Highstories';
+  src: url('/highstories/HIGHSTORIES Demo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Minecraft';
   src: url('https://assets.codepen.io/36869/MinecraftTen-VGORe.woff') format('woff');
 }
 
 @layer reset {
   :root {
-    font-family: "Minecraft", sans-serif;
+    font-family: "Highstories", sans-serif;
+    letter-spacing: 0.05em;
     font-optical-sizing: auto;
     line-height: 1.5;
     font-weight: 400;
