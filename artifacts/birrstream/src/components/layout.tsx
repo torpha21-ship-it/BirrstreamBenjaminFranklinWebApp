@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import {
-  LayoutDashboard, ListChecks, Plus, User as UserIcon,
+  LayoutDashboard, ListChecks, Gamepad2, User as UserIcon,
   X, ArrowUpRight, ArrowDownRight, Package, Users, Receipt, ChevronRight,
   Trophy, ShieldAlert, MessageCircle
 } from "lucide-react";
@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
-import quickActionsLower from "@/assets/decor/quick-actions-lower.svg";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/games", icon: Gamepad2, label: "Arcade Games" },
   { href: "/tasks", icon: ListChecks, label: "Daily Tasks" },
   { href: "/packages", icon: Package, label: "VIP Packages" },
   { href: "/referral", icon: Users, label: "Referrals" },
@@ -24,10 +24,11 @@ const NAV_ITEMS = [
 ];
 
 const MOBILE_NAV = [
-  { href: "/dashboard", icon: LayoutDashboard },
-  { href: "/tasks", icon: ListChecks },
-  { href: "/support", icon: MessageCircle },
-  { href: "/profile", icon: UserIcon },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/tasks", icon: ListChecks, label: "Tasks" },
+  { href: "/games", icon: Gamepad2, label: "Games", isCenterGame: true },
+  { href: "/support", icon: MessageCircle, label: "Support" },
+  { href: "/profile", icon: UserIcon, label: "Profile" },
 ];
 
 const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, label: "Admin Panel" };
@@ -40,7 +41,6 @@ function DepositWatcher() {
 export function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location] = useLocation();
-  const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -152,81 +152,36 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {/* Floating Add Menu (Mobile) */}
-      {isAddMenuOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center pb-[100px]">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsAddMenuOpen(false)} />
-          <div className="relative bg-card w-full max-w-md rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 fade-in duration-200">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Quick Actions</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsAddMenuOpen(false)}
-                className="rounded-full"
-                aria-label="Close quick actions"
-              >
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <Link href="/deposit" onClick={() => setIsAddMenuOpen(false)} className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-primary text-[#1A1A1A] hover:opacity-90 transition-opacity">
-                <ArrowDownRight className="w-7 h-7" />
-                <span className="font-semibold text-sm">Deposit</span>
-              </Link>
-              <Link href="/withdraw" onClick={() => setIsAddMenuOpen(false)} className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-[#F5E6A3] text-[#8B7200] hover:opacity-90 transition-opacity">
-                <ArrowUpRight className="w-7 h-7" />
-                <span className="font-semibold text-sm">Withdraw</span>
-              </Link>
-            </div>
-            {/*
-              Lower section — pink-wave SVG is an actual <img> filling the container.
-              CSS background was invisible because the opaque button tiles covered it.
-              Now the SVG renders as a real image; buttons use bg-white/60 + backdrop-blur
-              so the pink shows through as a frosted tint.
-            */}
-            {/* min-height ≈ 2× the SVG's natural rendered height so the pink wave fills prominently */}
-            <div className="rounded-2xl overflow-hidden relative" style={{ minHeight: 220 }}>
-              <img
-                src={quickActionsLower}
-                alt=""
-                aria-hidden
-                className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none"
-              />
-              {/* Buttons sit at the top; the wave fills the remaining space below them */}
-              <div className="relative z-10 grid grid-cols-3 gap-3 p-3">
-                {[
-                  { href: "/packages", icon: Package, label: "Packages", color: "text-[#5B44BE]" },
-                  { href: "/referral", icon: Users, label: "Referral", color: "text-[#2B7A4B]" },
-                  { href: "/transactions", icon: Receipt, label: "History", color: "text-[#C0402E]" },
-                ].map(({ href, icon: Icon, label, color }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={() => setIsAddMenuOpen(false)}
-                    className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/60 backdrop-blur-sm ${color} transition-opacity hover:opacity-80`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-semibold text-xs">{label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Bottom Nav — floating island, fully rounded at every corner */}
-      <nav className="md:hidden fixed bottom-4 left-4 right-4 h-[68px] bg-[#1A1A1A] rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.28)] flex items-center justify-between px-6 z-40">
-        {MOBILE_NAV.slice(0, 2).map(({ href, icon: Icon }) => {
+      {/* Mobile Bottom Nav — consistent rectangle floating bar */}
+      <nav className="md:hidden fixed bottom-4 left-4 right-4 h-[64px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-white/10 flex items-center justify-around px-2 z-40">
+        {MOBILE_NAV.map(({ href, icon: Icon, isCenterGame }) => {
+          const active = location === href || (href !== "/dashboard" && location.startsWith(href));
           const showBadge = href === "/dashboard" && unreadCount > 0;
+
+          if (isCenterGame) {
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-label="Arcade Games"
+                className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+                  active 
+                    ? "bg-primary text-[#1A1A1A] shadow-md shadow-primary/30 scale-105" 
+                    : "bg-primary/15 text-primary hover:bg-primary/25"
+                }`}
+              >
+                <Icon className="w-6 h-6" />
+              </Link>
+            );
+          }
+
           return (
             <Link
               key={href}
               href={href}
-              aria-label={href === "/dashboard" ? "Dashboard" : "Daily Tasks"}
+              aria-label={href === "/dashboard" ? "Dashboard" : href}
               onClick={href === "/dashboard" ? clearBadge : undefined}
-              className={`flex flex-col items-center p-2 transition-colors ${location === href ? "text-primary" : "text-gray-400"}`}
+              className={`flex flex-col items-center p-2 transition-colors ${active ? "text-primary" : "text-gray-400"}`}
             >
               <span className="relative">
                 <Icon className="w-6 h-6" />
@@ -239,29 +194,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </Link>
           );
         })}
-
-        {/* Centre + button */}
-        <div className="relative -top-6">
-          <button
-            onClick={() => setIsAddMenuOpen(prev => !prev)}
-            aria-label={isAddMenuOpen ? "Close quick actions" : "Open quick actions"}
-            className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 text-[#1A1A1A] hover:scale-105 transition-transform active:scale-95"
-          >
-            <Plus className={`w-8 h-8 transition-transform duration-200 ${isAddMenuOpen ? "rotate-45" : ""}`} />
-          </button>
-        </div>
-
-        {MOBILE_NAV.slice(2).map(({ href, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            aria-label={href === "/support" ? "Support" : "Profile"}
-            className={`flex flex-col items-center p-2 transition-colors ${location === href ? "text-primary" : "text-gray-400"}`}
-          >
-            <Icon className="w-6 h-6" />
-          </Link>
-        ))}
       </nav>
     </div>
   );
 }
+

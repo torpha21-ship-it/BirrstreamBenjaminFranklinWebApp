@@ -1,0 +1,143 @@
+<div id="app">
+  <header>
+    <h1>Pick your character</h1>
+    <div class="additional">
+      <small>support keyboard arrows (while focus)</small>
+      <kbd>←</kbd>
+      <kbd>→</kbd>
+    </div>
+  </header>
+  <main class="container">
+    <div class="characters">
+      <div>
+        <input type="radio" name="character" id="character-1" aria-hidden="true" tabindex="1" checked autofocus/>
+        <label for="character-1" class="character">
+          <img src="https://assets.codepen.io/36869/cat-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-2" aria-hidden="true"/>
+        <label for="character-2" class="character">
+          <img src="https://assets.codepen.io/36869/spider-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-3" aria-hidden="true"/>
+        <label for="character-3" class="character">
+          <img src="https://assets.codepen.io/36869/cow-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-4" aria-hidden="true"/>
+        <label for="character-4" class="character">
+          <img src="https://assets.codepen.io/36869/creeper-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-5" aria-hidden="true"/>
+        <label for="character-5" class="character">
+          <img src="https://assets.codepen.io/36869/enderman-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-6" aria-hidden="true"/>
+        <label for="character-6" class="character">
+          <img src="https://assets.codepen.io/36869/evoker-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-7" aria-hidden="true"/>
+        <label for="character-7" class="character">
+          <img src="https://assets.codepen.io/36869/golem-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-8" aria-hidden="true"/>
+        <label for="character-8" class="character">
+          <img src="https://assets.codepen.io/36869/horse-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-9" aria-hidden="true"/>
+        <label for="character-9" class="character">
+          <img src="https://assets.codepen.io/36869/ocelot-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-10" aria-hidden="true"/>
+        <label for="character-10" class="character">
+          <img src="https://assets.codepen.io/36869/panda-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-11" aria-hidden="true"/>
+        <label for="character-11" class="character">
+          <img src="https://assets.codepen.io/36869/skeleton-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-12" aria-hidden="true"/>
+        <label for="character-12" class="character">
+          <img src="https://assets.codepen.io/36869/wolf-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-13" aria-hidden="true"/>
+        <label for="character-13" class="character">
+          <img src="https://assets.codepen.io/36869/squid-preview.png" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-14" aria-hidden="true"/>
+        <label for="character-14" class="character">
+          <img src="https://assets.codepen.io/36869/fox-preview.webp" alt="">
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="character" id="character-15" aria-hidden="true"/>
+        <label for="character-15" class="character">
+          <img src="https://assets.codepen.io/36869/villager-preview.webp" alt="">
+        </label>
+      </div>
+    </div>
+
+    <div class="preview">
+      <div class="preview-container">
+        <div class="sprite-container">
+          <div class="sprite"></div>
+          <div class="sprite-direction">
+            <input type="radio" name="direction" checked>
+            <input type="radio" name="direction">
+          </div>
+        </div>
+        <div class="sprite-stats">
+          <dl>
+            <dt>Current frame:</dt>
+            <dd class="sprite-tw"></dd>
+            <dt>Current col:</dt>
+            <dd class="sprite-cc"></dd>
+            <dt>Current row:</dt>
+            <dd class="sprite-cr"></dd>
+            <dt>
+              <label for="select-fps">FPS:</label>
+            </dt>
+            <dd class="sprite-fps">
+              <select id="select-fps">
+                <option value="12">12</option>
+                <option value="24">24</option>
+                <option value="48" selected>48</option>
+                <option value="64">64</option>
+                <option value="76">76</option>
+                <option value="100">100</option>
+              </select>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <footer>
+    <small style="color: hsl(0deg 0% 100% / 50%);">Support mobile devices</small>
+  </footer>
+</div>

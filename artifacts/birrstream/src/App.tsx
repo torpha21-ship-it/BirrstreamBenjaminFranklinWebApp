@@ -27,6 +27,7 @@ import Support from "@/pages/support";
 import DeleteAccount from "@/pages/delete-account";
 import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
+import Games from "@/pages/games";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +75,7 @@ function Router() {
         <Route path="/forgot-password" component={() => <PublicRoute component={ForgotPassword} />} />
         <Route path="/reset-password" component={() => <PublicRoute component={ResetPassword} />} />
         <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+        <Route path="/games" component={() => <ProtectedRoute component={Games} />} />
         <Route path="/packages" component={() => <ProtectedRoute component={Packages} />} />
         <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
         <Route path="/deposit" component={() => <ProtectedRoute component={Deposit} />} />
