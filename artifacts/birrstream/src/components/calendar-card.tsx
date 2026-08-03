@@ -63,7 +63,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full -mx-4 px-4 flex flex-col items-center justify-center pt-6 pb-0 relative overflow-visible" style={{ marginBottom: "-110px" }}>
+    <div className="w-full -mx-4 flex flex-col items-center justify-center pt-6 pb-4 relative overflow-visible">
       {/* Exact CSS from calendar/dist/style.css, scaled 30% smaller (scale 0.7) */}
       <style>{`
         .orig-calendar-wrapper {
@@ -270,11 +270,11 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
         }
 
         .orig-calendar-wrapper .footer .week {
-          width: 50%;
+          flex: 1;
           font-weight: 700;
           text-align: center;
           white-space: nowrap;
-          margin-left: -15px;
+          margin-left: 0;
           font-family: "Roboto", sans-serif;
         }
 
@@ -382,19 +382,24 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           display: flex;
           justify-content: center;
           align-items: center;
-          margin: 25px auto 10px;
+          margin: 20px 0 0 0;
           position: relative;
           z-index: 9;
-          width: 100%;
+          width: 100vw;
+          margin-left: calc(-50vw + 50%);
+          padding: 0 16px;
+          box-sizing: border-box;
+          transform: scale(1.43);
+          transform-origin: top center;
         }
 
         .orig-calendar-wrapper .funcBox .timer {
-          padding: 14px 18px;
-          font-size: 17px;
+          padding: 16px 20px;
+          font-size: 22px;
           line-height: 1.5;
           font-weight: bold;
           font-family: "Highstories", sans-serif;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.06em;
           color: #139AB4;
           background: #1A1A1A;
           border-radius: 16px;
@@ -402,7 +407,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           box-shadow: 0 0 20px rgba(19, 154, 180, 0.35);
           text-align: center;
           width: 100%;
-          max-width: 420px;
+          max-width: none;
         }
       `}</style>
 
