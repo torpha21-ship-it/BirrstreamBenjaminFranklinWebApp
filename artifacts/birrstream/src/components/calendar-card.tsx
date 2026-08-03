@@ -63,7 +63,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full relative z-10 flex flex-col items-center pt-16">
+    <div className="w-full relative z-10 flex flex-col items-center pt-32">
       {/* Exact CSS from calendar/dist/style.css */}
       <style>{`
         .orig-calendar-wrapper {
@@ -435,14 +435,14 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
         </div>
       </div>
 
-      {/* 6 Months Countdown Card - Fits both left & right side perfectly (-mx-4), with zero space below */}
+      {/* 6 Months Countdown Card - Fits both left & right side perfectly (-mx-4), with pure white bg */}
       <div className="w-full -mx-4 mb-6 relative z-10">
-        <div className="bg-[#1A1A1A] border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-[0_0_20px_rgba(19,154,180,0.35)] text-center w-full">
+        <div className="bg-white border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-lg shadow-[#139AB4]/15 text-center w-full">
           <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-3 tracking-wide leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
             6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users
           </p>
           <div className="inline-block bg-[#139AB4]/10 border border-[#139AB4]/30 rounded-2xl px-6 py-2.5 shadow-inner">
-            <span className="text-cyan-400 font-extrabold font-mono tracking-wider text-2xl sm:text-3xl">
+            <span className="text-[#139AB4] font-extrabold font-mono tracking-wider text-2xl sm:text-3xl">
               {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
             </span>
           </div>
