@@ -63,8 +63,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full -mx-4 flex flex-col items-center justify-center pt-6 pb-4 relative overflow-visible">
-      {/* Exact CSS from calendar/dist/style.css, scaled 30% smaller (scale 0.7) */}
+    <div className="w-full relative z-10 flex flex-col items-center">
+      {/* Exact CSS from calendar/dist/style.css */}
       <style>{`
         .orig-calendar-wrapper {
           position: relative;
@@ -377,97 +377,74 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           background: rgba(254, 213, 56, 0.8);
           z-index: -1;
         }
-
-        .orig-calendar-wrapper .funcBox {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 20px 0 0 0;
-          position: relative;
-          z-index: 9;
-          width: 100vw;
-          margin-left: calc(-50vw + 50%);
-          padding: 0 16px;
-          box-sizing: border-box;
-          transform: scale(1.43);
-          transform-origin: top center;
-        }
-
-        .orig-calendar-wrapper .funcBox .timer {
-          padding: 16px 20px;
-          font-size: 22px;
-          line-height: 1.5;
-          font-weight: bold;
-          font-family: "Highstories", sans-serif;
-          letter-spacing: 0.06em;
-          color: #139AB4;
-          background: #1A1A1A;
-          border-radius: 16px;
-          border: 2px solid #139AB4;
-          box-shadow: 0 0 20px rgba(19, 154, 180, 0.35);
-          text-align: center;
-          width: 100%;
-          max-width: none;
-        }
       `}</style>
 
-      {/* Exact DOM Structure from calendar/dist/index.html */}
-      <div className="orig-calendar-wrapper">
-        <div className="calendar">
-          <div className="header"> 
-            <div className="pin"></div>
-            <p>{yy}</p>
-            <div className="pin"></div>
-          </div>
-          <div className="hook"></div>
-          <div className="body">
-            <div className="month">
-              <p>{pad(mm + 1)}</p>
-              <p>{months[mm].substring(0, 3)}</p>
+      {/* 3D Tear-Off Calendar scaled visual with exact container height to eliminate blank space below */}
+      <div className="w-full flex justify-center items-center overflow-visible" style={{ height: "315px" }}>
+        <div className="orig-calendar-wrapper">
+          <div className="calendar">
+            <div className="header"> 
+              <div className="pin"></div>
+              <p>{yy}</p>
+              <div className="pin"></div>
             </div>
-            <div className="date">{dt}</div>
-            <div className="footer">
-              <div className="fullMonth">
-                <div className="title">{months[mm]}</div>
-                <table>
-                  <thead>
-                    <tr>
-                      {dayHeader.map((d, i) => (
-                        <th key={i}>{d}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {gridRows.map((row, rIdx) => (
-                      <tr key={rIdx}>
-                        {row.map((dayNum, cIdx) => (
-                          <td key={cIdx} className={dayNum === dt ? "now" : ""}>
-                            {dayNum ?? ""}
-                          </td>
+            <div className="hook"></div>
+            <div className="body">
+              <div className="month">
+                <p>{pad(mm + 1)}</p>
+                <p>{months[mm].substring(0, 3)}</p>
+              </div>
+              <div className="date">{dt}</div>
+              <div className="footer">
+                <div className="fullMonth">
+                  <div className="title">{months[mm]}</div>
+                  <table>
+                    <thead>
+                      <tr>
+                        {dayHeader.map((d, i) => (
+                          <th key={i}>{d}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="week">
-                <p className="en">{daysShort[dy]}</p>
-                <p className="day">{daysEn[dy]}</p>
-                <p className="lunar">6-MONTH SEASON</p>
-              </div>
-              <div className="icons">
-                <div className="material-icons">wb_sunny</div>
-                <div className="material-icons">cloud</div>
-                <div className="material-icons">brightness_1</div>
+                    </thead>
+                    <tbody>
+                      {gridRows.map((row, rIdx) => (
+                        <tr key={rIdx}>
+                          {row.map((dayNum, cIdx) => (
+                            <td key={cIdx} className={dayNum === dt ? "now" : ""}>
+                              {dayNum ?? ""}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="week">
+                  <p className="en">{daysShort[dy]}</p>
+                  <p className="day">{daysEn[dy]}</p>
+                  <p className="lunar">6-MONTH SEASON</p>
+                </div>
+                <div className="icons">
+                  <div className="material-icons">wb_sunny</div>
+                  <div className="material-icons">cloud</div>
+                  <div className="material-icons">brightness_1</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* funcBox with 6-Month Timer (No lightBtn / no Chinese text) */}
-        <div className="funcBox">
-          <div className="timer">
-            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users: <span className="text-cyan-400 font-extrabold font-mono tracking-wider text-lg block sm:inline mt-1 sm:mt-0">{diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}</span>
+      {/* 6 Months Countdown Card - Fits both left & right side perfectly (-mx-4), with zero space below */}
+      <div className="w-full -mx-4 mb-6 relative z-10">
+        <div className="bg-[#1A1A1A] border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-[0_0_20px_rgba(19,154,180,0.35)] text-center w-full">
+          <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-3 tracking-wide leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users
+          </p>
+          <div className="inline-block bg-[#139AB4]/10 border border-[#139AB4]/30 rounded-2xl px-6 py-2.5 shadow-inner">
+            <span className="text-cyan-400 font-extrabold font-mono tracking-wider text-2xl sm:text-3xl">
+              {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
+            </span>
           </div>
         </div>
       </div>
