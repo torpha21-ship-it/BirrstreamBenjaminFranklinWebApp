@@ -14,24 +14,25 @@ interface MobData {
   ability: string;
   agility: string;
   previewUrl: string;
+  rotClass: string;
 }
 
 const MOBS: MobData[] = [
-  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 150, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp" },
-  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -75, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp" },
-  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 100, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp" },
-  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500 animate-pulse", amount: -150, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp" },
-  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 400, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp" },
-  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500 animate-pulse", amount: -200, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp" },
-  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 300, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp" },
-  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 250, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp" },
-  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 180, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp" },
-  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 500, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp" },
-  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -100, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp" },
-  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 220, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp" },
-  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 80, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png" },
-  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 350, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp" },
-  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 200, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp" }
+  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 150, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1" },
+  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -75, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10" },
+  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 100, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1" },
+  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500 animate-pulse", amount: -150, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20" },
+  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 400, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1" },
+  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500 animate-pulse", amount: -200, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10" },
+  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 300, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10" },
+  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 250, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2" },
+  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 180, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-15 translate-x-2 z-20" },
+  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 500, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30" },
+  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -100, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2" },
+  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 220, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10" },
+  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 80, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-10 translate-y-1" },
+  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 350, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10" },
+  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 200, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1" }
 ];
 
 export default function Games() {
@@ -125,11 +126,28 @@ export default function Games() {
 
   const currentMob = MOBS[selectedIndex];
 
-  // If in Full-Page Game Mode, render directly on a full screen layout (no background cards)
+  // Full-Page Clean Game View (No background cards wrapper)
   if (isFullPageGame) {
     return (
       <div className="min-h-screen bg-[#1A1A1A] text-white p-4 md:p-6 flex flex-col justify-between -mx-4 md:mx-0">
-        {/* Full-Page Top Bar */}
+        {/* Keyframe style for active stuck-in-hover character movement */}
+        <style>{`
+          @keyframes activeMobHover {
+            0%, 100% {
+              transform: translateY(0px) scale(1.12);
+              filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.8)) drop-shadow(0 0 25px rgba(74, 222, 128, 0.6));
+            }
+            50% {
+              transform: translateY(-10px) scale(1.22);
+              filter: drop-shadow(0 0 18px rgba(74, 222, 128, 0.9)) drop-shadow(0 0 35px rgba(250, 204, 21, 0.9));
+            }
+          }
+          .animate-active-mob {
+            animation: activeMobHover 1.5s ease-in-out infinite;
+          }
+        `}</style>
+
+        {/* Full-Page Top Navigation Bar */}
         <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-4 mb-4">
           <button 
             onClick={() => setIsFullPageGame(false)}
@@ -148,8 +166,8 @@ export default function Games() {
           </div>
         </div>
 
-        {/* Full-Page Game Body */}
-        <div className="space-y-5 flex-1 max-w-2xl mx-auto w-full">
+        {/* Full-Page Main Game Screen */}
+        <div className="space-y-6 flex-1 max-w-2xl mx-auto w-full">
           {/* Header Title */}
           <div className="text-center">
             <h1 className="text-[28px] font-bold text-white mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
@@ -177,10 +195,10 @@ export default function Games() {
             </Button>
           </div>
 
-          {/* All 15 Mobs Grid */}
+          {/* Character Selector Row */}
           <div>
             <p className="text-xs text-gray-400 mb-2 uppercase" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-              Character Mob Selection (15 Mobs)
+              Selected Mob Roster (15 Mobs)
             </p>
             <div className="grid grid-cols-5 gap-2">
               {MOBS.map((mob, idx) => {
@@ -192,11 +210,15 @@ export default function Games() {
                     onClick={() => !isSpinning && setSelectedIndex(idx)}
                     className={`relative p-2 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                       isSelected
-                        ? "bg-primary/20 border-primary ring-2 ring-primary/50 scale-105"
-                        : "bg-white/5 border-white/10 hover:border-white/20 opacity-80"
+                        ? "bg-primary/20 border-primary ring-2 ring-primary/60 scale-110 z-10"
+                        : "bg-white/5 border-white/10 hover:border-white/20 opacity-75"
                     }`}
                   >
-                    <img src={mob.previewUrl} alt={mob.name} className="w-10 h-10 object-contain mb-1" />
+                    <img 
+                      src={mob.previewUrl} 
+                      alt={mob.name} 
+                      className={`w-10 h-10 object-contain mb-1 ${isSelected ? "animate-pulse" : ""}`} 
+                    />
                     <span 
                       className={`text-[11px] font-semibold ${isGain ? "text-emerald-400" : "text-red-400"}`}
                       style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.04em" }}
@@ -209,15 +231,22 @@ export default function Games() {
             </div>
           </div>
 
-          {/* Gamified RPG Mob Stats Display */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 items-center">
-            <div className="w-20 h-20 bg-black/60 rounded-2xl border border-white/10 flex items-center justify-center p-2 flex-shrink-0">
-              <img src={currentMob.previewUrl} alt={currentMob.name} className="w-16 h-16 object-contain" />
+          {/* Active Moving Character & Gamified RPG Stats (Stuck in active hover animation state!) */}
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col sm:flex-row gap-6 items-center shadow-2xl">
+            {/* Active Moving Mob Showcase */}
+            <div className="w-32 h-32 bg-black/60 rounded-3xl border border-white/20 flex items-center justify-center p-3 flex-shrink-0 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-yellow-500/10 pointer-events-none" />
+              <img 
+                src={currentMob.previewUrl} 
+                alt={currentMob.name} 
+                className="w-24 h-24 object-contain animate-active-mob" 
+              />
             </div>
 
-            <div className="flex-1 w-full space-y-2 text-left">
+            {/* RPG Gamified Stats */}
+            <div className="flex-1 w-full space-y-3 text-left">
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <h3 className="font-bold text-white text-xl" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+                <h3 className="font-bold text-white text-2xl" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
                   {currentMob.name}
                 </h3>
                 <Badge className={currentMob.rarityColor} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
@@ -225,24 +254,24 @@ export default function Games() {
                 </Badge>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Power Rating:</span>
-                  <span className="font-semibold text-yellow-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.power}</span>
+                  <span className="font-semibold text-yellow-400 text-base" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.power}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Agility Stat:</span>
-                  <span className="font-semibold text-cyan-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.agility}</span>
+                  <span className="font-semibold text-cyan-400 text-base" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.agility}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Birr Potential:</span>
-                  <span className={`font-semibold ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
+                  <span className={`font-bold text-base ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
                     {currentMob.amount >= 0 ? `+${currentMob.amount} ETB` : `${currentMob.amount} ETB`}
                   </span>
                 </div>
                 <div>
                   <span className="text-gray-400 text-xs block" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>Special Skill:</span>
-                  <span className="font-semibold text-gray-200" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.ability}</span>
+                  <span className="font-semibold text-gray-200 text-sm" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>{currentMob.ability}</span>
                 </div>
               </div>
             </div>
@@ -279,7 +308,7 @@ export default function Games() {
     );
   }
 
-  // Standard Arcade Hub View: Cards styled like Main Balance card, but with double length downward
+  // Standard Arcade Hub View: Cards styled like Main Balance card (Double length downward)
   return (
     <div className="space-y-6 max-w-md mx-auto md:max-w-none">
       {/* Top Header */}
@@ -302,36 +331,44 @@ export default function Games() {
 
       {/* Main Game Card — Designed like Main Balance Card, double length downward */}
       <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-2xl relative overflow-hidden -mx-4 flex flex-col min-h-[580px]">
-        {/* FIRST HALF (Top): Filled with every character (15 Minecraft Mobs) */}
-        <div className="flex-1 space-y-3 pb-4 border-b border-white/10">
-          <div className="flex items-center justify-between mb-1">
+        
+        {/* FIRST HALF (Top): DOODLE STICKER COLLAGE of every character */}
+        <div className="flex-1 space-y-3 pb-4 border-b border-white/10 relative">
+          <div className="flex items-center justify-between mb-2">
             <p className="text-[24px] text-gray-400 font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-              Minecraft Mob Roster
+              Minecraft Mob Sticker Roster
             </p>
             <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full font-semibold" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-              15 Characters
+              15 Mob Stickers
             </span>
           </div>
 
-          {/* 15 Mobs Grid filling the top half */}
-          <div className="grid grid-cols-5 gap-2.5 pt-1">
-            {MOBS.map((mob) => {
-              const isGain = mob.amount >= 0;
-              return (
-                <div 
-                  key={mob.id} 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col items-center justify-center transition-all hover:bg-white/10"
-                >
-                  <img src={mob.previewUrl} alt={mob.name} className="w-10 h-10 object-contain mb-1" />
-                  <span 
-                    className={`text-[11px] font-semibold ${isGain ? "text-emerald-400" : "text-red-400"}`}
-                    style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.04em" }}
-                  >
-                    {isGain ? `+${mob.amount}` : mob.amount}
-                  </span>
-                </div>
-              );
-            })}
+          {/* Doodle Sticker Art Canvas: Overlapping character stickers with white outlines & random rotations */}
+          <div className="relative min-h-[220px] bg-black/40 rounded-2xl border border-white/10 p-3 overflow-hidden flex flex-wrap items-center justify-center gap-1.5 shadow-inner">
+            {MOBS.map((mob) => (
+              <div 
+                key={mob.id}
+                className={`relative inline-block transition-transform hover:scale-125 hover:z-40 cursor-pointer ${mob.rotClass}`}
+                title={`${mob.name} (${mob.amount >= 0 ? '+' : ''}${mob.amount} ETB)`}
+              >
+                <img 
+                  src={mob.previewUrl} 
+                  alt={mob.name} 
+                  className="w-12 h-12 object-contain"
+                  style={{
+                    filter: "drop-shadow(0px 0px 2px #ffffff) drop-shadow(0px 0px 4px #ffffff) drop-shadow(2px 3px 6px rgba(0,0,0,0.9))"
+                  }}
+                />
+              </div>
+            ))}
+
+            {/* Sticker Doodle Floating Badges */}
+            <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold rotate-12 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
+              💎 +500 ETB
+            </div>
+            <div className="absolute bottom-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold -rotate-6 shadow-lg" style={{ fontFamily: "'Highstories', sans-serif" }}>
+              💣 TNT TRAPS
+            </div>
           </div>
         </div>
 
