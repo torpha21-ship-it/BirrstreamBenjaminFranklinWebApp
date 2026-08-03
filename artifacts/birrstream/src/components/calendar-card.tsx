@@ -456,8 +456,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
 
         {/* funcBox with 6-Month Timer (No lightBtn / no Chinese text) */}
         <div className="funcBox">
-          <div className="timer">
-            6M COUNTDOWN: {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
+          <div className="timer" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em", fontSize: "14px", lineHeight: "1.4" }}>
+            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users: {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
           </div>
         </div>
       </div>

@@ -474,34 +474,29 @@ export default function Games() {
         </div>
       </div>
 
-      {/* Main Game Card — Styled like Main Balance card, double length */}
-      <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-2xl relative overflow-hidden flex flex-col min-h-[580px]">
-
-        {/* FIRST HALF: DOODLE STICKER COLLAGE */}
-        <div className="flex-1 space-y-3 pb-4 border-b border-white/10 relative">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[22px] text-gray-400 font-semibold" style={HS}>
-              Minecraft Mob Sticker Roster
-            </p>
-            <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full font-semibold" style={HSsm}>
-              15 Mob Stickers
-            </span>
-          </div>
-
-          <StickerCollage />
-        </div>
-
-        {/* SECOND HALF: Game Info + Start Button */}
-        <div className="pt-5 space-y-4 flex flex-col justify-between">
-          <div>
-            <h2 className="text-[24px] font-bold text-white mb-1" style={HS}>
+      {/* Main Game Card — Styled like Main Balance card */}
+      <div className="bg-[#1A1A1A] rounded-3xl p-5 text-white border border-white/10 shadow-2xl relative overflow-hidden flex flex-col space-y-4">
+        
+        {/* THUMBNAIL IMAGE WITH TITLE & DESCRIPTION OVERLAY ON TOP */}
+        <div className="relative w-full h-64 rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+          <img
+            src="/game-thumbnail.jpg"
+            alt="Minecraft Mob Spinner"
+            className="w-full h-full object-cover"
+          />
+          {/* Title & Description Overlay on top of Thumbnail */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent p-4 flex flex-col justify-end">
+            <h2 className="text-[26px] font-bold text-white mb-1" style={HS}>
               Minecraft Mob Spinner
             </h2>
-            <p className="text-gray-300 text-sm leading-snug" style={HSsm}>
+            <p className="text-gray-200 text-xs leading-snug" style={HSsm}>
               Spin the auto-picker to randomly land on 1 of 15 mobs. Win up to +500 ETB with Diamond Panda or dodge Creeper TNT traps!
             </p>
           </div>
+        </div>
 
+        {/* OUTSIDE / BELOW THUMBNAIL: Badges & Start Button */}
+        <div className="space-y-4 pt-1">
           {/* Info Badges */}
           <div className="flex flex-wrap gap-2">
             <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>
@@ -516,7 +511,7 @@ export default function Games() {
           </div>
 
           {/* Start Game Button */}
-          <div className="pt-2">
+          <div>
             <Button
               onClick={() => setIsFullPageGame(true)}
               className="w-full bg-primary text-[#1A1A1A] hover:bg-primary/90 font-bold text-lg py-6 rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -535,25 +530,36 @@ export default function Games() {
           Upcoming Arcade Games
         </p>
 
-        {/* Coming Soon Card 1 */}
-        <div className="bg-[#1A1A1A] rounded-3xl p-6 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[260px]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-              </div>
-              <h3 className="text-[20px] font-bold text-white" style={HS}>
-                Birr Mine Sweeper
-              </h3>
+        {/* Coming Soon Card 1 — ANIMATED VIDEO THUMBNAIL */}
+        <div className="bg-[#1A1A1A] rounded-3xl p-5 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between space-y-4">
+          
+          {/* Animated Video Thumbnail */}
+          <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+            <video
+              src="/Gamevid.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+            {/* Animated Thumbnail Overlay Badge */}
+            <div className="absolute top-3 right-3 bg-amber-500/80 backdrop-blur-md text-black px-3 py-1 rounded-full text-xs font-extrabold shadow-lg" style={HS}>
+              🔒 COMING SOON
             </div>
-            <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-semibold" style={HSsm}>
-              🔒 SOON
-            </span>
+            <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-xs font-bold text-white" style={HS}>
+              🎬 Animated Preview
+            </div>
           </div>
 
-          <p className="text-gray-300 text-sm my-4" style={HSsm}>
-            Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!
-          </p>
+          <div>
+            <h3 className="text-[22px] font-bold text-white mb-1" style={HS}>
+              Birr Mine Sweeper
+            </h3>
+            <p className="text-gray-300 text-sm" style={HSsm}>
+              Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!
+            </p>
+          </div>
 
           <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
             Coming Soon
