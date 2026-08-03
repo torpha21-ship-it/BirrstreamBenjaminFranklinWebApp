@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useAuth } from "@/lib/auth";
 import { Coins, RefreshCw, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,20 +65,13 @@ const MOBS: MobData[] = [
 ];
 
 /* ================================================================
-   SPRITE WALK ANIMATION COMPONENT
-   Replicates the original CSS sprite animation from style.css:
-   - Uses background-image with the sprite sheet
-   - Calculates background-position per frame
-   - Cycles frames via requestAnimationFrame at 48 FPS
+   SPRITE WALK ANIMATION COMPONENT (Exact 48 FPS)
    ================================================================ */
 function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteData; displayWidth?: number }) {
   const divRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
 
-  const FPS = 48;
-  const frameDuration = 1000 / FPS;
-
-  // Calculate dimensions (mirroring the original CSS math)
+  // Calculate dimensions
   const frameWidthOriginal = sprite.sheetWidth / sprite.columns;
   const scaleFactor = displayWidth / frameWidthOriginal;
   const scaledSheetWidth = sprite.sheetWidth * scaleFactor;
@@ -87,24 +80,21 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
   const frameHeight = scaledSheetHeight / rows;
 
   useEffect(() => {
-    let lastTime = 0;
-    let frame = 0;
+    let startTime = 0;
 
     function animate(timestamp: number) {
-      if (!lastTime) lastTime = timestamp;
-      const elapsed = timestamp - lastTime;
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      
+      // Exact 48 FPS calculation (0.048 frames per millisecond)
+      const currentFrame = Math.floor(elapsed * 0.048) % sprite.totalFrames;
 
-      if (elapsed >= frameDuration) {
-        lastTime = timestamp - (elapsed % frameDuration);
-        frame = (frame + 1) % sprite.totalFrames;
-
-        if (divRef.current) {
-          const col = frame % sprite.columns;
-          const row = Math.floor(frame / sprite.columns);
-          const x = col * displayWidth;
-          const y = row * frameHeight;
-          divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
-        }
+      if (divRef.current) {
+        const col = currentFrame % sprite.columns;
+        const row = Math.floor(currentFrame / sprite.columns);
+        const x = col * displayWidth;
+        const y = row * frameHeight;
+        divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
       }
 
       rafRef.current = requestAnimationFrame(animate);
@@ -112,7 +102,7 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
 
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [sprite, displayWidth, frameHeight, frameDuration]);
+  }, [sprite, displayWidth, frameHeight]);
 
   return (
     <div
@@ -132,11 +122,9 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
 }
 
 /* ================================================================
-   STICKER COLLAGE COMPONENT
-   Duplicated characters, full-opacity white borders, overlapping
+   STICKER COLLAGE COMPONENT (Memoized for high performance)
    ================================================================ */
-function StickerCollage() {
-  // Duplicate the mobs array so characters fill the space with overlap
+const StickerCollage = memo(function StickerCollage() {
   const doubled = [...MOBS, ...MOBS];
 
   return (
@@ -146,7 +134,7 @@ function StickerCollage() {
       {doubled.map((mob, idx) => (
         <div
           key={`${mob.id}-${idx}`}
-          className={`relative inline-block transition-transform hover:scale-125 hover:z-50 cursor-pointer`}
+          className="relative inline-block transition-transform hover:scale-125 hover:z-50 cursor-pointer"
           title={`${mob.name} (${mob.amount >= 0 ? '+' : ''}${mob.amount} ETB)`}
           style={{
             margin: "-4px -2px",
@@ -160,7 +148,7 @@ function StickerCollage() {
             loading="lazy"
             className="w-11 h-11 object-contain"
             style={{
-              filter: "drop-shadow(0px 0px 0px #ffffff) drop-shadow(0px 1px 0px #ffffff) drop-shadow(0px -1px 0px #ffffff) drop-shadow(1px 0px 0px #ffffff) drop-shadow(-1px 0px 0px #ffffff) drop-shadow(1px 1px 0px #ffffff) drop-shadow(-1px -1px 0px #ffffff) drop-shadow(1px -1px 0px #ffffff) drop-shadow(-1px 1px 0px #ffffff) drop-shadow(2px 3px 5px rgba(0,0,0,0.9))"
+              filter: "drop-shadow(0 0 2px #ffffff) drop-shadow(1px 2px 4px rgba(0,0,0,0.8))"
             }}
           />
         </div>
@@ -175,7 +163,7 @@ function StickerCollage() {
       </div>
     </div>
   );
-}
+});
 
 /* ================================================================
    MAIN COMPONENT
