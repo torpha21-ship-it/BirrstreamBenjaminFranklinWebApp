@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth";
 import { Coins, RefreshCw, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -73,8 +73,7 @@ const MOBS: MobData[] = [
    ================================================================ */
 function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteData; displayWidth?: number }) {
   const divRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef(0);
-  const lastTimeRef = useRef(0);
+  const rafRef = useRef<number>(0);
 
   const FPS = 48;
   const frameDuration = 1000 / FPS;
@@ -87,31 +86,33 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
   const rows = Math.ceil(sprite.totalFrames / sprite.columns);
   const frameHeight = scaledSheetHeight / rows;
 
-  const animate = useCallback((timestamp: number) => {
-    if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-    const elapsed = timestamp - lastTimeRef.current;
+  useEffect(() => {
+    let lastTime = 0;
+    let frame = 0;
 
-    if (elapsed >= frameDuration) {
-      lastTimeRef.current = timestamp - (elapsed % frameDuration);
-      frameRef.current = (frameRef.current + 1) % sprite.totalFrames;
+    function animate(timestamp: number) {
+      if (!lastTime) lastTime = timestamp;
+      const elapsed = timestamp - lastTime;
 
-      if (divRef.current) {
-        const f = frameRef.current;
-        const col = f % sprite.columns;
-        const row = Math.floor(f / sprite.columns);
-        const x = col * displayWidth;
-        const y = row * frameHeight;
-        divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
+      if (elapsed >= frameDuration) {
+        lastTime = timestamp - (elapsed % frameDuration);
+        frame = (frame + 1) % sprite.totalFrames;
+
+        if (divRef.current) {
+          const col = frame % sprite.columns;
+          const row = Math.floor(frame / sprite.columns);
+          const x = col * displayWidth;
+          const y = row * frameHeight;
+          divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
+        }
       }
+
+      rafRef.current = requestAnimationFrame(animate);
     }
 
-    requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [sprite, displayWidth, frameHeight, frameDuration]);
-
-  useEffect(() => {
-    const handle = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(handle);
-  }, [animate]);
 
   return (
     <div
@@ -124,7 +125,7 @@ function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteDat
         backgroundPosition: "0px 0px",
         backgroundRepeat: "no-repeat",
         imageRendering: "pixelated",
-        filter: "drop-shadow(0 0 12px rgba(250, 204, 21, 0.7)) drop-shadow(2px 4px 8px rgba(0,0,0,0.8))",
+        filter: "drop-shadow(0 0 12px rgba(250, 204, 21, 1)) drop-shadow(2px 4px 8px rgba(0,0,0,0.8))",
       }}
     />
   );
@@ -156,6 +157,7 @@ function StickerCollage() {
           <img
             src={mob.previewUrl}
             alt={mob.name}
+            loading="lazy"
             className="w-11 h-11 object-contain"
             style={{
               filter: "drop-shadow(0px 0px 0px #ffffff) drop-shadow(0px 1px 0px #ffffff) drop-shadow(0px -1px 0px #ffffff) drop-shadow(1px 0px 0px #ffffff) drop-shadow(-1px 0px 0px #ffffff) drop-shadow(1px 1px 0px #ffffff) drop-shadow(-1px -1px 0px #ffffff) drop-shadow(1px -1px 0px #ffffff) drop-shadow(-1px 1px 0px #ffffff) drop-shadow(2px 3px 5px rgba(0,0,0,0.9))"
@@ -344,10 +346,10 @@ export default function Games() {
                     <button
                       key={mob.id}
                       onClick={() => !isSpinning && setSelectedIndex(idx)}
-                      className={`relative p-2 rounded-2xl border flex flex-col items-center justify-center transition-all ${
+                      className={`relative p-2 rounded-2xl flex flex-col items-center justify-center transition-all ${
                         isSelected
-                          ? "bg-primary/20 border-primary ring-2 ring-primary/60 scale-110 z-10"
-                          : "bg-white/5 border-white/10 hover:border-white/20 opacity-75"
+                          ? "ring-2 ring-primary/60 scale-110 z-10"
+                          : "opacity-75 hover:opacity-100"
                       }`}
                     >
                       <img
@@ -369,9 +371,8 @@ export default function Games() {
 
             {/* Active Character with REAL SPRITE WALK ANIMATION + RPG Stats */}
             <div className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 items-center shadow-2xl">
-              {/* Sprite Walk Animation Showcase */}
-              <div className="w-40 h-40 bg-black/60 rounded-3xl border border-white/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-yellow-500/10 pointer-events-none" />
+              {/* Sprite Walk Animation Showcase — no background card */}
+              <div className="w-40 h-40 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                 <SpriteWalkAnimation sprite={currentMob.sprite} displayWidth={120} />
               </div>
 
@@ -408,6 +409,9 @@ export default function Games() {
                 </div>
               </div>
             </div>
+
+            {/* Bottom spacer — same height as the Spin button for scroll room */}
+            <div className="h-20 flex-shrink-0" />
           </div>
         </div>
 
