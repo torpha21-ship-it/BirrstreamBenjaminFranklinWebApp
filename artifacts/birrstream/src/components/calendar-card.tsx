@@ -63,7 +63,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full relative z-10 flex flex-col items-center">
+    <div className="w-full relative z-10 flex flex-col items-center pt-8">
       {/* Exact CSS from calendar/dist/style.css */}
       <style>{`
         .orig-calendar-wrapper {
@@ -380,7 +380,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
       `}</style>
 
       {/* 3D Tear-Off Calendar scaled visual with exact container height to eliminate blank space below */}
-      <div className="w-full flex justify-center items-center overflow-visible" style={{ height: "315px" }}>
+      <div className="w-full flex justify-center items-center overflow-visible pt-10" style={{ height: "340px" }}>
         <div className="orig-calendar-wrapper">
           <div className="calendar">
             <div className="header"> 
