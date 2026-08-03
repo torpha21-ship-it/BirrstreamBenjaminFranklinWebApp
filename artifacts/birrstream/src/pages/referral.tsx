@@ -21,10 +21,12 @@ export default function Referral() {
         <BSLogo />
       </div>
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
-          <ArrowLeft className="w-4 h-4" />
+        <Link href="/dashboard" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-200 shadow-sm flex-shrink-0">
+          <ArrowLeft className="w-4 h-4 text-black" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground">Referral Program</h1>
+        <div className="bg-white rounded-2xl px-4 py-2 shadow-sm border border-gray-200">
+          <h1 className="text-xl font-bold text-black" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Referral Program</h1>
+        </div>
       </div>
 
       {/* Stats banner */}

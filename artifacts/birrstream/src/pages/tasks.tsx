@@ -46,11 +46,11 @@ export default function Tasks() {
   return (
     <div className="px-4 py-6 max-w-md mx-auto relative">
       <div className="flex items-center gap-3 mb-2 relative z-10">
-        <Link href="/dashboard" className="w-9 h-9 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 shadow-sm">
-          <ArrowLeft className="w-4 h-4 text-white" />
+        <Link href="/dashboard" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-200 shadow-sm flex-shrink-0">
+          <ArrowLeft className="w-4 h-4 text-black" />
         </Link>
-        <div className="backdrop-blur-md bg-white/40 rounded-2xl px-4 py-2 shadow-sm border border-white/50">
-          <h1 className="text-[20px] font-bold text-white" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Daily Tasks</h1>
+        <div className="bg-white rounded-2xl px-4 py-2 shadow-sm border border-gray-200">
+          <h1 className="text-[20px] font-bold text-black" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Daily Tasks</h1>
         </div>
       </div>
 

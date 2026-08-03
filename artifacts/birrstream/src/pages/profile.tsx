@@ -91,16 +91,16 @@ export default function Profile() {
         <Link
           href="/dashboard"
           aria-label="Back to dashboard"
-          className="w-9 h-9 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 shadow-sm flex-shrink-0"
+          className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-200 shadow-sm flex-shrink-0"
         >
-          <ArrowLeft className="w-4 h-4 text-white" />
+          <ArrowLeft className="w-4 h-4 text-black" />
         </Link>
         <button
           onClick={handleLogout}
-          className="ml-auto flex items-center gap-1.5 text-sm text-white hover:text-white transition-colors backdrop-blur-md bg-white/40 rounded-2xl px-3 py-2 border border-white/50 shadow-sm"
+          className="ml-auto flex items-center gap-1.5 text-sm text-black hover:text-black transition-colors bg-white rounded-2xl px-3.5 py-2 border border-gray-200 shadow-sm font-bold"
         >
-          <LogOut className="w-4 h-4 text-white" />
-          <span className="text-white">Sign out</span>
+          <LogOut className="w-4 h-4 text-black" />
+          <span className="text-black">Sign out</span>
         </button>
       </div>
 
