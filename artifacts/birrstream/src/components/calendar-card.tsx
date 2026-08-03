@@ -63,8 +63,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
   }
 
   return (
-    <div className="w-full flex flex-col items-center justify-center my-6 relative overflow-visible">
-      {/* Exact CSS from calendar/dist/style.css */}
+    <div className="w-full flex flex-col items-center justify-center pt-10 pb-0 relative overflow-visible" style={{ marginBottom: "-110px" }}>
+      {/* Exact CSS from calendar/dist/style.css, scaled 30% smaller (scale 0.7) */}
       <style>{`
         .orig-calendar-wrapper {
           position: relative;
@@ -74,6 +74,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           width: 100%;
           max-width: 360px;
           margin: 0 auto;
+          transform: scale(0.7);
+          transform-origin: top center;
         }
 
         .orig-calendar-wrapper .calendar {
