@@ -522,7 +522,7 @@ export function SpecialVipCardSlider() {
           {/* Card Buffer 0 */}
           <div
             ref={(el) => { cardRefs.current[0] = el; }}
-            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl overflow-hidden"
+            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl"
             style={{
               transformStyle: "preserve-3d",
               willChange: "transform",
@@ -531,7 +531,7 @@ export function SpecialVipCardSlider() {
             }}
           >
             {/* 3D Ghoul Image Box & Risers */}
-            <div className="ghoul relative w-full aspect-square rounded-xl overflow-hidden shadow-md">
+            <div className="ghoul relative w-full aspect-square">
               <div className="riser riser--1" />
               <div className="riser riser--2" />
               <div className="riser riser--3" />
@@ -607,7 +607,7 @@ export function SpecialVipCardSlider() {
           {/* Card Buffer 1 */}
           <div
             ref={(el) => { cardRefs.current[1] = el; }}
-            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl overflow-hidden"
+            className="card front absolute inset-0 rounded-[22px] p-[18px] flex flex-col shadow-2xl"
             style={{
               transformStyle: "preserve-3d",
               willChange: "transform",
@@ -616,7 +616,7 @@ export function SpecialVipCardSlider() {
             }}
           >
             {/* 3D Ghoul Image Box & Risers */}
-            <div className="ghoul relative w-full aspect-square rounded-xl overflow-hidden shadow-md">
+            <div className="ghoul relative w-full aspect-square">
               <div className="riser riser--1" />
               <div className="riser riser--2" />
               <div className="riser riser--3" />

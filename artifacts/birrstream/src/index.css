@@ -168,7 +168,7 @@
 
 /* 3D Ghoul Card Slider Utilities */
 .card-wrapper {
-  --riser: 18px;
+  --riser: 25px;
 }
 .card {
   border-radius: 22px;
@@ -245,7 +245,6 @@
 }
 .front .logo-wrapper .ghoul-logo {
   width: 100%;
-  height: 42px;
 }
 .front .logo-wrapper .card-name {
   width: 75%;
