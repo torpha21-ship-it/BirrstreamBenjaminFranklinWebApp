@@ -63,7 +63,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, []);
 
   if (isLoading) {
-    return <NaomiLoader message="LOADING PLATFORM & MEDIA..." />;
+    return <NaomiLoader />;
   }
 
   if (!user) {

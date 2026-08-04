@@ -44,7 +44,7 @@ const queryClient = new QueryClient({
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
-  if (isLoading) return <NaomiLoader message="AUTHENTICATING SESSION..." />;
+  if (isLoading) return <NaomiLoader />;
   if (!user) return <Redirect to="/login" />;
   return <Component />;
 }

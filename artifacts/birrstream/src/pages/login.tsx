@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <>
       {isLoading && (
-        <NaomiLoader message="AUTHENTICATING & PREPARING MEDIA..." />
+        <NaomiLoader />
       )}
 
       <div className="min-h-[100dvh] flex flex-col bg-background overflow-hidden relative">
