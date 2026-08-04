@@ -5,134 +5,149 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 import jesterImg from "@/assets/jester.png";
+import { NaomiLoader } from "@/components/naomi-loader";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { login } = useAuth();
   const { toast } = useToast();
   const [form, setForm] = useState({ usernameOrEmail: "", password: "", rememberMe: false });
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const loginMutation = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsAuthenticating(true);
     loginMutation.mutate(
       { data: { usernameOrEmail: form.usernameOrEmail, password: form.password, rememberMe: form.rememberMe } },
       {
         onSuccess: (data) => {
           login(data.token, data.user);
-          setLocation("/dashboard");
+          // Transition smoothly to dashboard after authentication and media prep
+          setTimeout(() => {
+            setLocation("/dashboard");
+          }, 1200);
         },
         onError: () => {
+          setIsAuthenticating(false);
           toast({ title: "Login failed", description: "Invalid credentials. Please try again.", variant: "destructive" });
         },
       }
     );
   };
 
+  const isLoading = loginMutation.isPending || isAuthenticating;
+
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-background overflow-hidden relative">
-      {/* Main content */}
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-sm">
-          {/* Logo + heading */}
-<div className="text-center mb-10">
+    <>
+      {isLoading && (
+        <NaomiLoader message="AUTHENTICATING & PREPARING MEDIA..." />
+      )}
+
+      <div className="min-h-[100dvh] flex flex-col bg-background overflow-hidden relative">
+        {/* Main content */}
+        <div className="flex-1 flex items-center justify-center px-4">
+          <div className="w-full max-w-sm">
+            {/* Logo + heading */}
+            <div className="text-center mb-10">
               <img src={logoNaomi} alt="Naomi Labs logo" className="w-10 h-10 object-contain mx-auto" />
-             <h1
-               className="text-3xl text-foreground"
-               style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
-             >
-               Naomi Labs
-             </h1>
-            <p
-              className="text-muted-foreground mt-1 text-sm"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
-            >
-              Welcome back
+              <h1
+                className="text-3xl text-foreground"
+                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+              >
+                Naomi Labs
+              </h1>
+              <p
+                className="text-muted-foreground mt-1 text-sm"
+                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+              >
+                Welcome back
+              </p>
+            </div>
+
+            {/* Form — no card wrapper */}
+            <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
+              <div>
+                <label
+                  htmlFor="login-username-or-email"
+                  className="block text-[20px] font-semibold text-foreground mb-2"
+                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+                >
+                  Username or Email
+                </label>
+                <input
+                  id="login-username-or-email"
+                  name="usernameOrEmail"
+                  type="text"
+                  value={form.usernameOrEmail}
+                  onChange={e => setForm(f => ({ ...f, usernameOrEmail: e.target.value }))}
+                  placeholder="Enter your username or email"
+                  autoComplete="username"
+                  className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="login-password"
+                  className="block text-[20px] font-semibold text-foreground mb-2"
+                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+                >
+                  Password
+                </label>
+                <input
+                  id="login-password"
+                  name="password"
+                  type="password"
+                  value={form.password}
+                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
+                  required
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="login-remember-me" className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    id="login-remember-me"
+                    name="rememberMe"
+                    type="checkbox"
+                    checked={form.rememberMe}
+                    onChange={e => setForm(f => ({ ...f, rememberMe: e.target.checked }))}
+                    className="w-4 h-4 accent-black rounded"
+                  />
+                  <span className="text-sm text-muted-foreground">Remember me</span>
+                </label>
+                <Link href="/forgot-password" className="text-sm text-black font-semibold">Forgot password?</Link>
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3.5 bg-black text-white rounded-2xl font-bold text-sm shadow-lg shadow-black/25 hover:opacity-80 active:scale-[0.98] transition-all disabled:opacity-60"
+              >
+                Sign In
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-muted-foreground mt-6">
+              Don't have an account?{" "}
+              <Link href="/register" className="text-black font-semibold">Create one</Link>
             </p>
           </div>
+        </div>
 
-          {/* Form — no card wrapper */}
-          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
-            <div>
-              <label
-                htmlFor="login-username-or-email"
-                className="block text-[20px] font-semibold text-foreground mb-2"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
-              >
-                Username or Email
-              </label>
-              <input
-                id="login-username-or-email"
-                name="usernameOrEmail"
-                type="text"
-                value={form.usernameOrEmail}
-                onChange={e => setForm(f => ({ ...f, usernameOrEmail: e.target.value }))}
-                placeholder="Enter your username or email"
-                autoComplete="username"
-                className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="login-password"
-                className="block text-[20px] font-semibold text-foreground mb-2"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
-              >
-                Password
-              </label>
-              <input
-                id="login-password"
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                placeholder="Enter your password"
-                autoComplete="current-password"
-                className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
-                required
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="login-remember-me" className="flex items-center gap-2 cursor-pointer">
-                <input
-                  id="login-remember-me"
-                  name="rememberMe"
-                  type="checkbox"
-                  checked={form.rememberMe}
-                  onChange={e => setForm(f => ({ ...f, rememberMe: e.target.checked }))}
-                  className="w-4 h-4 accent-black rounded"
-                />
-                <span className="text-sm text-muted-foreground">Remember me</span>
-              </label>
-              <Link href="/forgot-password" className="text-sm text-black font-semibold">Forgot password?</Link>
-            </div>
-            <button
-              type="submit"
-              disabled={loginMutation.isPending}
-              className="w-full py-3.5 bg-black text-white rounded-2xl font-bold text-sm shadow-lg shadow-black/25 hover:opacity-80 active:scale-[0.98] transition-all disabled:opacity-60"
-            >
-              {loginMutation.isPending ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-black font-semibold">Create one</Link>
-          </p>
+        {/* Jester background image — pinned to bottom, full width */}
+        <div className="w-full flex-shrink-0">
+          <img
+            src={jesterImg}
+            alt=""
+            aria-hidden="true"
+            className="w-full block"
+            style={{ display: "block" }}
+          />
         </div>
       </div>
-
-      {/* Jester background image — pinned to bottom, full width */}
-      <div className="w-full flex-shrink-0">
-        <img
-          src={jesterImg}
-          alt=""
-          aria-hidden="true"
-          className="w-full block"
-          style={{ display: "block" }}
-        />
-      </div>
-    </div>
+    </>
   );
 }

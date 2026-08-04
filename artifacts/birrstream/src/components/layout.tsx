@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
+import { NaomiLoader } from "@/components/naomi-loader";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -62,11 +63,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <NaomiLoader message="LOADING PLATFORM & MEDIA..." />;
   }
 
   if (!user) {

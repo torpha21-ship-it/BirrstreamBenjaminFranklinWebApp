@@ -40,13 +40,11 @@ const queryClient = new QueryClient({
   },
 });
 
+import { NaomiLoader } from "@/components/naomi-loader";
+
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
-  if (isLoading) return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-background">
-      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (isLoading) return <NaomiLoader message="AUTHENTICATING SESSION..." />;
   if (!user) return <Redirect to="/login" />;
   return <Component />;
 }
