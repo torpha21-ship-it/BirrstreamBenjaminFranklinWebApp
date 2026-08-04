@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
-import { NaomiLoader } from "@/components/naomi-loader";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -62,15 +61,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("birr:clear-badge", clearBadge);
   }, []);
 
-  // Temporary: force loader to show for at least 10 seconds so we can inspect it
-  const [minTime, setMinTime] = useState(true);
-  useEffect(() => {
-    const t = setTimeout(() => setMinTime(false), 10000);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (isLoading || minTime) {
-    return <NaomiLoader />;
+  if (isLoading) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   if (!user) {
