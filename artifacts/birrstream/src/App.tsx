@@ -28,6 +28,7 @@ import DeleteAccount from "@/pages/delete-account";
 import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
 import Games from "@/pages/games";
+import { NaomiLoader } from "@/components/naomi-loader";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,6 @@ const queryClient = new QueryClient({
   },
 });
 
-import { NaomiLoader } from "@/components/naomi-loader";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
