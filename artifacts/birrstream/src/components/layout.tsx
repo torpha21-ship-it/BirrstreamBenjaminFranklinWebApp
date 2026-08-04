@@ -62,7 +62,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("birr:clear-badge", clearBadge);
   }, []);
 
-  if (isLoading) {
+  // Temporary: force loader to show for at least 10 seconds so we can inspect it
+  const [minTime, setMinTime] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setMinTime(false), 10000);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (isLoading || minTime) {
     return <NaomiLoader />;
   }
 
