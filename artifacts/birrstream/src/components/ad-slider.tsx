@@ -1,16 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 
 const AD_VIDEOS = [
-  "/ads/ai-video-7951.mp4",
-  "/ads/ai-video-7952.mp4",
-  "/ads/ai-video-7953.mp4",
-  "/ads/ai-video-7957.mp4",
-  "/ads/ai-video-7960.mp4",
-  "/ads/ai-video-7961.mp4",
-  "/ads/ai-video-7962.mp4",
-  "/ads/ai-video-7963.mp4",
-  "/ads/ai-video-7964.mp4",
-  "/ads/kling_20260728_VIDEO_High_end_c_5669_0 (online-video-cutter.com).mp4",
+  "/ads/1.mp4",
+  "/ads/2.mp4",
+  "/ads/3.mp4",
+  "/ads/4.mp4",
+  "/ads/5.mp4",
+  "/ads/7.mp4",
 ];
 
 export function AdSlider() {
