@@ -54,6 +54,27 @@ router.post("/packages/:id/purchase", requireAuth, async (req, res) => {
         });
       }
 
+      // ── Block duplicate purchase of the same active package ─────────
+      const [existingSamePackage] = await tx
+        .select()
+        .from(userPackagesTable)
+        .where(
+          and(
+            eq(userPackagesTable.userId, user.id),
+            eq(userPackagesTable.packageId, pkg.id),
+            eq(userPackagesTable.isActive, true),
+            sql`expires_at > NOW()`,
+          ),
+        )
+        .limit(1);
+
+      if (existingSamePackage) {
+        throw Object.assign(new Error("ALREADY_ACTIVE"), {
+          httpStatus: 400,
+          clientMessage: `You already have an active ${pkg.name} package. Please wait for it to expire before re-purchasing.`,
+        });
+      }
+
       const cost = parseFloat(pkg.cost);
 
       // ── Atomically deduct balance — WHERE enforces sufficient funds ────────
