@@ -182,16 +182,18 @@ export default function Dashboard() {
         {isLoading ? (
           <div className="h-12 bg-white/10 rounded-xl animate-pulse w-48 mb-2" />
         ) : (
-          <p className="text-4xl font-bold mb-1">
-            {fmt(summary?.mainBalance ?? 0)}{" "}
-            <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
-          </p>
-          {pendingWithdrawalTotal > 0 && (
-            <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
-              <span className="text-xs text-yellow-400 font-medium">⏳ Pending Withdrawal</span>
-              <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} ETB</span>
-            </div>
-          )}
+          <>
+            <p className="text-4xl font-bold mb-1">
+              {fmt(summary?.mainBalance ?? 0)}{" "}
+              <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
+            </p>
+            {pendingWithdrawalTotal > 0 && (
+              <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
+                <span className="text-xs text-yellow-400 font-medium">⏳ Pending Withdrawal</span>
+                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} ETB</span>
+              </div>
+            )}
+          </>
         )}
         {summary?.activePackageName ? (
           <div className="flex items-center gap-2 mt-3 flex-wrap">
