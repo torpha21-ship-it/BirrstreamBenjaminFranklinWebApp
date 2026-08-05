@@ -12,6 +12,7 @@ import userRouter from "./user";
 import yieldsRouter from "./yields";
 import adminRouter from "./admin";
 import adminUsersRouter from "./admin-users";
+import arcadeRouter from "./arcade";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(userRouter);
 router.use(yieldsRouter);
 router.use(adminRouter);
 router.use(adminUsersRouter);
+router.use(arcadeRouter);
 
 export default router;

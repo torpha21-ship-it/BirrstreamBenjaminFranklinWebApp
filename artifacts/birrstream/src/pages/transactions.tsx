@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useListTransactions, getListTransactionsQueryKey } from "@workspace/api-client-react";
-import { ArrowLeft, ArrowDownLeft, ArrowUpRight, Star, Users, Flame, TrendingUp, Bell, X, Download } from "lucide-react";
+import { ArrowLeft, ArrowDownLeft, ArrowUpRight, Star, Users, Flame, TrendingUp, Bell, X, Download, Gamepad2 } from "lucide-react";
 import { Link } from "wouter";
 import { NEW_EVENTS_KEY, type NewTxEvent } from "@/hooks/use-deposit-watcher";
 import {
@@ -16,6 +16,8 @@ const TX_CONFIG: Record<string, { icon: React.ComponentType<any>; bg: string; co
   commission:   { icon: Users,         bg: "bg-[#C9BDF5]", color: "text-[#5B44BE]", sign: "+" },
   streak_bonus: { icon: Flame,         bg: "bg-primary/10", color: "text-primary", sign: "+" },
   daily_yield:  { icon: TrendingUp,    bg: "bg-[#A8D5B5]", color: "text-[#2B7A4B]", sign: "+" },
+  arcade_win:   { icon: Gamepad2,      bg: "bg-[#A8D5B5]", color: "text-[#2B7A4B]", sign: "+" },
+  arcade_loss:  { icon: Gamepad2,      bg: "bg-[#F2A89A]", color: "text-[#C0402E]", sign: "-" },
 };
 
 function fmt(n: number) {

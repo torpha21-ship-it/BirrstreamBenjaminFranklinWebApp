@@ -3,6 +3,9 @@ import { useAuth } from "@/lib/auth";
 import { Coins, RefreshCw, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQueryClient } from "@tanstack/react-query";
+import { getGetDashboardSummaryQueryKey, getGetUserProfileQueryKey, getGetMeQueryKey } from "@workspace/api-client-react";
+import { withApiBaseUrl } from "@/lib/api-base-url";
 
 /* ================================================================
    SPRITE DATA — Each character's sprite sheet dimensions & frames.
@@ -169,7 +172,8 @@ const StickerCollage = memo(function StickerCollage() {
    MAIN COMPONENT
    ================================================================ */
 export default function Games() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const qc = useQueryClient();
   const [balance, setBalance] = useState<number>(() => parseFloat((user as any)?.mainBalance || "1000"));
   const [isFullPageGame, setIsFullPageGame] = useState(false);
 
@@ -266,9 +270,40 @@ export default function Games() {
       } else {
         setIsSpinning(false);
         const finalMob = MOBS[curr];
-        setBalance(prev => prev + finalMob.amount);
         setModalResult(finalMob);
         playArcadeSound(finalMob.amount >= 0 ? 'win' : 'loss');
+
+        // Claim winnings/losses on backend PostgreSQL database
+        if (token) {
+          fetch(withApiBaseUrl("/api/arcade/claim"), {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              mobId: finalMob.id,
+              mobName: finalMob.name,
+              amount: finalMob.amount,
+            }),
+          })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+              if (data && typeof data.newBalance === "number") {
+                setBalance(data.newBalance);
+                qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
+                qc.invalidateQueries({ queryKey: getGetUserProfileQueryKey() });
+                qc.invalidateQueries({ queryKey: getGetMeQueryKey() });
+              } else {
+                setBalance((prev) => prev + finalMob.amount);
+              }
+            })
+            .catch(() => {
+              setBalance((prev) => prev + finalMob.amount);
+            });
+        } else {
+          setBalance((prev) => prev + finalMob.amount);
+        }
       }
     }
 
