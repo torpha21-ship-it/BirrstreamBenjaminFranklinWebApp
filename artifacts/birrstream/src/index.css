@@ -17,6 +17,19 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 3.5s ease-in-out infinite;
+}
+
 @custom-variant dark (&:is(.dark, .dark *));
 
 @theme inline {

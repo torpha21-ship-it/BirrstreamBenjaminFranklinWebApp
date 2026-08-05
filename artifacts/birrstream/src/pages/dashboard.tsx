@@ -54,6 +54,17 @@ export default function Dashboard() {
       .reduce((sum: number, w: any) => sum + (w.amount ?? 0), 0);
   }, [withdrawals]);
 
+  // Dynamic transform & opacity for main balance card asset so it smoothly shifts backward/right & scales down as balance digits expand
+  const { handShiftX, handScale, handOpacity } = useMemo(() => {
+    const len = fmt(summary?.mainBalance ?? 0).length;
+    const extraLen = Math.max(0, len - 6);
+    return {
+      handShiftX: Math.min(36, extraLen * 7),
+      handScale: Math.max(0.6, 1 - extraLen * 0.05),
+      handOpacity: Math.max(0.35, 0.9 - extraLen * 0.07),
+    };
+  }, [summary?.mainBalance]);
+
   // Auto-credit daily yield when dashboard loads
   useEffect(() => {
     if (!token) return;
@@ -174,7 +185,16 @@ export default function Dashboard() {
 
       {/* Main Balance Card */}
       <div className="bg-[#1A1A1A] rounded-3xl px-6 pt-3 pb-6 text-white relative z-10 overflow-hidden -mx-4">
-        <img src={pointingHand} alt="" aria-hidden="true" className="absolute right-0 top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
+        <div
+          className="absolute right-0 top-0 h-1/2 pointer-events-none select-none transition-all duration-700 ease-out animate-float-slow"
+          style={{
+            transform: `translateX(${handShiftX}px) scale(${handScale})`,
+            transformOrigin: "top right",
+            opacity: handOpacity,
+          }}
+        >
+          <img src={pointingHand} alt="" aria-hidden="true" className="h-full object-contain object-right-top" />
+        </div>
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
