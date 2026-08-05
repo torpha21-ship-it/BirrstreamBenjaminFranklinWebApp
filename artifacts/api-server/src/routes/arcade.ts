@@ -2,15 +2,8 @@ import { Router } from "express";
 import { db, usersTable, transactionsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "../middlewares/auth";
-import { z } from "zod";
 
 const router = Router();
-
-const ClaimResultBody = z.object({
-  mobId: z.string(),
-  mobName: z.string(),
-  amount: z.number().min(-500).max(1000),
-});
 
 /**
  * Endpoint called when a user completes an Arcade game spin.
@@ -18,14 +11,20 @@ const ClaimResultBody = z.object({
  */
 router.post("/arcade/claim", requireAuth, async (req, res) => {
   const user = (req as any).user;
-  const parsed = ClaimResultBody.safeParse(req.body);
 
-  if (!parsed.success) {
+  if (
+    !req.body ||
+    typeof req.body.mobName !== "string" ||
+    typeof req.body.amount !== "number" ||
+    isNaN(req.body.amount)
+  ) {
     res.status(400).json({ error: "Invalid arcade claim payload" });
     return;
   }
 
-  const { mobName, amount } = parsed.data;
+  const mobName = req.body.mobName;
+  const rawAmount = req.body.amount;
+  const amount = Math.min(1000, Math.max(-500, rawAmount));
 
   try {
     const result = await db.transaction(async (tx) => {
