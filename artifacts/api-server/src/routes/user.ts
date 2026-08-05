@@ -100,8 +100,18 @@ router.delete("/user/delete", requireAuth, async (req, res) => {
     return;
   }
   const user = (req as any).user;
-  await db.delete(usersTable).where(eq(usersTable.id, user.id));
-  res.json({ message: "Account successfully deleted." });
+  try {
+    await db.delete(usersTable).where(eq(usersTable.id, user.id));
+    res.json({ message: "Account successfully deleted." });
+  } catch (err: any) {
+    if (err.code === "23503") {
+      res.status(400).json({
+        error: "Cannot delete account with existing financial or transaction history. Please contact support.",
+      });
+    } else {
+      throw err;
+    }
+  }
 });
 
 export default router;

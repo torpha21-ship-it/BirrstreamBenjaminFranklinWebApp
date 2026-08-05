@@ -87,7 +87,6 @@ router.post("/tasks/:id/complete", requireAuth, taskLimiter, async (req, res) =>
         .update(usersTable)
         .set({
           mainBalance: sql`main_balance + ${String(rewardEarned)}::numeric`,
-          totalYield: sql`total_yield + ${String(rewardEarned)}::numeric`,
         })
         .where(eq(usersTable.id, user.id))
         .returning({ mainBalance: usersTable.mainBalance });

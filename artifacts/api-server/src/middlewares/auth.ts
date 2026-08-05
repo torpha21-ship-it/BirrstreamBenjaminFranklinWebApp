@@ -27,6 +27,15 @@ export function revokeToken(token: string): void {
   SESSIONS.delete(token);
 }
 
+/** Invalidates all active tokens for a given user (used when resetting password). */
+export function revokeAllUserSessions(userId: number): void {
+  for (const [token, session] of SESSIONS.entries()) {
+    if (session.userId === userId) {
+      SESSIONS.delete(token);
+    }
+  }
+}
+
 export function getUserIdFromToken(token: string): number | null {
   const session = SESSIONS.get(token);
   if (!session) return null;

@@ -177,7 +177,7 @@ router.post(
           userId,
           type: "admin_adjustment",
           amount: String(Math.abs(amount)),
-          description: `Admin balance adjustment: ${reason}`,
+          description: `Admin ${amount > 0 ? "credit" : "debit"}: ${reason}`,
           status: "completed",
         });
 

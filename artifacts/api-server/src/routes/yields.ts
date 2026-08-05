@@ -44,8 +44,7 @@ router.post("/yields/credit-daily", requireAuth, yieldLimiter, async (req, res) 
         and(
           eq(transactionsTable.userId, user.id),
           eq(transactionsTable.type, "daily_yield"),
-          sql`created_at AT TIME ZONE 'UTC' >= (${today}::date)::timestamptz`,
-          sql`created_at AT TIME ZONE 'UTC' < (${today}::date + interval '1 day')::timestamptz`,
+          sql`to_char(created_at + interval '3 hours', 'YYYY-MM-DD') = ${today}`,
         ),
       )
       .limit(1);

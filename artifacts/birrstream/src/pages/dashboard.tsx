@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetLoginStreak, getGetLoginStreakQueryKey, useCheckinStreak, useGetUserProfile, getGetUserProfileQueryKey } from "@workspace/api-client-react";
+import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetLoginStreak, getGetLoginStreakQueryKey, useCheckinStreak, useGetUserProfile, getGetUserProfileQueryKey, useListWithdrawals } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -44,6 +44,15 @@ export default function Dashboard() {
   const { data: streak } = useGetLoginStreak({ query: { queryKey: getGetLoginStreakQueryKey() } });
   const { data: profileData } = useGetUserProfile({ query: { queryKey: getGetUserProfileQueryKey() } });
   const checkinMutation = useCheckinStreak();
+  const { data: withdrawals } = useListWithdrawals();
+
+  // Sum up all pending withdrawal amounts to show in the balance card
+  const pendingWithdrawalTotal = useMemo(() => {
+    if (!withdrawals || !Array.isArray(withdrawals)) return 0;
+    return withdrawals
+      .filter((w: any) => w.status === "pending")
+      .reduce((sum: number, w: any) => sum + (w.amount ?? 0), 0);
+  }, [withdrawals]);
 
   // Auto-credit daily yield when dashboard loads
   useEffect(() => {
@@ -177,6 +186,12 @@ export default function Dashboard() {
             {fmt(summary?.mainBalance ?? 0)}{" "}
             <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
           </p>
+          {pendingWithdrawalTotal > 0 && (
+            <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
+              <span className="text-xs text-yellow-400 font-medium">⏳ Pending Withdrawal</span>
+              <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} ETB</span>
+            </div>
+          )}
         )}
         {summary?.activePackageName ? (
           <div className="flex items-center gap-2 mt-3 flex-wrap">

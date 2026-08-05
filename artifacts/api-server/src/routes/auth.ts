@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, passwordResetTokensTable } from "@workspace/db";
 import { eq, or, and, sql } from "drizzle-orm";
-import { generateToken, revokeToken, requireAuth } from "../middlewares/auth";
+import { generateToken, revokeToken, revokeAllUserSessions, requireAuth } from "../middlewares/auth";
 import { loginLimiter, registerLimiter } from "../middlewares/rate-limit";
 import {
   RegisterBody,
@@ -379,6 +379,8 @@ router.post("/auth/reset-password", async (req, res) => {
       .set({ used: true })
       .where(eq(passwordResetTokensTable.id, tokenRow.id));
   });
+
+  revokeAllUserSessions(tokenRow.userId);
 
   res.json({ message: "Password updated successfully. You can now log in." });
 });
