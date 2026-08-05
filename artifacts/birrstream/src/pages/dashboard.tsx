@@ -54,16 +54,7 @@ export default function Dashboard() {
       .reduce((sum: number, w: any) => sum + (w.amount ?? 0), 0);
   }, [withdrawals]);
 
-  // Dynamic transform & opacity for main balance card asset so it smoothly shifts backward/right & scales down as balance digits expand
-  const { handShiftX, handScale, handOpacity } = useMemo(() => {
-    const len = fmt(summary?.mainBalance ?? 0).length;
-    const extraLen = Math.max(0, len - 6);
-    return {
-      handShiftX: Math.min(36, extraLen * 7),
-      handScale: Math.max(0.6, 1 - extraLen * 0.05),
-      handOpacity: Math.max(0.35, 0.9 - extraLen * 0.07),
-    };
-  }, [summary?.mainBalance]);
+
 
   // Auto-credit daily yield when dashboard loads
   useEffect(() => {
@@ -185,16 +176,6 @@ export default function Dashboard() {
 
       {/* Main Balance Card */}
       <div className="bg-[#1A1A1A] rounded-3xl px-6 pt-3 pb-6 text-white relative z-10 overflow-hidden -mx-4">
-        <div
-          className="absolute right-0 top-0 h-1/2 pointer-events-none select-none transition-all duration-700 ease-out animate-float-slow"
-          style={{
-            transform: `translateX(${handShiftX}px) scale(${handScale})`,
-            transformOrigin: "top right",
-            opacity: handOpacity,
-          }}
-        >
-          <img src={pointingHand} alt="" aria-hidden="true" className="h-full object-contain object-right-top" />
-        </div>
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
@@ -203,10 +184,13 @@ export default function Dashboard() {
           <div className="h-12 bg-white/10 rounded-xl animate-pulse w-48 mb-2" />
         ) : (
           <>
-            <p className="text-4xl font-bold mb-1">
-              {fmt(summary?.mainBalance ?? 0)}{" "}
-              <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
-            </p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-4xl font-bold whitespace-nowrap">
+                {fmt(summary?.mainBalance ?? 0)}{" "}
+                <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
+              </p>
+              <img src={pointingHand} alt="" aria-hidden="true" className="h-12 object-contain pointer-events-none select-none opacity-80 flex-shrink-0" />
+            </div>
             {pendingWithdrawalTotal > 0 && (
               <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
                 <span className="text-xs text-yellow-400 font-medium">⏳ Pending Withdrawal</span>
