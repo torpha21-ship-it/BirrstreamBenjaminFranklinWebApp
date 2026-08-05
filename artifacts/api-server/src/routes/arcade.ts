@@ -43,9 +43,11 @@ router.post("/arcade/claim", requireAuth, async (req, res) => {
 
       await tx.insert(transactionsTable).values({
         userId: user.id,
-        type: isWin ? "arcade_win" : "arcade_loss",
+        type: isWin ? "task_earning" : "admin_adjustment",
         amount: String(Math.abs(amount)),
-        description: `Arcade: ${mobName} (${isWin ? "+" : ""}${amount} ETB)`,
+        description: isWin
+          ? `Arcade Win: ${mobName} (+${amount} ETB)`
+          : `Arcade Loss: ${mobName} (${amount} ETB)`,
         status: "completed",
       });
 

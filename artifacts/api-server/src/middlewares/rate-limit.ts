@@ -39,6 +39,7 @@ export const taskLimiter = rateLimit({
   message: { error: "Too many task completions. Please slow down." },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { default: false },
 });
 
 export const yieldLimiter = rateLimit({
@@ -48,4 +49,5 @@ export const yieldLimiter = rateLimit({
   message: { error: "Daily yield already credited. Come back tomorrow." },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { default: false },
 });
