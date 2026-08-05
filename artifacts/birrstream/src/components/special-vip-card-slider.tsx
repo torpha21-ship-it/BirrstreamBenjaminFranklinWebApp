@@ -466,22 +466,27 @@ export function SpecialVipCardSlider() {
       </svg>
 
       {/* Header section */}
-      <div className="flex items-center justify-between px-3 mb-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-yellow-500 fill-yellow-400" />
-          <h2
-            className="text-2xl font-bold text-foreground leading-none"
-            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+      <div className="px-3 mb-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-yellow-500 fill-yellow-400" />
+            <h2
+              className="text-2xl font-bold text-foreground leading-none"
+              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+            >
+              Time Cards
+            </h2>
+          </div>
+          <span
+            className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/20 text-primary"
+            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
           >
-            Special VIP Cards
-          </h2>
+            {currentCard.vipTier} ({currentIdx + 1}/4)
+          </span>
         </div>
-        <span
-          className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/20 text-primary"
-          style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
-        >
-          {currentCard.vipTier} ({currentIdx + 1}/4)
-        </span>
+        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+          Speeds up your VIP package daily income so you can top up quick and maximize earnings within the 6-month time frame or until the grand withdrawal day.
+        </p>
       </div>
 
       {/* 3D Card Interactive Stage Container */}
