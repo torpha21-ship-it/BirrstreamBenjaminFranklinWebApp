@@ -10,7 +10,6 @@ import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
 import { AdSlider } from "@/components/ad-slider";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
-import mainBalanceIcon from "@/assets/decor/profile-main-balance-card.svg";
 import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
 import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
 import totalWithdrawnCard from "@/assets/decor/total-withdrawn-card.png";
@@ -177,7 +176,6 @@ export default function Dashboard() {
 
       {/* Main Balance Card */}
       <div className="bg-[#1A1A1A] rounded-3xl px-6 pt-3 pb-6 text-white relative z-10 overflow-hidden -mx-4">
-        <img src={pointingHand} alt="" aria-hidden="true" className="absolute right-0 top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
@@ -188,9 +186,9 @@ export default function Dashboard() {
           <>
             <p className="text-4xl font-bold mb-1 flex items-center flex-wrap gap-2">
               <span>{fmt(summary?.mainBalance ?? 0)}</span>
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-2">
                 <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
-                <img src={mainBalanceIcon} alt="" aria-hidden="true" className="w-8 h-8 object-contain pointer-events-none select-none opacity-90" />
+                <img src={pointingHand} alt="" aria-hidden="true" className="h-10 w-auto object-contain pointer-events-none select-none opacity-90 inline-block align-middle" />
               </span>
             </p>
             {pendingWithdrawalTotal > 0 && (
