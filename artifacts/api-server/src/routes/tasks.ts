@@ -18,19 +18,24 @@ router.get("/tasks", requireAuth, async (req, res) => {
     .from(dailyTasksTable)
     .where(eq(dailyTasksTable.isActive, true));
 
-  const completions = await db
+  // Fetch ALL completions for this user (not just today)
+  const allCompletions = await db
     .select()
     .from(userTaskCompletionsTable)
-    .where(
-      and(
-        eq(userTaskCompletionsTable.userId, user.id),
-        eq(userTaskCompletionsTable.date, today),
-      ),
-    );
-  const completedTaskIds = new Set(completions.map(c => c.taskId));
+    .where(eq(userTaskCompletionsTable.userId, user.id));
+
+  // Today's completions for daily tasks
+  const todayCompletions = allCompletions.filter(c => c.date === today);
+  const completedTodayIds = new Set(todayCompletions.map(c => c.taskId));
+  // All-time completions for lifetime tasks
+  const completedEverIds = new Set(allCompletions.map(c => c.taskId));
 
   const taskList = tasks.map(t => {
-    const completion = completions.find(c => c.taskId === t.id);
+    const isLifetime = t.taskType === "social" || t.taskType === "subscribe";
+    const isCompleted = isLifetime
+      ? completedEverIds.has(t.id)
+      : completedTodayIds.has(t.id);
+    const completion = allCompletions.find(c => c.taskId === t.id);
     return {
       id: t.id,
       title: t.title,
@@ -38,7 +43,7 @@ router.get("/tasks", requireAuth, async (req, res) => {
       reward: parseFloat(t.reward),
       taskType: t.taskType,
       actionUrl: t.actionUrl,
-      isCompleted: completedTaskIds.has(t.id),
+      isCompleted,
       completedAt: completion?.completedAt?.toISOString() ?? null,
     };
   });
@@ -64,6 +69,25 @@ router.post("/tasks/:id/complete", requireAuth, taskLimiter, async (req, res) =>
   if (!task) {
     res.status(404).json({ error: "Task not found" });
     return;
+  }
+
+  // ── Lifetime tasks (social/subscribe): block if already completed ever ──
+  if (task.taskType === "social" || task.taskType === "subscribe") {
+    const [existingCompletion] = await db
+      .select()
+      .from(userTaskCompletionsTable)
+      .where(
+        and(
+          eq(userTaskCompletionsTable.userId, user.id),
+          eq(userTaskCompletionsTable.taskId, task.id),
+        ),
+      )
+      .limit(1);
+
+    if (existingCompletion) {
+      res.status(400).json({ error: "This task has already been completed." });
+      return;
+    }
   }
 
   try {

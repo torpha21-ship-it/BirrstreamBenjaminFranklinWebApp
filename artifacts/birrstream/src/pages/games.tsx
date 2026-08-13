@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
-import { Coins, RefreshCw, ArrowLeft, Play } from "lucide-react";
+import { Coins, RefreshCw, ArrowLeft, Play, ShieldAlert, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { getGetDashboardSummaryQueryKey, getGetUserProfileQueryKey, getGetMeQueryKey, customFetch } from "@workspace/api-client-react";
 import { withApiBaseUrl } from "@/lib/api-base-url";
@@ -35,35 +36,35 @@ interface MobData {
 }
 
 const MOBS: MobData[] = [
-  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 150, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1",
+  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 45, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1",
     sprite: { imageUrl: "https://assets.codepen.io/36869/cat.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5364, totalFrames: 42 } },
-  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -75, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10",
+  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -25, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10",
     sprite: { imageUrl: "https://assets.codepen.io/36869/spider.webp", columns: 5, sheetWidth: 2980, sheetHeight: 3576, totalFrames: 28 } },
-  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 100, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1",
+  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 30, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1",
     sprite: { imageUrl: "https://assets.codepen.io/36869/cow.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 60 } },
-  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500", amount: -150, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20",
+  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500", amount: -50, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20",
     sprite: { imageUrl: "https://assets.codepen.io/36869/creeper.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
-  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 400, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1",
+  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 120, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1",
     sprite: { imageUrl: "https://assets.codepen.io/36869/enderman.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
-  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500", amount: -200, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10",
+  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500", amount: -65, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10",
     sprite: { imageUrl: "https://assets.codepen.io/36869/evoker.webp", columns: 5, sheetWidth: 2980, sheetHeight: 11920, totalFrames: 99 } },
-  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 300, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10",
+  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 90, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10",
     sprite: { imageUrl: "https://assets.codepen.io/36869/golem.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8940, totalFrames: 72 } },
-  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 250, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2",
+  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 75, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2",
     sprite: { imageUrl: "https://assets.codepen.io/36869/horse.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5960, totalFrames: 47 } },
-  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 180, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-[15deg] translate-x-2 z-20",
+  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 55, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-[15deg] translate-x-2 z-20",
     sprite: { imageUrl: "https://assets.codepen.io/36869/ocelot.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } },
-  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 500, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30",
+  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 215, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30",
     sprite: { imageUrl: "https://assets.codepen.io/36869/panda.webp", columns: 5, sheetWidth: 2980, sheetHeight: 10728, totalFrames: 88 } },
-  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -100, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2",
+  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -35, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2",
     sprite: { imageUrl: "https://assets.codepen.io/36869/skeleton.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7748, totalFrames: 65 } },
-  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 220, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10",
+  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 65, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10",
     sprite: { imageUrl: "https://assets.codepen.io/36869/wolf.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 58 } },
-  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 80, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-[10deg] translate-y-1",
+  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 25, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-[10deg] translate-y-1",
     sprite: { imageUrl: "https://assets.codepen.io/36869/squid.webp", columns: 5, sheetWidth: 2980, sheetHeight: 12516, totalFrames: 104 } },
-  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 350, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10",
+  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 105, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10",
     sprite: { imageUrl: "https://assets.codepen.io/36869/fox.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8344, totalFrames: 69 } },
-  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 200, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1",
+  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 60, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1",
     sprite: { imageUrl: "https://assets.codepen.io/36869/villager.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } }
 ];
 
@@ -171,11 +172,35 @@ const StickerCollage = memo(function StickerCollage() {
 /* ================================================================
    MAIN COMPONENT
    ================================================================ */
+interface ArcadeStatus {
+  hasActiveVip: boolean;
+  highestPackageName: string | null;
+  highestSortOrder?: number;
+  maxSpins: number | "Unlimited";
+  spinsToday: number;
+  spinsRemaining: number | "Unlimited";
+  isUnlimited: boolean;
+  canSpin: boolean;
+  message: string;
+}
+
 export default function Games() {
   const { user, token } = useAuth();
+  const { toast } = useToast();
   const qc = useQueryClient();
   const [balance, setBalance] = useState<number>(() => parseFloat((user as any)?.mainBalance || "1000"));
   const [isFullPageGame, setIsFullPageGame] = useState(false);
+  const [arcadeStatus, setArcadeStatus] = useState<ArcadeStatus | null>(null);
+
+  const fetchArcadeStatus = useCallback(() => {
+    customFetch<ArcadeStatus>("/api/arcade/status")
+      .then((data) => setArcadeStatus(data))
+      .catch((err) => console.error("Failed to fetch arcade status", err));
+  }, []);
+
+  useEffect(() => {
+    fetchArcadeStatus();
+  }, [fetchArcadeStatus]);
 
   // Audio Context singleton ref to eliminate lag from audio creation
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -248,6 +273,17 @@ export default function Games() {
 
   function startSpin() {
     if (isSpinning) return;
+
+    // Check spin limits before starting the animation
+    if (arcadeStatus && !arcadeStatus.canSpin) {
+      toast({
+        title: "Arcade Limit Reached",
+        description: arcadeStatus.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSpinning(true);
     setModalResult(null);
 
@@ -274,7 +310,7 @@ export default function Games() {
         playArcadeSound(finalMob.amount >= 0 ? 'win' : 'loss');
 
         // Claim winnings/losses on backend PostgreSQL database using customFetch
-        customFetch<{ success: boolean; newBalance: number }>("/api/arcade/claim", {
+        customFetch<{ success: boolean; newBalance: number; message: string }>("/api/arcade/claim", {
           method: "POST",
           body: JSON.stringify({
             mobId: finalMob.id,
@@ -288,13 +324,18 @@ export default function Games() {
               qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
               qc.invalidateQueries({ queryKey: getGetUserProfileQueryKey() });
               qc.invalidateQueries({ queryKey: getGetMeQueryKey() });
-            } else {
-              setBalance((prev) => prev + finalMob.amount);
+              fetchArcadeStatus();
             }
           })
-          .catch((err) => {
+          .catch((err: any) => {
             console.error("Arcade claim error:", err);
-            setBalance((prev) => prev + finalMob.amount);
+            const errMsg = err?.data?.error || err?.message || "Failed to process arcade spin";
+            toast({
+              title: "Spin Claim Error",
+              description: errMsg,
+              variant: "destructive",
+            });
+            fetchArcadeStatus();
           });
       }
     }
@@ -349,20 +390,49 @@ export default function Games() {
               </p>
             </div>
 
+            {/* VIP Spin Status Indicator */}
+            {arcadeStatus && (
+              <div
+                className={`px-4 py-2.5 rounded-2xl text-xs font-semibold text-center flex items-center justify-center gap-2 border shadow-lg ${
+                  !arcadeStatus.hasActiveVip
+                    ? "bg-red-500/15 border-red-500/40 text-red-300"
+                    : arcadeStatus.isUnlimited
+                    ? "bg-amber-500/20 border-amber-500/50 text-amber-300 font-bold"
+                    : arcadeStatus.canSpin
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
+                    : "bg-red-500/15 border-red-500/40 text-red-300"
+                }`}
+                style={HSsm}
+              >
+                {arcadeStatus.isUnlimited ? (
+                  <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
+                ) : (
+                  <ShieldAlert className="w-4 h-4" />
+                )}
+                <span>{arcadeStatus.message}</span>
+              </div>
+            )}
+
             {/* Spin Button */}
             <div className="flex justify-center">
               <Button
                 onClick={startSpin}
-                disabled={isSpinning}
+                disabled={isSpinning || (arcadeStatus ? !arcadeStatus.canSpin : false)}
                 className={`w-full max-w-sm py-6 rounded-2xl text-lg font-bold shadow-xl transition-all ${
                   isSpinning
                     ? "bg-amber-500 text-black animate-pulse"
+                    : arcadeStatus && !arcadeStatus.canSpin
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed border border-white/10"
                     : "bg-primary text-[#1A1A1A] hover:bg-primary/90 shadow-primary/30"
                 }`}
                 style={{ ...HS, letterSpacing: "0.08em" }}
               >
                 <RefreshCw className={`w-5 h-5 mr-2 ${isSpinning ? "animate-spin" : ""}`} />
-                {isSpinning ? "SPINNING AUTO-PICKER..." : "START AUTO-PICKER (SPIN)"}
+                {isSpinning
+                  ? "SPINNING AUTO-PICKER..."
+                  : arcadeStatus && !arcadeStatus.canSpin
+                  ? "DAILY LIMIT REACHED"
+                  : "START AUTO-PICKER (SPIN)"}
               </Button>
             </div>
 
@@ -517,7 +587,7 @@ export default function Games() {
               Minecraft Mob Spinner
             </h2>
             <p className="text-gray-200 text-xs leading-snug" style={HSsm}>
-              Spin the auto-picker to randomly land on 1 of 15 mobs. Win up to +500 ETB with Diamond Panda or dodge Creeper TNT traps!
+              Spin the auto-picker to randomly land on 1 of 15 mobs. Win up to +215 ETB with Diamond Panda or dodge Creeper TNT traps! Tiered daily spins per VIP level (VIP 4+ Unlimited).
             </p>
           </div>
         </div>
@@ -527,14 +597,27 @@ export default function Games() {
           {/* Info Badges */}
           <div className="flex flex-wrap gap-2">
             <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>
-              Jackpot: +500 ETB
+              Jackpot: +215 ETB
             </span>
             <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold" style={HSsm}>
               Danger Traps Included
             </span>
-            <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold" style={HSsm}>
-              RPG Power Grades
-            </span>
+            {arcadeStatus && (
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                  !arcadeStatus.hasActiveVip
+                    ? "bg-red-500/20 text-red-400 border-red-500/30"
+                    : arcadeStatus.isUnlimited
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                    : arcadeStatus.canSpin
+                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                    : "bg-red-500/20 text-red-400 border-red-500/30"
+                }`}
+                style={HSsm}
+              >
+                {arcadeStatus.message}
+              </span>
+            )}
           </div>
 
           {/* Start Game Button */}

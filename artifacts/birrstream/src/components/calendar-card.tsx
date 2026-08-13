@@ -1,7 +1,129 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 interface CalendarCardProps {
   userCreatedAt?: string;
+}
+
+/**
+ * Modular-counter digit maps.
+ * A 3×8 grid of blocks (24 total). Each digit 0-9 is defined by which blocks
+ * are "visible" (in-position) vs "hidden" (translated off-screen).
+ * 1 = visible, 0 = hidden (moved away).
+ */
+const DIGIT_MAPS: Record<number, number[]> = {
+  0: [1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+  1: [0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0],
+  2: [1,1,1, 0,0,1, 0,0,1, 1,1,1, 1,0,0, 1,0,0, 1,0,0, 1,1,1],
+  3: [1,1,1, 0,0,1, 0,0,1, 1,1,1, 0,0,1, 0,0,1, 0,0,1, 1,1,1],
+  4: [1,0,1, 1,0,1, 1,0,1, 1,1,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1],
+  5: [1,1,1, 1,0,0, 1,0,0, 1,1,1, 0,0,1, 0,0,1, 0,0,1, 1,1,1],
+  6: [1,1,1, 1,0,0, 1,0,0, 1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+  7: [1,1,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1],
+  8: [1,1,1, 1,0,1, 1,0,1, 1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+  9: [1,1,1, 1,0,1, 1,0,1, 1,1,1, 0,0,1, 0,0,1, 0,0,1, 1,1,1],
+};
+
+/** Slide direction varies by column to mimic the original CSS */
+const SLIDE_DIRS: Record<number, [number, number]> = {
+  0: [1, 0],   // left-column blocks slide right
+  1: [0, -1],  // middle-column blocks slide down
+  2: [-1, 0],  // right-column blocks slide left
+};
+
+function ModularDigit({ digit, color = "#139AB4" }: { digit: number; color?: string }) {
+  const map = DIGIT_MAPS[digit] ?? DIGIT_MAPS[0];
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: "1.5px",
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      {map.map((visible, i) => {
+        const col = i % 3;
+        const row = Math.floor(i / 3);
+        const [dx, dy] = SLIDE_DIRS[col];
+        // Stagger delays for organic animation feel
+        const delay = ((row * 23 + col * 37 + i * 7) % 150);
+
+        return (
+          <div
+            key={i}
+            style={{
+              backgroundColor: visible ? color : "transparent",
+              borderRadius: "1.5px",
+              transition: `all 0.45s cubic-bezier(0.65, 0, 0.35, 1) ${delay}ms`,
+              transform: visible
+                ? "translate(0, 0) scale(1)"
+                : `translate(${dx * 120}%, ${dy * 120}%) scale(0.3)`,
+              opacity: visible ? 1 : 0,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function CountdownGroup({ value, label, color }: { value: number; label: string; color: string }) {
+  const tens = Math.floor(value / 10) % 10;
+  const ones = value % 10;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+      <div style={{ display: "flex", gap: "3px", height: "52px" }}>
+        <div style={{ width: "22px", height: "52px" }}>
+          <ModularDigit digit={tens} color={color} />
+        </div>
+        <div style={{ width: "22px", height: "52px" }}>
+          <ModularDigit digit={ones} color={color} />
+        </div>
+      </div>
+      <span style={{
+        fontSize: "9px",
+        fontWeight: 700,
+        color: "#888",
+        textTransform: "uppercase",
+        letterSpacing: "0.1em",
+        fontFamily: "'Roboto', sans-serif",
+      }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function ModularSeparator({ color }: { color: string }) {
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "6px",
+      height: "52px",
+      padding: "0 2px",
+    }}>
+      <div style={{
+        width: "5px",
+        height: "5px",
+        borderRadius: "50%",
+        backgroundColor: color,
+        opacity: 0.7,
+      }} />
+      <div style={{
+        width: "5px",
+        height: "5px",
+        borderRadius: "50%",
+        backgroundColor: color,
+        opacity: 0.7,
+      }} />
+    </div>
+  );
 }
 
 export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
@@ -61,6 +183,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
     }
     if (currentDay > totalDaysInMonth) break;
   }
+
+  const accentColor = "#139AB4";
 
   return (
     <div className="w-full relative z-10 flex flex-col items-center pt-32">
@@ -377,6 +501,15 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           background: rgba(254, 213, 56, 0.8);
           z-index: -1;
         }
+
+        @keyframes modularPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(19, 154, 180, 0.15); }
+          50% { box-shadow: 0 0 20px 4px rgba(19, 154, 180, 0.25); }
+        }
+
+        .modular-countdown-card {
+          animation: modularPulse 3s ease-in-out infinite;
+        }
       `}</style>
 
       {/* 3D Tear-Off Calendar scaled visual with exact container height to eliminate blank space below */}
@@ -435,19 +568,35 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
         </div>
       </div>
 
-      {/* 6 Months Countdown Card - Fits both left & right side perfectly (-mx-4), with pure white bg */}
+      {/* 6 Months Countdown — Modular Block Counter Animation */}
       <div className="w-full -mx-4 mb-6 relative z-10">
-        <div className="bg-white border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-lg shadow-[#139AB4]/15 text-center w-full">
-          <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-3 tracking-wide leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+        <div className="modular-countdown-card bg-white border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-lg shadow-[#139AB4]/15 text-center w-full">
+          <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-4 tracking-wide leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
             6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users
           </p>
-          <div className="inline-block bg-[#139AB4]/10 border border-[#139AB4]/30 rounded-2xl px-6 py-2.5 shadow-inner">
-            <span className="text-[#139AB4] font-extrabold font-mono tracking-wider text-2xl sm:text-3xl">
-              {diffDays}d {pad(diffHours)}:{pad(diffMins)}:{pad(diffSecs)}
-            </span>
+
+          {/* Modular Block Counter */}
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: "8px",
+            background: "linear-gradient(135deg, #0a2e36 0%, #0d1b2a 50%, #0a2e36 100%)",
+            borderRadius: "16px",
+            padding: "16px 12px 12px",
+            border: "1px solid rgba(19, 154, 180, 0.3)",
+          }}>
+            <CountdownGroup value={diffDays} label="DAYS" color={accentColor} />
+            <ModularSeparator color={accentColor} />
+            <CountdownGroup value={diffHours} label="HRS" color={accentColor} />
+            <ModularSeparator color={accentColor} />
+            <CountdownGroup value={diffMins} label="MIN" color={accentColor} />
+            <ModularSeparator color={accentColor} />
+            <CountdownGroup value={diffSecs} label="SEC" color={accentColor} />
           </div>
         </div>
       </div>
     </div>
   );
 }
+
