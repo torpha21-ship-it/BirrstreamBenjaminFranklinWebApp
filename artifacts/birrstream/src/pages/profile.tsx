@@ -209,7 +209,10 @@ export default function Profile() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-[10px] opacity-50">ETB</p>
+              <div className="flex items-center gap-1">
+                <p className="text-[10px] opacity-50">ETB</p>
+                <img src={item.icon} alt="" aria-hidden="true" className="w-4 h-4 object-contain opacity-80" />
+              </div>
             </div>
           </div>
         ))}
