@@ -1,14 +1,15 @@
-import fbLogo from "@/assets/dashboard-icons/static/wired-outline-2540-logo-facebook-hover-draw.png";
-import ytLogo from "@/assets/dashboard-icons/static/wired-outline-2547-logo-youtube-hover-pinch.png";
-import twitchLogo from "@/assets/dashboard-icons/static/wired-outline-2556-logo-twitch-hover-pinch.png";
-import googleLogo from "@/assets/dashboard-icons/static/wired-outline-2557-logo-google-hover-pinch.png";
-import telegramLogo from "@/assets/dashboard-icons/static/wired-outline-2559-logo-telegram-hover-pinch.png";
-import redditLogo from "@/assets/dashboard-icons/static/wired-outline-2560-logo-reddit-hover-pinch.png";
-import indieHackersLogo from "@/assets/dashboard-icons/static/wired-outline-2561-logo-indie-hackers-hover-pinch.png";
-import mediumLogo from "@/assets/dashboard-icons/static/wired-outline-2562-logo-medium-hover-pinch.png";
-import discordLogo from "@/assets/dashboard-icons/static/wired-outline-2566-logo-discord-hover-rotation.png";
-import stackOverflowLogo from "@/assets/dashboard-icons/static/wired-outline-2567-logo-stack-overflow-hover-flow.png";
-import yelpLogo from "@/assets/dashboard-icons/static/wired-outline-2576-logo-yelp-hover-pinch.png";
+import fbLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2540-logo-facebook-hover-draw.png";
+import ytLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2547-logo-youtube-hover-pinch.png";
+import twitchLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2556-logo-twitch-hover-pinch.png";
+import googleLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2557-logo-google-hover-pinch.png";
+import telegramLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2559-logo-telegram-hover-pinch.png";
+import redditLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2560-logo-reddit-hover-pinch.png";
+import indieHackersLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2561-logo-indie-hackers-hover-pinch.png";
+import mediumLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2562-logo-medium-hover-pinch.png";
+import wechatLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2563-logo-wechat-hover-pinch.png";
+import discordLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2566-logo-discord-hover-rotation.png";
+import stackOverflowLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2567-logo-stack-overflow-hover-flow.png";
+import yelpLogo from "@/assets/dashboard-icons/dark-theme/wired-outline-2576-logo-yelp-hover-pinch.png";
 
 const ANIMATED_LOGOS = [
   { name: "Facebook", src: fbLogo },
@@ -17,6 +18,7 @@ const ANIMATED_LOGOS = [
   { name: "Google", src: googleLogo },
   { name: "Discord", src: discordLogo },
   { name: "Twitch", src: twitchLogo },
+  { name: "WeChat", src: wechatLogo },
   { name: "Reddit", src: redditLogo },
   { name: "Medium", src: mediumLogo },
   { name: "Indie Hackers", src: indieHackersLogo },

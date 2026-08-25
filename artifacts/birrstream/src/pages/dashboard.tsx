@@ -21,7 +21,7 @@ import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
 
 import hiIcon from "@/assets/dashboard-icons/Hi.webp";
-import mainBalanceIcon from "@/assets/dashboard-icons/Main Balance.webp";
+import mainBalanceDarkThemeIcon from "@/assets/dashboard-icons/dark-theme/Main Balance.png";
 import depositIcon from "@/assets/dashboard-icons/Deposit.gif";
 import withdrawIcon from "@/assets/dashboard-icons/Withdraw.gif";
 import packagesIcon from "@/assets/dashboard-icons/Packages.webp";
@@ -192,7 +192,7 @@ export default function Dashboard() {
         <img src={pointingHand} alt="" aria-hidden="true" className="absolute -right-[90px] top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
-          <img src={mainBalanceIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0 invert brightness-200" />
+          <img src={mainBalanceDarkThemeIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
         </div>
         {isLoading ? (
