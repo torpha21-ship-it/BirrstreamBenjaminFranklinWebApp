@@ -192,7 +192,7 @@ export default function Dashboard() {
         <img src={pointingHand} alt="" aria-hidden="true" className="absolute -right-[90px] top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
-          <img src={mainBalanceIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
+          <img src={mainBalanceIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0 invert brightness-200" />
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
         </div>
         {isLoading ? (
@@ -260,7 +260,7 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
         {[
-          { iconSrc: depositIcon, label: "Deposit", href: "/deposit", color: "bg-primary/10" },
+          { iconSrc: depositIcon, label: "Deposit", href: "/deposit", color: "bg-[#FCE7EE]" },
           { iconSrc: withdrawIcon, label: "Withdraw", href: "/withdraw", color: "bg-[#F5E6A3]" },
           { iconSrc: packagesIcon, label: "Packages", href: "/packages", color: "bg-[#C9BDF5]" },
           { iconSrc: tasksIcon, label: "Tasks", href: "/tasks", color: "bg-[#A8D5B5]" },
@@ -286,7 +286,7 @@ export default function Dashboard() {
               src={card.image}
               alt=""
               aria-hidden="true"
-              className="absolute -right-1 -bottom-1 h-16 w-16 object-contain pointer-events-none select-none drop-shadow-sm"
+              className="absolute right-2 bottom-2 h-8 w-8 object-contain pointer-events-none select-none drop-shadow-sm"
             />
             <div className="relative z-10">
               <p className={`text-[20px] ${card.textColor} opacity-60 mb-0.5`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{card.label}</p>
@@ -301,8 +301,10 @@ export default function Dashboard() {
       <div className="bg-card rounded-3xl p-5 border border-border relative z-10 -mx-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <img src={loginStreakIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 bg-[#FCE7EE] rounded-xl flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
+              <img src={loginStreakIcon} alt="" className="w-full h-full object-contain" />
+            </div>
             <h2 className="text-[32px] font-bold text-foreground leading-none" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Login Streak</h2>
           </div>
           <div className="flex items-center gap-2">
@@ -392,7 +394,7 @@ export default function Dashboard() {
             className="flex items-center justify-between bg-card rounded-2xl p-4 border border-border hover:border-primary/30 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center overflow-hidden p-1.5">
+              <div className="w-10 h-10 bg-[#FCE7EE] rounded-xl flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
                 <img src={iconSrc} alt="" className="w-full h-full object-contain" />
               </div>
               <div>

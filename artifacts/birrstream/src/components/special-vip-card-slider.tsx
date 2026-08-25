@@ -469,8 +469,10 @@ export function SpecialVipCardSlider() {
       {/* Header section */}
       <div className="px-3 mb-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src={timeCardsIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 bg-[#FCE7EE] rounded-xl flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
+              <img src={timeCardsIcon} alt="" className="w-full h-full object-contain" />
+            </div>
             <h2
               className="text-2xl font-bold text-foreground leading-none"
               style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
