@@ -75,7 +75,9 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "@lordicon/element": "^2.3.1",
     "gsap": "^3.15.0",
-    "lottie-react": "^3.1.0"
+    "lottie-react": "^3.1.0",
+    "lottie-web": "^5.13.0"
   }
 }

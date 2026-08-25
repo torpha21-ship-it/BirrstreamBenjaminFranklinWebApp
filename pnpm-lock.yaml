@@ -240,12 +240,18 @@ importers:
 
   artifacts/birrstream:
     dependencies:
+      '@lordicon/element':
+        specifier: ^2.3.1
+        version: 2.3.1
       gsap:
         specifier: ^3.15.0
         version: 3.15.0
       lottie-react:
         specifier: ^3.1.0
         version: 3.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      lottie-web:
+        specifier: ^5.13.0
+        version: 5.13.0
     devDependencies:
       '@hookform/resolvers':
         specifier: ^3.10.0
@@ -826,6 +832,12 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lordicon/element@2.3.1':
+    resolution: {integrity: sha512-thmlosWLpOy+et/4Eu+0fM09u6gEn7ToQ+fBi7r/mS1F5N020yQJJEoUZJQ6RdZVloVSIlfOSxZgdE8GKu+GxQ==}
+
+  '@lordicon/web@1.2.1':
+    resolution: {integrity: sha512-16djHCP6w6+y5WuCEl6D3I2tZhzLqcVhdSR8jynzxIrF384t0RTL2zNYEZhjCjNbw5taN0pbdqlqH8vJ1+spQg==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3376,6 +3388,12 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@lordicon/element@2.3.1':
+    dependencies:
+      '@lordicon/web': 1.2.1
+
+  '@lordicon/web@1.2.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
