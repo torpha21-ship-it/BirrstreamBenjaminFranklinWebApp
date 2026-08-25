@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useToast } from "@/hooks/use-toast";
 import { useGetDashboardSummary, getGetDashboardSummaryQueryKey } from "@workspace/api-client-react";
 import { ChevronLeft, ChevronRight, Lock, CheckCircle2, Sparkles } from "lucide-react";
+import timeCardsIcon from "@/assets/dashboard-icons/Time Cards.webp";
 
 interface CardData {
   id: string;
@@ -469,7 +470,7 @@ export function SpecialVipCardSlider() {
       <div className="px-3 mb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-yellow-500 fill-yellow-400" />
+            <img src={timeCardsIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
             <h2
               className="text-2xl font-bold text-foreground leading-none"
               style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}

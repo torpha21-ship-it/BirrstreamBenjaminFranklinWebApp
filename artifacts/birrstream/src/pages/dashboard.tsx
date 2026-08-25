@@ -12,13 +12,24 @@ import { AdSlider } from "@/components/ad-slider";
 import { LogoSlider } from "@/components/logo-slider";
 import { AnimatedLogoSlider } from "@/components/animated-logo-slider";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
-import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
-import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
-import totalWithdrawnCard from "@/assets/decor/total-withdrawn-card.png";
-import totalYieldCard from "@/assets/decor/total-yield-card.png";
 import streakImg from "@/assets/decor/173.png";
 import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
+
+import hiIcon from "@/assets/dashboard-icons/Hi.webp";
+import mainBalanceIcon from "@/assets/dashboard-icons/Main Balance.webp";
+import depositIcon from "@/assets/dashboard-icons/Deposit.gif";
+import withdrawIcon from "@/assets/dashboard-icons/Withdraw.gif";
+import packagesIcon from "@/assets/dashboard-icons/Packages.webp";
+import tasksIcon from "@/assets/dashboard-icons/Tasks.webp";
+import totalYieldIcon from "@/assets/dashboard-icons/Total Yield.webp";
+import totalDepositedIcon from "@/assets/dashboard-icons/Total Deposited.webp";
+import totalWithdrawnIcon from "@/assets/dashboard-icons/Total Withdrawn.webp";
+import reserveFloorIcon from "@/assets/dashboard-icons/Reserve Floor.webp";
+import loginStreakIcon from "@/assets/dashboard-icons/Login Streak.webp";
+import checkInIcon from "@/assets/dashboard-icons/Check In Button.webp";
+import referralNetworkIcon from "@/assets/dashboard-icons/My Referal Network.webp";
+import vipUpgradeGoalsIcon from "@/assets/dashboard-icons/VIP Upgrade Goals.webp";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -91,10 +102,10 @@ export default function Dashboard() {
   };
 
   const statCards = [
-    { label: "Total Yield", value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldCard },
-    { label: "Total Deposited", value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedCard },
-    { label: "Total Withdrawn", value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnCard },
-    { label: "Reserve Floor", value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorCard },
+    { label: "Total Yield", value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldIcon },
+    { label: "Total Deposited", value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedIcon },
+    { label: "Total Withdrawn", value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnIcon },
+    { label: "Reserve Floor", value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorIcon },
   ];
 
   const dayNames = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
@@ -147,24 +158,24 @@ export default function Dashboard() {
         <BSLogo />
       </div>
 
-      {/* Header: welcome text + toggle + profile avatar */}
-      <div className="flex items-center bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-foreground/70 font-medium">Welcome back</p>
-          <h1
-            className="text-lg font-bold text-foreground"
-            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
-          >
-            {user?.fullName?.split(" ")[0]}
-          </h1>
+      {/* Header: welcome text + Hi.webp + toggle on right + profile avatar */}
+      <div className="flex items-center justify-between bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div>
+            <p className="text-xs text-foreground/70 font-medium">Welcome back</p>
+            <h1
+              className="text-lg font-bold text-foreground"
+              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+            >
+              {user?.fullName?.split(" ")[0]}
+            </h1>
+          </div>
+          <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none" />
         </div>
 
-        {/* Night-Day Animated Toggle — perfectly centered */}
-        <div className="flex items-center justify-center px-3">
-          <NightDayToggle size={76} />
-        </div>
-
-        <div className="flex-1 flex justify-end min-w-0">
+        {/* Night-Day Animated Toggle moved to right next to profile avatar */}
+        <div className="flex items-center gap-2.5">
+          <NightDayToggle size={70} />
           <Link
             href="/profile"
             className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shadow-primary/30 overflow-hidden flex-shrink-0"
@@ -181,6 +192,7 @@ export default function Dashboard() {
         <img src={pointingHand} alt="" aria-hidden="true" className="absolute -right-[90px] top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
+          <img src={mainBalanceIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
           <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
         </div>
         {isLoading ? (
@@ -248,18 +260,18 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
         {[
-          { icon: ArrowDownRight, label: "Deposit", href: "/deposit", color: "text-primary bg-primary/10" },
-          { icon: ArrowUpRight, label: "Withdraw", href: "/withdraw", color: "text-[#D4B61B] bg-[#F5E6A3]" },
-          { icon: Package, label: "Packages", href: "/packages", color: "text-[#5B44BE] bg-[#C9BDF5]" },
-          { icon: ListChecks, label: "Tasks", href: "/tasks", color: "text-[#2B7A4B] bg-[#A8D5B5]" },
-        ].map(({ icon: Icon, label, href, color }) => (
+          { iconSrc: depositIcon, label: "Deposit", href: "/deposit", color: "bg-primary/10" },
+          { iconSrc: withdrawIcon, label: "Withdraw", href: "/withdraw", color: "bg-[#F5E6A3]" },
+          { iconSrc: packagesIcon, label: "Packages", href: "/packages", color: "bg-[#C9BDF5]" },
+          { iconSrc: tasksIcon, label: "Tasks", href: "/tasks", color: "bg-[#A8D5B5]" },
+        ].map(({ iconSrc, label, href, color }) => (
           <Link
             key={href}
             href={href}
             className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-card border border-border hover:scale-105 active:scale-95 transition-transform"
           >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
-              <Icon className="w-5 h-5" />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} overflow-hidden p-1.5`}>
+              <img src={iconSrc} alt={label} className="w-full h-full object-contain" />
             </div>
             <span className="text-xs font-semibold text-foreground">{label}</span>
           </Link>
@@ -274,7 +286,7 @@ export default function Dashboard() {
               src={card.image}
               alt=""
               aria-hidden="true"
-              className="absolute -right-2 -bottom-2 h-14 w-14 object-contain pointer-events-none select-none opacity-90"
+              className="absolute -right-1 -bottom-1 h-16 w-16 object-contain pointer-events-none select-none drop-shadow-sm"
             />
             <div className="relative z-10">
               <p className={`text-[20px] ${card.textColor} opacity-60 mb-0.5`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{card.label}</p>
@@ -290,7 +302,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Flame className="w-5 h-5 text-primary" />
+            <img src={loginStreakIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
             <h2 className="text-[32px] font-bold text-foreground leading-none" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Login Streak</h2>
           </div>
           <div className="flex items-center gap-2">
@@ -355,10 +367,11 @@ export default function Dashboard() {
           <button
             onClick={handleCheckin}
             disabled={checkinMutation.isPending}
-            className="w-full py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60"
+            className="w-full py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
           >
-            {checkinMutation.isPending ? "Checking in..." : "Check In — Earn +5 ETB"}
+            <img src={checkInIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+            <span>{checkinMutation.isPending ? "Checking in..." : "Check In — Earn +5 ETB"}</span>
           </button>
         ) : (
           <div className="w-full py-3 bg-accent/30 text-accent-foreground rounded-2xl font-semibold text-sm text-center">
@@ -370,17 +383,17 @@ export default function Dashboard() {
       {/* Navigate to more */}
       <div className="grid grid-cols-1 gap-3 relative z-10 -mx-4">
         {[
-          { label: "My Referral Network", desc: "View your affiliate downline", href: "/affiliate-network", icon: Users },
-          { label: "VIP Upgrade Goals", desc: "Earn premium packages through referrals", href: "/vip-upgrades", icon: Package },
-        ].map(({ label, desc, href, icon: Icon }) => (
+          { label: "My Referral Network", desc: "View your affiliate downline", href: "/affiliate-network", iconSrc: referralNetworkIcon },
+          { label: "VIP Upgrade Goals", desc: "Earn premium packages through referrals", href: "/vip-upgrades", iconSrc: vipUpgradeGoalsIcon },
+        ].map(({ label, desc, href, iconSrc }) => (
           <Link
             key={href}
             href={href}
             className="flex items-center justify-between bg-card rounded-2xl p-4 border border-border hover:border-primary/30 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Icon className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center overflow-hidden p-1.5">
+                <img src={iconSrc} alt="" className="w-full h-full object-contain" />
               </div>
               <div>
                 <p className="font-semibold text-[28px] text-foreground leading-tight" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{label}</p>
