@@ -1,17 +1,28 @@
 import { useListDailyTasks, getListDailyTasksQueryKey, useCompleteTask } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, Circle, Tv, Globe, MessageCircle, Star, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Circle, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import dailyTipBg from "@/assets/decor/daily-tip-card-bg.svg";
 
-const TASK_ICONS: Record<string, React.ComponentType<any>> = {
-  stream_video: Tv,
-  open_page: Globe,
-  join_telegram: MessageCircle,
-  other: Star,
-};
+import videoIcon from "@/assets/daily-tasks/wired-outline-1876-video.webp";
+import homepageIcon from "@/assets/daily-tasks/wired-outline-27-homepage.webp";
+import telegramIcon from "@/assets/daily-tasks/wired-outline-2559-logo-telegram.webp";
+import linkIcon from "@/assets/daily-tasks/wired-outline-11-link.webp";
+import profileIcon from "@/assets/daily-tasks/wired-outline-471-profile-complete.webp";
+import moreVideoIcon from "@/assets/daily-tasks/wired-outline-2738-2-more-video.webp";
+
+function getTaskIcon(title: string, taskType: string): string {
+  const t = title.toLowerCase();
+  if (t.includes("2 more") || t.includes("additional")) return moreVideoIcon;
+  if (t.includes("video") || t.includes("watch") || taskType === "stream_video") return videoIcon;
+  if (t.includes("home") || t.includes("visit") || taskType === "open_page") return homepageIcon;
+  if (t.includes("telegram") || taskType === "join_telegram") return telegramIcon;
+  if (t.includes("referral") || t.includes("link") || t.includes("share")) return linkIcon;
+  if (t.includes("profile")) return profileIcon;
+  return homepageIcon;
+}
 
 const TASK_COLORS: Record<string, string> = {
   stream_video: "bg-[#C9BDF5] text-[#5B44BE]",
@@ -102,7 +113,7 @@ export default function Tasks() {
         {isLoading ? Array(4).fill(0).map((_, i) => (
           <div key={i} className="h-20 bg-card rounded-2xl animate-pulse border border-border" />
         )) : tasks?.map(task => {
-          const Icon = TASK_ICONS[task.taskType] ?? Star;
+          const iconSrc = getTaskIcon(task.title, task.taskType);
           const colors = TASK_COLORS[task.taskType] ?? TASK_COLORS.other;
           return (
             <div
@@ -110,7 +121,7 @@ export default function Tasks() {
               className={`bg-card rounded-2xl p-4 border border-border flex items-start gap-3 transition-all ${task.isCompleted ? "opacity-60" : ""}`}
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colors}`}>
-                <Icon className="w-5 h-5" />
+                <img src={iconSrc} alt="" className="w-6 h-6 object-contain" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">

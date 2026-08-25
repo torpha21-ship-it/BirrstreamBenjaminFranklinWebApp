@@ -17,6 +17,12 @@ import hand2 from "@/assets/decor/member-hand-2.svg";
 import hand1 from "@/assets/decor/member-hand-1.svg";
 import { CalendarCard } from "@/components/calendar-card";
 
+import withdrawalSettingsIcon from "@/assets/profile-icons/wired-outline-2540-Withdrawal Settings.webp";
+import transactionHistoryIcon from "@/assets/profile-icons/wired-outline-948-Transaction History.webp";
+import referralIcon from "@/assets/profile-icons/My Referal Network.webp";
+import affiliateIcon from "@/assets/profile-icons/wired-outline-409-wrench-hover-oscillate.webp";
+import vipUpgradeIcon from "@/assets/profile-icons/VIP Upgrade Goals.webp";
+
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
   const { toast } = useToast();
@@ -59,16 +65,16 @@ export default function Profile() {
     {
       title: "Account",
       items: [
-        { icon: Settings2, label: "Withdrawal Settings", href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
-        { icon: Receipt, label: "Transaction History", href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
+        { imgSrc: withdrawalSettingsIcon, label: "Withdrawal Settings", href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
+        { imgSrc: transactionHistoryIcon, label: "Transaction History", href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
       ],
     },
     {
       title: "Network",
       items: [
-        { icon: ChevronRight, label: "My Referral Code", href: "/referral", color: "bg-[#F5E6A3] text-[#8B7200]" },
-        { icon: ChevronRight, label: "Affiliate Network", href: "/affiliate-network", color: "bg-primary/10 text-primary" },
-        { icon: ChevronRight, label: "VIP Upgrade Goals", href: "/vip-upgrades", color: "bg-[#F2A89A] text-[#C0402E]" },
+        { imgSrc: referralIcon, label: "My Referral Code", href: "/referral", color: "bg-[#F5E6A3] text-[#8B7200]" },
+        { imgSrc: affiliateIcon, label: "Affiliate Network", href: "/affiliate-network", color: "bg-primary/10 text-primary" },
+        { imgSrc: vipUpgradeIcon, label: "VIP Upgrade Goals", href: "/vip-upgrades", color: "bg-[#F2A89A] text-[#C0402E]" },
       ],
     },
     {
@@ -222,7 +228,7 @@ export default function Profile() {
             {section.title}
           </p>
           <div className="bg-card rounded-3xl border border-border overflow-hidden -mx-4">
-            {section.items.map((item, i) => {
+            {section.items.map((item: any, i: number) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -234,7 +240,10 @@ export default function Profile() {
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.color}`}>
-                      <Icon className="w-4 h-4" />
+                      {item.imgSrc
+                        ? <img src={item.imgSrc} alt="" className="w-5 h-5 object-contain" />
+                        : <Icon className="w-4 h-4" />
+                      }
                     </div>
                     <span className="font-semibold text-[28px] text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{item.label}</span>
                   </div>

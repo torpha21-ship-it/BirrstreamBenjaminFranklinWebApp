@@ -2,33 +2,33 @@ import { ReactNode, useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import {
-  LayoutDashboard, ListChecks, Gamepad2, User as UserIcon,
   X, ArrowUpRight, ArrowDownRight, Package, Users, Receipt, ChevronRight,
-  Trophy, ShieldAlert, MessageCircle
+  Trophy, ShieldAlert
 } from "lucide-react";
+import { NavHomeIcon, NavTasksIcon, NavGamesIcon, NavSupportIcon, NavProfileIcon } from "@/components/nav-icons";
 import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/games", icon: Gamepad2, label: "Arcade Games" },
-  { href: "/tasks", icon: ListChecks, label: "Daily Tasks" },
+  { href: "/dashboard", icon: NavHomeIcon, label: "Dashboard" },
+  { href: "/games", icon: NavGamesIcon, label: "Arcade Games" },
+  { href: "/tasks", icon: NavTasksIcon, label: "Daily Tasks" },
   { href: "/packages", icon: Package, label: "VIP Packages" },
   { href: "/referral", icon: Users, label: "Referrals" },
   { href: "/transactions", icon: Receipt, label: "Transactions" },
   { href: "/vip-upgrades", icon: Trophy, label: "VIP Upgrades" },
-  { href: "/support", icon: MessageCircle, label: "Support" },
-  { href: "/profile", icon: UserIcon, label: "Profile" },
+  { href: "/support", icon: NavSupportIcon, label: "Support" },
+  { href: "/profile", icon: NavProfileIcon, label: "Profile" },
 ];
 
 const MOBILE_NAV = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/tasks", icon: ListChecks, label: "Tasks" },
-  { href: "/games", icon: Gamepad2, label: "Games", isCenterGame: true },
-  { href: "/support", icon: MessageCircle, label: "Support" },
-  { href: "/profile", icon: UserIcon, label: "Profile" },
+  { href: "/dashboard", icon: NavHomeIcon, label: "Dashboard" },
+  { href: "/tasks", icon: NavTasksIcon, label: "Tasks" },
+  { href: "/games", icon: NavGamesIcon, label: "Games", isCenterGame: true },
+  { href: "/support", icon: NavSupportIcon, label: "Support" },
+  { href: "/profile", icon: NavProfileIcon, label: "Profile" },
 ];
 
 const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, label: "Admin Panel" };

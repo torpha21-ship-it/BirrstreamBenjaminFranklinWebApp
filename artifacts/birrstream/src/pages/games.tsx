@@ -571,11 +571,11 @@ export default function Games() {
         </div>
       </div>
 
-      {/* Main Game Card — Styled like Main Balance card */}
-      <div className="bg-[#1A1A1A] rounded-3xl p-5 text-white border border-white/10 shadow-2xl relative overflow-hidden flex flex-col space-y-4">
+      {/* Main Game Card — Clean layout without background black card */}
+      <div className="relative flex flex-col space-y-4">
         
         {/* THUMBNAIL IMAGE WITH TITLE & DESCRIPTION OVERLAY ON TOP */}
-        <div className="relative w-full h-64 rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+        <div className="relative w-full h-64 rounded-3xl overflow-hidden border border-border shadow-lg">
           <img
             src="/game-thumbnail.jpg"
             alt="Minecraft Mob Spinner"
@@ -596,22 +596,22 @@ export default function Games() {
         <div className="space-y-4 pt-1">
           {/* Info Badges */}
           <div className="flex flex-wrap gap-2">
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>
               Jackpot: +215 ETB
             </span>
-            <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold" style={HSsm}>
+            <span className="px-3 py-1 bg-red-500/20 text-red-600 dark:text-red-400 rounded-full text-xs font-semibold" style={HSsm}>
               Danger Traps Included
             </span>
             {arcadeStatus && (
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold border ${
                   !arcadeStatus.hasActiveVip
-                    ? "bg-red-500/20 text-red-400 border-red-500/30"
+                    ? "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
                     : arcadeStatus.isUnlimited
-                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                    ? "bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/40"
                     : arcadeStatus.canSpin
-                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                    : "bg-red-500/20 text-red-400 border-red-500/30"
+                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                    : "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
                 }`}
                 style={HSsm}
               >
@@ -636,15 +636,15 @@ export default function Games() {
 
       {/* Coming Soon Section */}
       <div className="space-y-4 pt-2">
-        <p className="text-[22px] text-gray-400 font-semibold" style={HS}>
+        <p className="text-[22px] text-muted-foreground font-semibold" style={HS}>
           Upcoming Arcade Games
         </p>
 
-        {/* Coming Soon Card 1 — ANIMATED VIDEO THUMBNAIL */}
-        <div className="bg-[#1A1A1A] rounded-3xl p-5 text-white border border-white/10 shadow-xl relative overflow-hidden flex flex-col justify-between space-y-4">
+        {/* Coming Soon Card 1 — ANIMATED VIDEO THUMBNAIL (Clean without black card background) */}
+        <div className="relative flex flex-col space-y-3">
           
           {/* Animated Video Thumbnail */}
-          <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+          <div className="relative w-full h-48 rounded-3xl overflow-hidden border border-border shadow-md">
             <video
               src="/Gamevid.mp4"
               autoPlay
@@ -654,7 +654,7 @@ export default function Games() {
               className="w-full h-full object-cover"
             />
             {/* Animated Thumbnail Overlay Badge */}
-            <div className="absolute top-3 right-3 bg-amber-500/80 backdrop-blur-md text-black px-3 py-1 rounded-full text-xs font-extrabold shadow-lg" style={HS}>
+            <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md text-black px-3 py-1 rounded-full text-xs font-extrabold shadow-lg" style={HS}>
               🔒 COMING SOON
             </div>
             <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-xs font-bold text-white" style={HS}>
@@ -663,15 +663,15 @@ export default function Games() {
           </div>
 
           <div>
-            <h3 className="text-[22px] font-bold text-white mb-1" style={HS}>
+            <h3 className="text-[22px] font-bold text-foreground mb-1" style={HS}>
               Birr Mine Sweeper
             </h3>
-            <p className="text-gray-300 text-sm" style={HSsm}>
+            <p className="text-muted-foreground text-sm" style={HSsm}>
               Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!
             </p>
           </div>
 
-          <Button disabled variant="outline" className="w-full text-gray-500 border-white/10 bg-white/5 py-5 rounded-2xl" style={HS}>
+          <Button disabled variant="outline" className="w-full text-muted-foreground border-border bg-muted/40 py-5 rounded-2xl" style={HS}>
             Coming Soon
           </Button>
         </div>
