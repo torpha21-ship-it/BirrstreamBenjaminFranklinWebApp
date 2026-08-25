@@ -1,4 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { Phone, Send } from "lucide-react";
+import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 
 const AD_VIDEOS = [
   "/ads/1.mp4",
@@ -66,7 +68,7 @@ export function AdSlider() {
 
   return (
     <div
-      className="relative z-10 -mx-4 rounded-3xl overflow-hidden bg-[#1A1A1A]"
+      className="relative z-10 -mx-4 rounded-3xl overflow-hidden bg-[#1A1A1A] shadow-md border border-white/5"
       style={{ aspectRatio: "16 / 9" }}
     >
       {/* All videos are pre-mounted and preloaded; only the active one is visible */}
@@ -117,8 +119,45 @@ export function AdSlider() {
         </div>
       )}
 
-      {/* Dot indicators */}
-      <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
+      {/* Subtle Vignettes for crisp text readability over videos */}
+      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
+
+      {/* Top Left: Sponsored Badge */}
+      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/45 backdrop-blur-md border border-white/15 pointer-events-none select-none shadow-sm">
+        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+        <span className="text-[10px] font-bold text-white/85 tracking-wider uppercase">Ad</span>
+      </div>
+
+      {/* Top Right: Naomi Labs Logo & Brand Name */}
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/20 shadow-lg pointer-events-none select-none">
+        <img
+          src={logoNaomi}
+          alt="Naomi Labs"
+          className="w-4 h-4 rounded-full object-cover flex-shrink-0 border border-white/40"
+        />
+        <span
+          className="text-white text-[13px] font-bold tracking-wider"
+          style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+        >
+          Naomi Labs
+        </span>
+      </div>
+
+      {/* Bottom Left: Contact Info */}
+      <div className="absolute bottom-3 left-3 z-20 flex flex-col gap-0.5 px-2.5 py-1.5 rounded-xl bg-black/55 backdrop-blur-md border border-white/15 text-white shadow-lg pointer-events-none select-none">
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-white/95">
+          <Phone className="w-3 h-3 text-primary flex-shrink-0" />
+          <span>+251 911 234 567</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] text-white/75">
+          <Send className="w-2.5 h-2.5 text-sky-400 flex-shrink-0" />
+          <span>@naomilabs_et</span>
+        </div>
+      </div>
+
+      {/* Bottom Right: Dot indicators */}
+      <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-20 bg-black/45 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/15 shadow-sm">
         {AD_VIDEOS.map((_, i) => {
           const isCurrent = i === activeIdx && !animating;
           const isTarget = nextSlideIdx !== null && i === nextSlideIdx && animating;
@@ -133,8 +172,8 @@ export function AdSlider() {
               }}
               className={`rounded-full transition-all duration-300 ${
                 active
-                  ? "w-5 h-2 bg-primary shadow-sm shadow-primary/40"
-                  : "w-2 h-2 bg-white/40 hover:bg-white/60"
+                  ? "w-4 h-1.5 bg-primary shadow-sm shadow-primary/40"
+                  : "w-1.5 h-1.5 bg-white/40 hover:bg-white/70"
               }`}
             />
           );
