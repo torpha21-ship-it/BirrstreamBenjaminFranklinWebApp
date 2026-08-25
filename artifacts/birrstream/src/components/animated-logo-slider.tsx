@@ -1,14 +1,14 @@
-import fbLogo from "@/assets/custom-logos/wired-outline-2540-logo-facebook-hover-draw.webp";
-import ytLogo from "@/assets/custom-logos/wired-outline-2547-logo-youtube-hover-pinch.webp";
-import twitchLogo from "@/assets/custom-logos/wired-outline-2556-logo-twitch-hover-pinch.webp";
-import googleLogo from "@/assets/custom-logos/wired-outline-2557-logo-google-hover-pinch.webp";
-import telegramLogo from "@/assets/custom-logos/wired-outline-2559-logo-telegram-hover-pinch.webp";
-import redditLogo from "@/assets/custom-logos/wired-outline-2560-logo-reddit-hover-pinch.webp";
-import indieHackersLogo from "@/assets/custom-logos/wired-outline-2561-logo-indie-hackers-hover-pinch.webp";
-import mediumLogo from "@/assets/custom-logos/wired-outline-2562-logo-medium-hover-pinch.webp";
-import discordLogo from "@/assets/custom-logos/wired-outline-2566-logo-discord-hover-rotation.webp";
-import stackOverflowLogo from "@/assets/custom-logos/wired-outline-2567-logo-stack-overflow-hover-flow.webp";
-import yelpLogo from "@/assets/custom-logos/wired-outline-2576-logo-yelp-hover-pinch.webp";
+import fbLogo from "@/assets/dashboard-icons/static/wired-outline-2540-logo-facebook-hover-draw.png";
+import ytLogo from "@/assets/dashboard-icons/static/wired-outline-2547-logo-youtube-hover-pinch.png";
+import twitchLogo from "@/assets/dashboard-icons/static/wired-outline-2556-logo-twitch-hover-pinch.png";
+import googleLogo from "@/assets/dashboard-icons/static/wired-outline-2557-logo-google-hover-pinch.png";
+import telegramLogo from "@/assets/dashboard-icons/static/wired-outline-2559-logo-telegram-hover-pinch.png";
+import redditLogo from "@/assets/dashboard-icons/static/wired-outline-2560-logo-reddit-hover-pinch.png";
+import indieHackersLogo from "@/assets/dashboard-icons/static/wired-outline-2561-logo-indie-hackers-hover-pinch.png";
+import mediumLogo from "@/assets/dashboard-icons/static/wired-outline-2562-logo-medium-hover-pinch.png";
+import discordLogo from "@/assets/dashboard-icons/static/wired-outline-2566-logo-discord-hover-rotation.png";
+import stackOverflowLogo from "@/assets/dashboard-icons/static/wired-outline-2567-logo-stack-overflow-hover-flow.png";
+import yelpLogo from "@/assets/dashboard-icons/static/wired-outline-2576-logo-yelp-hover-pinch.png";
 
 const ANIMATED_LOGOS = [
   { name: "Facebook", src: fbLogo },
