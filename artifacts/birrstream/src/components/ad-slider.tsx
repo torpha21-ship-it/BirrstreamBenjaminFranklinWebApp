@@ -123,21 +123,21 @@ export function AdSlider() {
       <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
       <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
 
-      {/* Top Left: Sponsored Badge */}
-      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-white/60 pointer-events-none select-none shadow-md">
+      {/* Top Right: Sharp Ad Badge flush in the far right top corner */}
+      <div className="absolute top-0 right-0 z-20 flex items-center gap-1.5 px-3 py-1 bg-white text-black pointer-events-none select-none shadow-md">
         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-        <span className="text-[10px] font-bold text-black tracking-wider uppercase">Ad</span>
+        <span className="text-[11px] font-bold tracking-wider uppercase">Ad</span>
       </div>
 
-      {/* Top Right: Naomi Labs Logo & Brand Name */}
-      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/20 shadow-lg pointer-events-none select-none">
+      {/* Top Left: Original Naomi Labs Logo without background card */}
+      <div className="absolute top-3 left-3 z-20 flex items-center gap-2 pointer-events-none select-none drop-shadow-md">
         <img
           src={logoNaomi}
           alt="Naomi Labs"
-          className="w-4 h-4 rounded-full object-cover flex-shrink-0 border border-white/40"
+          className="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-white/40"
         />
         <span
-          className="text-white text-[13px] font-bold tracking-wider"
+          className="text-white text-[15px] font-bold tracking-wider"
           style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
         >
           Naomi Labs

@@ -21,6 +21,7 @@ import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
 
 import hiIcon from "@/assets/dashboard-icons/Hi.webp";
+import hiDarkIcon from "@/assets/dashboard-icons/dark-theme/Hi.webp";
 import mainBalanceDarkThemeIcon from "@/assets/dashboard-icons/dark-theme/Main Balance.png";
 import depositIcon from "@/assets/dashboard-icons/Deposit.gif";
 import withdrawIcon from "@/assets/dashboard-icons/Withdraw.gif";
@@ -170,7 +171,8 @@ export default function Dashboard() {
               {user?.fullName?.split(" ")[0]}
             </h1>
           </div>
-          <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none" />
+          <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none dark:hidden" />
+          <img src={hiDarkIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none hidden dark:inline-block" />
         </div>
 
         {/* Night-Day Animated Toggle moved to right next to profile avatar */}
