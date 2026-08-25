@@ -124,9 +124,9 @@ export function AdSlider() {
       <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
 
       {/* Top Left: Sponsored Badge */}
-      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/45 backdrop-blur-md border border-white/15 pointer-events-none select-none shadow-sm">
+      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-white/60 pointer-events-none select-none shadow-md">
         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-        <span className="text-[10px] font-bold text-white/85 tracking-wider uppercase">Ad</span>
+        <span className="text-[10px] font-bold text-black tracking-wider uppercase">Ad</span>
       </div>
 
       {/* Top Right: Naomi Labs Logo & Brand Name */}
