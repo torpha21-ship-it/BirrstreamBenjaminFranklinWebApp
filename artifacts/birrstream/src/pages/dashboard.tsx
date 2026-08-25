@@ -235,11 +235,14 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Top Logo Slider: between Main Balance and Ad Slider */}
+      <LogoSlider className="-mx-4" />
+
       {/* Video Ad Slider */}
       <AdSlider />
 
-      {/* Infinite Partner Logo Marquee Slider */}
-      <LogoSlider className="-mx-4" />
+      {/* Bottom Logo Slider: below Ad Slider */}
+      <LogoSlider className="-mx-4" reverse />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">

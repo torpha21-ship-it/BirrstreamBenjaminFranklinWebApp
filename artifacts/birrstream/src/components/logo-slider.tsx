@@ -18,18 +18,18 @@ const PARTNER_LOGOS = [
   { name: "Reddit", src: redditLogo },
 ];
 
-export function LogoSlider({ className = "" }: { className?: string }) {
+export function LogoSlider({ className = "", reverse = false }: { className?: string; reverse?: boolean }) {
   // Duplicate list to achieve a seamless, continuous infinite scroll loop
   const displayLogos = [...PARTNER_LOGOS, ...PARTNER_LOGOS];
 
   return (
-    <div className={`relative overflow-hidden py-3 select-none ${className}`}>
+    <div className={`relative overflow-hidden py-2.5 select-none ${className}`}>
       {/* Left and Right Fade Edge Vignettes */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
 
       {/* Marquee Track */}
-      <div className="animate-marquee flex items-center gap-8">
+      <div className={`${reverse ? "animate-marquee-reverse" : "animate-marquee"} flex items-center gap-8`}>
         {displayLogos.map((logo, idx) => (
           <div
             key={`${logo.name}-${idx}`}
