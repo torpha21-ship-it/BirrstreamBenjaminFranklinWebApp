@@ -68,7 +68,7 @@ export function AdSlider() {
 
   return (
     <div
-      className="relative z-10 -mx-4 rounded-3xl overflow-hidden bg-[#1A1A1A] shadow-md border border-white/5"
+      className="relative z-10 -mx-4 rounded-none overflow-hidden bg-[#1A1A1A] shadow-md border-y border-white/10"
       style={{ aspectRatio: "16 / 9" }}
     >
       {/* All videos are pre-mounted and preloaded; only the active one is visible */}
