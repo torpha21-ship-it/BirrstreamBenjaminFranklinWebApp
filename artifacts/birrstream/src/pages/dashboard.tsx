@@ -10,6 +10,7 @@ import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
 import { AdSlider } from "@/components/ad-slider";
 import { LogoSlider } from "@/components/logo-slider";
+import { AnimatedLogoSlider } from "@/components/animated-logo-slider";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
 import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
@@ -241,8 +242,8 @@ export default function Dashboard() {
       {/* Video Ad Slider */}
       <AdSlider />
 
-      {/* Bottom Logo Slider: below Ad Slider */}
-      <LogoSlider className="-mx-4" reverse />
+      {/* Bottom Custom Animated Logo Slider: below Ad Slider */}
+      <AnimatedLogoSlider className="-mx-4" reverse />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
