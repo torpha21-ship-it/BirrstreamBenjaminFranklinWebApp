@@ -12,6 +12,10 @@ import { AdSlider } from "@/components/ad-slider";
 import { LogoSlider } from "@/components/logo-slider";
 import { AnimatedLogoSlider } from "@/components/animated-logo-slider";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
+import reserveFloorCard from "@/assets/decor/reserve-floor-card.png";
+import totalDepositedCard from "@/assets/decor/total-deposited-card.png";
+import totalWithdrawnCard from "@/assets/decor/total-withdrawn-card.png";
+import totalYieldCard from "@/assets/decor/total-yield-card.png";
 import streakImg from "@/assets/decor/173.png";
 import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
@@ -22,10 +26,6 @@ import depositIcon from "@/assets/dashboard-icons/Deposit.gif";
 import withdrawIcon from "@/assets/dashboard-icons/Withdraw.gif";
 import packagesIcon from "@/assets/dashboard-icons/Packages.webp";
 import tasksIcon from "@/assets/dashboard-icons/Tasks.webp";
-import totalYieldIcon from "@/assets/dashboard-icons/Total Yield.webp";
-import totalDepositedIcon from "@/assets/dashboard-icons/Total Deposited.webp";
-import totalWithdrawnIcon from "@/assets/dashboard-icons/Total Withdrawn.webp";
-import reserveFloorIcon from "@/assets/dashboard-icons/Reserve Floor.webp";
 import loginStreakIcon from "@/assets/dashboard-icons/Login Streak.webp";
 import checkInIcon from "@/assets/dashboard-icons/Check In Button.webp";
 import referralNetworkIcon from "@/assets/dashboard-icons/My Referal Network.webp";
@@ -102,10 +102,10 @@ export default function Dashboard() {
   };
 
   const statCards = [
-    { label: "Total Yield", value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldIcon },
-    { label: "Total Deposited", value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedIcon },
-    { label: "Total Withdrawn", value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnIcon },
-    { label: "Reserve Floor", value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorIcon },
+    { label: "Total Yield", value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldCard },
+    { label: "Total Deposited", value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedCard },
+    { label: "Total Withdrawn", value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnCard },
+    { label: "Reserve Floor", value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorCard },
   ];
 
   const dayNames = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
@@ -254,8 +254,8 @@ export default function Dashboard() {
       {/* Video Ad Slider */}
       <AdSlider />
 
-      {/* Bottom Custom Animated Logo Slider: below Ad Slider */}
-      <AnimatedLogoSlider className="-mx-4" reverse />
+      {/* Bottom Logo Slider: below Ad Slider */}
+      <LogoSlider className="-mx-4" reverse />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
