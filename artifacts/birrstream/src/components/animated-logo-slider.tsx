@@ -1,56 +1,28 @@
-import { useEffect, useRef } from "react";
-import { defineElement } from "@lordicon/element";
-import lottie from "lottie-web";
-
-if (typeof window !== "undefined") {
-  try {
-    defineElement(lottie.loadAnimation);
-  } catch (e) {
-    // Already defined
-  }
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "lord-icon": any;
-    }
-  }
-}
+import fbLogo from "@/assets/custom-logos/wired-outline-2540-logo-facebook-hover-draw.webp";
+import ytLogo from "@/assets/custom-logos/wired-outline-2547-logo-youtube-hover-pinch.webp";
+import twitchLogo from "@/assets/custom-logos/wired-outline-2556-logo-twitch-hover-pinch.webp";
+import googleLogo from "@/assets/custom-logos/wired-outline-2557-logo-google-hover-pinch.webp";
+import telegramLogo from "@/assets/custom-logos/wired-outline-2559-logo-telegram-hover-pinch.webp";
+import redditLogo from "@/assets/custom-logos/wired-outline-2560-logo-reddit-hover-pinch.webp";
+import indieHackersLogo from "@/assets/custom-logos/wired-outline-2561-logo-indie-hackers-hover-pinch.webp";
+import mediumLogo from "@/assets/custom-logos/wired-outline-2562-logo-medium-hover-pinch.webp";
+import discordLogo from "@/assets/custom-logos/wired-outline-2566-logo-discord-hover-rotation.webp";
+import stackOverflowLogo from "@/assets/custom-logos/wired-outline-2567-logo-stack-overflow-hover-flow.webp";
+import yelpLogo from "@/assets/custom-logos/wired-outline-2576-logo-yelp-hover-pinch.webp";
 
 const ANIMATED_LOGOS = [
-  { name: "Facebook", src: "/custom-logos/wired-outline-2540-logo-facebook-hover-draw.json", state: "hover-draw" },
-  { name: "TikTok", src: "/custom-logos/wired-outline-2546-logo-tiktok-hover-dots.json", state: "hover-dots" },
-  { name: "YouTube", src: "/custom-logos/wired-outline-2547-logo-youtube-hover-pinch.json", state: "hover-pinch" },
-  { name: "Google", src: "/custom-logos/wired-outline-2557-logo-google-hover-pinch.json", state: "hover-pinch" },
-  { name: "Telegram", src: "/custom-logos/wired-outline-2559-logo-telegram-hover-pinch.json", state: "hover-pinch" },
-  { name: "Reddit", src: "/custom-logos/wired-outline-2560-logo-reddit-in-reveal.json", state: "in-reveal" },
-  { name: "WeChat", src: "/custom-logos/wired-outline-2563-logo-wechat-hover-pinch.json", state: "hover-pinch" },
-  { name: "Discord", src: "/custom-logos/wired-outline-2566-logo-discord-in-reveal.json", state: "in-reveal" },
+  { name: "Facebook", src: fbLogo },
+  { name: "YouTube", src: ytLogo },
+  { name: "Telegram", src: telegramLogo },
+  { name: "Google", src: googleLogo },
+  { name: "Discord", src: discordLogo },
+  { name: "Twitch", src: twitchLogo },
+  { name: "Reddit", src: redditLogo },
+  { name: "Medium", src: mediumLogo },
+  { name: "Indie Hackers", src: indieHackersLogo },
+  { name: "Stack Overflow", src: stackOverflowLogo },
+  { name: "Yelp", src: yelpLogo },
 ];
-
-function LordIconItem({ src, state }: { src: string; state?: string }) {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const el = ref.current as any;
-    if (el) {
-      el.src = src;
-      el.trigger = "loop";
-      if (state) el.state = state;
-    }
-  }, [src, state]);
-
-  return (
-    <lord-icon
-      ref={ref}
-      src={src}
-      trigger="loop"
-      state={state}
-      style={{ width: "34px", height: "34px", display: "inline-block" }}
-    />
-  );
-}
 
 export function AnimatedLogoSlider({ className = "", reverse = false }: { className?: string; reverse?: boolean }) {
   // Duplicate list to achieve a seamless, continuous infinite scroll loop
@@ -67,9 +39,14 @@ export function AnimatedLogoSlider({ className = "", reverse = false }: { classN
         {displayLogos.map((logo, idx) => (
           <div
             key={`${logo.name}-${idx}`}
-            className="flex items-center justify-center h-9 w-9 px-1 flex-shrink-0 opacity-90 hover:opacity-100 transition-opacity"
+            className="flex items-center justify-center h-8 w-8 px-1 flex-shrink-0 opacity-80 hover:opacity-100 transition-opacity"
           >
-            <LordIconItem src={logo.src} state={logo.state} />
+            <img
+              src={logo.src}
+              alt={logo.name}
+              className="h-7 w-7 object-contain drop-shadow-sm"
+              loading="lazy"
+            />
           </div>
         ))}
       </div>
