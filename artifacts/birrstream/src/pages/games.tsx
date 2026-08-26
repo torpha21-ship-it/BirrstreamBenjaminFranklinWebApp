@@ -9,18 +9,8 @@ import { getGetDashboardSummaryQueryKey, getGetUserProfileQueryKey, getGetMeQuer
 import { withApiBaseUrl } from "@/lib/api-base-url";
 
 /* ================================================================
-   SPRITE DATA — Each character's sprite sheet dimensions & frames.
-   This is the SAME data from the original style.css, ported to JS
-   so we can drive the walk animation via requestAnimationFrame.
+   MOB DATA — 15 Minecraft Mobs with Local Assets & RPG Stats
    ================================================================ */
-interface SpriteData {
-  imageUrl: string;      // sprite sheet URL
-  columns: number;       // columns in the sheet
-  sheetWidth: number;    // original sheet width px
-  sheetHeight: number;   // original sheet height px
-  totalFrames: number;   // total frames in the sheet
-}
-
 interface MobData {
   id: string;
   name: string;
@@ -198,13 +188,11 @@ export default function Games() {
   // Audio Context singleton ref to eliminate lag from audio creation
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Preload all sprite images into browser memory on mount
+  // Preload all mob images into browser memory on mount
   useEffect(() => {
     MOBS.forEach((mob) => {
       const img = new Image();
-      img.src = mob.sprite.imageUrl;
-      const prev = new Image();
-      prev.src = mob.previewUrl;
+      img.src = mob.previewUrl;
     });
   }, []);
 
