@@ -68,65 +68,68 @@ export function AdSlider() {
 
   return (
     <div
-      className="relative z-10 -mx-4 rounded-none overflow-hidden bg-[#1A1A1A] shadow-md border-y border-white/10"
+      className="relative z-10 -mx-4 rounded-none bg-[#1A1A1A] shadow-md border-y border-white/10"
       style={{ aspectRatio: "16 / 9" }}
     >
-      {/* All videos are pre-mounted and preloaded; only the active one is visible */}
-      {AD_VIDEOS.map((src, i) => {
-        const isActive = i === activeIdx;
-        const isNext = i === nextSlideIdx;
-        const visible = isActive || isNext;
+      {/* Video viewport container */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* All videos are pre-mounted and preloaded; only the active one is visible */}
+        {AD_VIDEOS.map((src, i) => {
+          const isActive = i === activeIdx;
+          const isNext = i === nextSlideIdx;
+          const visible = isActive || isNext;
 
-        let transform = "translateX(100%)"; // hidden off-screen right
-        if (isActive) {
-          transform = animating ? "translateX(-100%)" : "translateX(0)";
-        } else if (isNext) {
-          transform = animating ? "translateX(0)" : "translateX(100%)";
-        }
+          let transform = "translateX(100%)"; // hidden off-screen right
+          if (isActive) {
+            transform = animating ? "translateX(-100%)" : "translateX(0)";
+          } else if (isNext) {
+            transform = animating ? "translateX(0)" : "translateX(100%)";
+          }
 
-        return (
-          <div
-            key={i}
-            className="absolute inset-0 w-full h-full"
-            style={{
-              transform,
-              transition: visible && animating
-                ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
-                : "none",
-              visibility: visible ? "visible" : "hidden",
-            }}
-          >
-            <video
-              ref={(el) => { videoRefs.current[i] = el; }}
-              src={src}
-              className="w-full h-full object-cover"
-              muted
-              playsInline
-              preload={i <= 1 ? "auto" : "metadata"}
-              onEnded={isActive ? handleVideoEnded : undefined}
-            />
+          return (
+            <div
+              key={i}
+              className="absolute inset-0 w-full h-full"
+              style={{
+                transform,
+                transition: visible && animating
+                  ? "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                  : "none",
+                visibility: visible ? "visible" : "hidden",
+              }}
+            >
+              <video
+                ref={(el) => { videoRefs.current[i] = el; }}
+                src={src}
+                className="w-full h-full object-cover"
+                muted
+                playsInline
+                preload={i <= 1 ? "auto" : "metadata"}
+                onEnded={isActive ? handleVideoEnded : undefined}
+              />
+            </div>
+          );
+        })}
+
+        {/* Preload the next video aggressively once current is playing */}
+        <PreloadNext videoRefs={videoRefs} activeIdx={activeIdx} total={total} />
+
+        {/* Loading spinner overlay */}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 bg-[#1A1A1A]">
+            <div className="w-8 h-8 border-3 border-white/20 border-t-primary rounded-full animate-spin" />
           </div>
-        );
-      })}
+        )}
 
-      {/* Preload the next video aggressively once current is playing */}
-      <PreloadNext videoRefs={videoRefs} activeIdx={activeIdx} total={total} />
+        {/* Subtle Vignettes for crisp text readability over videos */}
+        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
+      </div>
 
-      {/* Loading spinner overlay */}
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 bg-[#1A1A1A]">
-          <div className="w-8 h-8 border-3 border-white/20 border-t-primary rounded-full animate-spin" />
-        </div>
-      )}
-
-      {/* Subtle Vignettes for crisp text readability over videos */}
-      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
-
-      {/* Top Left: Sharp Ad Badge flush in the far left top corner */}
-      <div className="absolute -top-1 -left-1 z-20 flex items-center gap-1.5 px-3 pt-2 pb-1 bg-white text-black pointer-events-none select-none shadow-md">
-        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-        <span className="text-[11px] font-bold tracking-wider uppercase">Ad</span>
+      {/* Top Left: Sharp Ad Badge flush in the far left top corner overlapping the top border */}
+      <div className="absolute -top-[1px] -left-[1px] z-30 flex items-center gap-1.5 px-3 py-1 bg-white text-black pointer-events-none select-none shadow-md">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-[11px] font-bold tracking-wider">Ad</span>
       </div>
 
       {/* Top Right: Original Naomi Labs Logo without circular outer layer */}
