@@ -32,96 +32,89 @@ interface MobData {
   agility: string;
   previewUrl: string;
   rotClass: string;
-  sprite: SpriteData;
+  themeColor: string;
 }
 
 const MOBS: MobData[] = [
-  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 45, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/cat-preview.webp", rotClass: "-rotate-6 translate-y-1",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/cat.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5364, totalFrames: 42 } },
-  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -25, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "https://assets.codepen.io/36869/spider-preview.webp", rotClass: "rotate-6 -translate-y-2 z-10",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/spider.webp", columns: 5, sheetWidth: 2980, sheetHeight: 3576, totalFrames: 28 } },
-  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 30, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "https://assets.codepen.io/36869/cow-preview.webp", rotClass: "-rotate-12 translate-x-1",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/cow.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 60 } },
-  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500", amount: -50, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "https://assets.codepen.io/36869/creeper-preview.webp", rotClass: "rotate-12 scale-110 z-20",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/creeper.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
-  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 120, ability: "Teleport Stash", agility: "95 AG", previewUrl: "https://assets.codepen.io/36869/enderman-preview.webp", rotClass: "-rotate-3 -translate-y-1",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/enderman.webp", columns: 5, sheetWidth: 2980, sheetHeight: 6556, totalFrames: 55 } },
-  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500", amount: -65, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "https://assets.codepen.io/36869/evoker-preview.webp", rotClass: "rotate-8 scale-105 z-10",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/evoker.webp", columns: 5, sheetWidth: 2980, sheetHeight: 11920, totalFrames: 99 } },
-  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 90, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "https://assets.codepen.io/36869/golem-preview.webp", rotClass: "-rotate-8 scale-110 z-10",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/golem.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8940, totalFrames: 72 } },
-  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 75, ability: "Soul Velocity", agility: "92 AG", previewUrl: "https://assets.codepen.io/36869/horse-preview.webp", rotClass: "rotate-4 translate-y-2",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/horse.webp", columns: 5, sheetWidth: 2980, sheetHeight: 5960, totalFrames: 47 } },
-  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 55, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "https://assets.codepen.io/36869/ocelot-preview.webp", rotClass: "-rotate-[15deg] translate-x-2 z-20",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/ocelot.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } },
-  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 215, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "https://assets.codepen.io/36869/panda-preview.webp", rotClass: "rotate-12 scale-125 z-30",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/panda.webp", columns: 5, sheetWidth: 2980, sheetHeight: 10728, totalFrames: 88 } },
-  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -35, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "https://assets.codepen.io/36869/skeleton-preview.webp", rotClass: "-rotate-6 -translate-y-2",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/skeleton.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7748, totalFrames: 65 } },
-  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 65, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "https://assets.codepen.io/36869/wolf-preview.webp", rotClass: "rotate-9 scale-105 z-10",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/wolf.webp", columns: 5, sheetWidth: 2980, sheetHeight: 7152, totalFrames: 58 } },
-  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 25, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "https://assets.codepen.io/36869/squid-preview.png", rotClass: "-rotate-[10deg] translate-y-1",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/squid.webp", columns: 5, sheetWidth: 2980, sheetHeight: 12516, totalFrames: 104 } },
-  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 105, ability: "Berry Treasure", agility: "90 AG", previewUrl: "https://assets.codepen.io/36869/fox-preview.webp", rotClass: "rotate-6 scale-110 z-10",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/fox.webp", columns: 5, sheetWidth: 2980, sheetHeight: 8344, totalFrames: 69 } },
-  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 60, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "https://assets.codepen.io/36869/villager-preview.webp", rotClass: "-rotate-4 translate-x-1",
-    sprite: { imageUrl: "https://assets.codepen.io/36869/villager.webp", columns: 5, sheetWidth: 2980, sheetHeight: 4768, totalFrames: 37 } }
+  { id: "character-1", name: "Lucky Pixel Cat", power: "720 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 45, ability: "Meow Lucky Charm", agility: "60 AG", previewUrl: "/mobs/cat.png", rotClass: "-rotate-6 translate-y-1", themeColor: "#60A5FA" },
+  { id: "character-2", name: "Venom Shadow Spider", power: "680 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -25, ability: "Poison Web Trap", agility: "88 AG", previewUrl: "/mobs/spider.png", rotClass: "rotate-6 -translate-y-2 z-10", themeColor: "#EF4444" },
+  { id: "character-3", name: "Golden Dairy Cow", power: "500 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 30, ability: "Milk Yield Boost", agility: "40 AG", previewUrl: "/mobs/cow.png", rotClass: "-rotate-12 translate-x-1", themeColor: "#94A3B8" },
+  { id: "character-4", name: "Explosive Creeper", power: "990 CP", rarity: "Danger Mob", rarityColor: "text-red-400 bg-red-600/30 border-red-500", amount: -50, ability: "TNT Blast Penalty", agility: "70 AG", previewUrl: "/mobs/creeper.png", rotClass: "rotate-12 scale-110 z-20", themeColor: "#22C55E" },
+  { id: "character-5", name: "Void Enderman", power: "890 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 120, ability: "Teleport Stash", agility: "95 AG", previewUrl: "/mobs/enderman.png", rotClass: "-rotate-3 -translate-y-1", themeColor: "#C084FC" },
+  { id: "character-6", name: "Arch Evoker", power: "950 CP", rarity: "Dark Boss", rarityColor: "text-rose-400 bg-rose-900/40 border-rose-500", amount: -65, ability: "Vex Soul Drain", agility: "75 AG", previewUrl: "/mobs/evoker.png", rotClass: "rotate-8 scale-105 z-10", themeColor: "#F43F5E" },
+  { id: "character-7", name: "Iron Golem Sentinel", power: "920 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 90, ability: "Iron Shield Guard", agility: "50 AG", previewUrl: "/mobs/golem.png", rotClass: "-rotate-8 scale-110 z-10", themeColor: "#E2E8F0" },
+  { id: "character-8", name: "Phantom Skeleton Horse", power: "810 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 75, ability: "Soul Velocity", agility: "92 AG", previewUrl: "/mobs/horse.png", rotClass: "rotate-4 translate-y-2", themeColor: "#38BDF8" },
+  { id: "character-9", name: "Jungle Ocelot", power: "640 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 55, ability: "Pounce Hunting", agility: "85 AG", previewUrl: "/mobs/ocelot.png", rotClass: "-rotate-[15deg] translate-x-2 z-20", themeColor: "#FACC15" },
+  { id: "character-10", name: "Diamond Panda King", power: "1000 CP", rarity: "Mythic Jackpot", rarityColor: "text-yellow-300 bg-yellow-500/30 border-yellow-400 font-bold", amount: 215, ability: "Bamboo Wealth", agility: "99 AG", previewUrl: "/mobs/panda.png", rotClass: "rotate-12 scale-125 z-30", themeColor: "#38BDF8" },
+  { id: "character-11", name: "Skeletal Sniper", power: "710 CP", rarity: "Curse Mob", rarityColor: "text-red-400 bg-red-500/20 border-red-500/40", amount: -35, ability: "Piercing Arrow", agility: "65 AG", previewUrl: "/mobs/skeleton.png", rotClass: "-rotate-6 -translate-y-2", themeColor: "#CBD5E1" },
+  { id: "character-12", name: "Alpha Timber Wolf", power: "780 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 65, ability: "Pack Leader Howl", agility: "80 AG", previewUrl: "/mobs/wolf.png", rotClass: "rotate-9 scale-105 z-10", themeColor: "#94A3B8" },
+  { id: "character-13", name: "Deep Ocean Squid", power: "450 CP", rarity: "Common", rarityColor: "text-slate-300 bg-slate-500/20 border-slate-500/40", amount: 25, ability: "Ink Cloud Escape", agility: "55 AG", previewUrl: "/mobs/squid.png", rotClass: "-rotate-[10deg] translate-y-1", themeColor: "#3B82F6" },
+  { id: "character-14", name: "Mystic Fire Fox", power: "860 CP", rarity: "Epic", rarityColor: "text-purple-400 bg-purple-500/20 border-purple-500/40", amount: 105, ability: "Berry Treasure", agility: "90 AG", previewUrl: "/mobs/fox.png", rotClass: "rotate-6 scale-110 z-10", themeColor: "#FB923C" },
+  { id: "character-15", name: "Emerald Master Trader", power: "690 CP", rarity: "Rare", rarityColor: "text-blue-400 bg-blue-500/20 border-blue-500/40", amount: 60, ability: "Emerald Exchange", agility: "60 AG", previewUrl: "/mobs/villager.png", rotClass: "-rotate-4 translate-x-1", themeColor: "#10B981" }
 ];
 
 /* ================================================================
-   SPRITE WALK ANIMATION COMPONENT (Exact 48 FPS)
+   SPRITE WALK & IDLE ANIMATION COMPONENT (Fluid 60 FPS CSS Voxel)
    ================================================================ */
-function SpriteWalkAnimation({ sprite, displayWidth = 160 }: { sprite: SpriteData; displayWidth?: number }) {
-  const divRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number>(0);
-
-  // Calculate dimensions
-  const frameWidthOriginal = sprite.sheetWidth / sprite.columns;
-  const scaleFactor = displayWidth / frameWidthOriginal;
-  const scaledSheetWidth = sprite.sheetWidth * scaleFactor;
-  const scaledSheetHeight = sprite.sheetHeight * scaleFactor;
-  const rows = Math.ceil(sprite.totalFrames / sprite.columns);
-  const frameHeight = scaledSheetHeight / rows;
-
-  useEffect(() => {
-    let startTime = 0;
-
-    function animate(timestamp: number) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      
-      // Exact 48 FPS calculation (0.048 frames per millisecond)
-      const currentFrame = Math.floor(elapsed * 0.048) % sprite.totalFrames;
-
-      if (divRef.current) {
-        const col = currentFrame % sprite.columns;
-        const row = Math.floor(currentFrame / sprite.columns);
-        const x = col * displayWidth;
-        const y = row * frameHeight;
-        divRef.current.style.backgroundPosition = `${-x}px ${-y}px`;
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
-    }
-
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [sprite, displayWidth, frameHeight]);
-
+function SpriteWalkAnimation({ mob, displayWidth = 130 }: { mob: MobData; displayWidth?: number }) {
   return (
-    <div
-      ref={divRef}
-      style={{
-        width: displayWidth,
-        height: frameHeight,
-        backgroundImage: `url(${sprite.imageUrl})`,
-        backgroundSize: `${scaledSheetWidth}px ${scaledSheetHeight}px`,
-        backgroundPosition: "0px 0px",
-        backgroundRepeat: "no-repeat",
-        imageRendering: "pixelated",
-        filter: "drop-shadow(0px 1px 0px #ffda0e) drop-shadow(-1px 0px 0px #ffda0e) drop-shadow(1px 0px 0px #ffda0e) drop-shadow(0px -1px 0px #ffda0e) drop-shadow(1px 1px 0px #ffda0e) drop-shadow(-1px -1px 0px #ffda0e) drop-shadow(2px 4px 6px black)",
-      }}
-    />
+    <div className="relative flex flex-col items-center justify-center select-none" style={{ width: displayWidth }}>
+      <style>{`
+        @keyframes voxel-walk {
+          0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          25% { transform: translateY(-10px) rotate(-5deg) scale(1.04); }
+          50% { transform: translateY(0px) rotate(0deg) scale(1); }
+          75% { transform: translateY(-10px) rotate(5deg) scale(1.04); }
+        }
+        @keyframes voxel-shadow {
+          0%, 100% { transform: scaleX(1); opacity: 0.6; }
+          25%, 75% { transform: scaleX(0.75); opacity: 0.3; }
+          50% { transform: scaleX(1); opacity: 0.6; }
+        }
+        @keyframes voxel-aura {
+          0%, 100% { opacity: 0.4; transform: scale(0.95); }
+          50% { opacity: 0.8; transform: scale(1.1); }
+        }
+      `}</style>
+
+      {/* Aura Glow */}
+      <div
+        className="absolute inset-0 rounded-full blur-xl pointer-events-none"
+        style={{
+          backgroundColor: mob.themeColor || "#38BDF8",
+          animation: "voxel-aura 2s ease-in-out infinite",
+        }}
+      />
+
+      {/* Character Sprite with Walk Bobbing */}
+      <div
+        style={{
+          animation: "voxel-walk 1.1s ease-in-out infinite",
+          transformOrigin: "bottom center",
+        }}
+        className="relative z-10"
+      >
+        <img
+          src={mob.previewUrl}
+          alt={mob.name}
+          className="object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
+          style={{
+            width: displayWidth,
+            height: displayWidth,
+            imageRendering: "pixelated",
+            filter: "drop-shadow(0px 1px 0px #ffda0e) drop-shadow(-1px 0px 0px #ffda0e) drop-shadow(1px 0px 0px #ffda0e) drop-shadow(0px -1px 0px #ffda0e) drop-shadow(0 6px 12px rgba(0,0,0,0.7))",
+          }}
+        />
+      </div>
+
+      {/* Dynamic Ground Shadow */}
+      <div
+        className="w-20 h-3 bg-black/60 rounded-full mt-2 pointer-events-none"
+        style={{
+          animation: "voxel-shadow 1.1s ease-in-out infinite",
+        }}
+      />
+    </div>
   );
 }
 
@@ -476,7 +469,7 @@ export default function Games() {
             <div className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 items-center shadow-2xl">
               {/* Sprite Walk Animation Showcase — no background card */}
               <div className="w-40 h-40 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                <SpriteWalkAnimation sprite={currentMob.sprite} displayWidth={120} />
+                <SpriteWalkAnimation mob={currentMob} displayWidth={120} />
               </div>
 
               {/* RPG Stats */}
