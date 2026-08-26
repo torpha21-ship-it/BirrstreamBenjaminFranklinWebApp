@@ -1,6 +1,7 @@
 import { useGetVipUpgradeGoals, getGetVipUpgradeGoalsQueryKey } from "@workspace/api-client-react";
 import { ArrowLeft, Lock, CheckCircle2, Users, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
+import { useLanguage } from "@/context/language-context";
 import creatorImg from "@/assets/decor/creator.png";
 import explorerImg from "@/assets/decor/explorer.png";
 import jesterImg from "@/assets/decor/jester.png";
@@ -18,6 +19,12 @@ const BAR_COLORS = ["bg-[#D4B61B]", "bg-[#5B44BE]", "bg-[#C0402E]", "bg-primary"
 
 export default function VipUpgrades() {
   const { data: goals, isLoading } = useGetVipUpgradeGoals({ query: { queryKey: getGetVipUpgradeGoalsQueryKey() } });
+  const { t, isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   return (
     <div className="px-4 py-6 max-w-md mx-auto">
@@ -25,17 +32,23 @@ export default function VipUpgrades() {
         <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>VIP Upgrades</h1>
+        <h1 className="text-xl font-bold text-foreground" style={displayFont}>
+          {t("profile.vip_upgrades")}
+        </h1>
       </div>
 
       <div className="bg-[#1A1A1A] rounded-3xl p-5 mb-5 text-white">
-        <p className="text-gray-400 text-sm">Earn premium VIP packages by growing your network. No cash purchase required.</p>
+        <p className="text-gray-400 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+          {isAmharic
+            ? "አውታረ መረብዎን በማሳደግ ነፃ የቪአይፒ ፓኬጆችን ያግኙ። ምንም የገንዘብ ግዢ አያስፈልግም።"
+            : "Earn premium VIP packages by growing your network. No cash purchase required."}
+        </p>
         <div className="mt-3 flex gap-3">
-          <div className="flex items-center gap-1.5 text-gray-300 text-xs">
-            <Users className="w-3.5 h-3.5" /> Direct referrals
+          <div className="flex items-center gap-1.5 text-gray-300 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            <Users className="w-3.5 h-3.5" /> {isAmharic ? "ቀጥተኛ ተጋባዦች" : "Direct referrals"}
           </div>
-          <div className="flex items-center gap-1.5 text-gray-300 text-xs">
-            <TrendingUp className="w-3.5 h-3.5" /> Network volume
+          <div className="flex items-center gap-1.5 text-gray-300 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            <TrendingUp className="w-3.5 h-3.5" /> {isAmharic ? "የአውታረ መረብ ገቢ" : "Network volume"}
           </div>
         </div>
       </div>
@@ -58,7 +71,7 @@ export default function VipUpgrades() {
                     aria-hidden="true"
                     className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none"
                   />
-                  {/* Very light vignette — keeps edges subtle without obscuring the photo */}
+                  {/* Very light vignette */}
                   <div className="absolute inset-0 bg-gradient-to-br from-black/15 via-transparent to-black/15" />
 
                   {/* Content: semi-opaque card backdrop so text is fully legible over any photo */}
@@ -66,8 +79,10 @@ export default function VipUpgrades() {
                     {/* Header row */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Milestone</span>
-                        <h3 className="text-xl font-bold text-foreground mt-0.5" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{goal.packageName}</h3>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                          {isAmharic ? "የደረጃ ግብ" : "Milestone"}
+                        </span>
+                        <h3 className="text-xl font-bold text-foreground mt-0.5" style={displayFont}>{goal.packageName}</h3>
                       </div>
                       {goal.isUnlocked
                         ? <CheckCircle2 className="w-7 h-7 text-primary" />
@@ -79,8 +94,8 @@ export default function VipUpgrades() {
                     <div className="space-y-3">
                       {/* Direct Referrals */}
                       <div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-xs font-semibold text-foreground/70">Direct Referrals</span>
+                        <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "ቀጥተኛ ተጋባዦች" : "Direct Referrals"}</span>
                           <span className="text-xs font-bold text-foreground">
                             {goal.currentDirectReferrals}/{goal.requiredDirectReferrals}
                           </span>
@@ -94,8 +109,8 @@ export default function VipUpgrades() {
                       </div>
                       {/* Network Volume */}
                       <div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-xs font-semibold text-foreground/70">Network Volume</span>
+                        <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "የአውታረ መረብ ተቀማጭ መጠን" : "Network Volume"}</span>
                           <span className="text-xs font-bold text-foreground">
                             {fmt(goal.currentDownlineVolume)}/{fmt(goal.requiredDownlineVolume)} ETB
                           </span>
@@ -111,10 +126,12 @@ export default function VipUpgrades() {
 
                     {/* Footer */}
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm font-bold text-foreground">Overall: {goal.progressPercent}%</span>
+                      <span className="text-sm font-bold text-foreground" style={displayFont}>
+                        {isAmharic ? "ጠቅላላ ሂደት፦ " : "Overall: "}{goal.progressPercent}%
+                      </span>
                       {goal.isUnlocked
-                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/15 text-primary">Unlocked! 🎉</span>
-                        : <span className="text-xs text-muted-foreground">{100 - goal.progressPercent}% remaining</span>
+                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/15 text-primary" style={displayFont}>{isAmharic ? "ተከፍቷል! 🎉" : "Unlocked! 🎉"}</span>
+                        : <span className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{100 - goal.progressPercent}% {isAmharic ? "ቀርቷል" : "remaining"}</span>
                       }
                     </div>
                   </div>

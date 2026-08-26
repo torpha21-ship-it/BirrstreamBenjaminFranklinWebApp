@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, TrendingUp, X, ArrowUpRight, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 export type EarningAlertData = {
   id: string;
@@ -44,6 +45,12 @@ export function showEarningAlert(data: Omit<EarningAlertData, "id">) {
 
 export function EarningAlertContainer() {
   const [alerts, setAlerts] = useState<EarningAlertData[]>([]);
+  const { isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -80,11 +87,11 @@ export function EarningAlertContainer() {
               {ALERT_STYLES[alert.type].icon}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-bold text-sm leading-tight">{alert.title}</p>
+              <p className="text-white font-bold text-sm leading-tight" style={displayFont}>{alert.title}</p>
               <p className={`text-xl font-black leading-tight ${ALERT_STYLES[alert.type].amount}`}>
                 {alert.amount}
               </p>
-              <p className="text-gray-400 text-xs mt-0.5 truncate">{alert.description}</p>
+              <p className="text-gray-400 text-xs mt-0.5 truncate" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{alert.description}</p>
             </div>
             <button
               onClick={() => dismiss(alert.id)}

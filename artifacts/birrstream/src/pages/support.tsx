@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Send, Bot } from "lucide-react";
 import { Link } from "wouter";
+import { useLanguage } from "@/context/language-context";
 
 interface Message {
   id: string;
@@ -9,7 +10,7 @@ interface Message {
   ts: Date;
 }
 
-const QUICK_REPLIES = [
+const QUICK_REPLIES_EN = [
   "Why is my withdrawal pending?",
   "How to complete daily tasks?",
   "How does the 40% reserve rule work?",
@@ -17,7 +18,15 @@ const QUICK_REPLIES = [
   "When does my VIP package expire?",
 ];
 
-const BOT_RESPONSES: Record<string, string> = {
+const QUICK_REPLIES_AM = [
+  "የገንዘብ ማውጣት ጥያቄዬ ለምን በመጠባበቅ ላይ ሆነ?",
+  "ዕለታዊ ተግባራትን እንዴት ማጠናቀቅ እችላለሁ?",
+  "የ 40% የተቀማጭ ደንብ እንዴት ይሰራል?",
+  "የግብዣ ኮሚሽን እንዴት ማግኘት እችላለሁ?",
+  "የቪአይፒ ፓኬጄ መቼ ያልቃል?",
+];
+
+const BOT_RESPONSES_EN: Record<string, string> = {
   "Why is my withdrawal pending?": "Withdrawals are reviewed manually by our team within 24 hours. Once approved, funds are sent to your registered bank/wallet. If it's been more than 24 hours, please contact us directly.",
   "How to complete daily tasks?": "Navigate to the Tasks page using the calendar icon in the navigation bar. Tap on any uncompleted task and follow the instructions. Each task earns you a fixed ETB reward credited instantly to your balance.",
   "How does the 40% reserve rule work?": "When you have an active VIP package, you must keep at least 40% of the package cost in your account at all times. For example, a VIP 1 package (500 ETB) requires a minimum balance of 200 ETB. This ensures platform stability.",
@@ -25,11 +34,31 @@ const BOT_RESPONSES: Record<string, string> = {
   "When does my VIP package expire?": "Each VIP package runs for exactly 7 days. You can check your active package's expiry date on the Dashboard or the Packages page. After expiry, you'll need to reinvest to continue earning daily returns.",
 };
 
-const DEFAULT_RESPONSE = "Thank you for your question! Our support team will get back to you soon. You can also browse our FAQ by tapping one of the quick-reply buttons above.";
+const BOT_RESPONSES_AM: Record<string, string> = {
+  "የገንዘብ ማውጣት ጥያቄዬ ለምን በመጠባበቅ ላይ ሆነ?": "የገንዘብ ማውጣት ጥያቄዎች በቡድናችን በ 24 ሰዓታት ውስጥ በእጅ ይገመገማሉ። ከፀደቀ በኋላ ገንዘቡ ወደ ተመዘገበው የባንክ ሂሳብ ወይም ዋሌት ይላካል። ከ 24 ሰዓታት በላይ ከወሰደ እባክዎን በቀጥታ ያነጋግሩን።",
+  "ዕለታዊ ተግባራትን እንዴት ማጠናቀቅ እችላለሁ?": "በታችኛው አሞሌ ላይ ያለውን የካሌንደር ምልክት በመጫን ወደ ተግባራት ገጽ ይሂዱ። ያልተጠናቀቁትን ተግባራት ይጫኑና መመሪያውን ይከተሉ። እያንዳንዱ ተግባር ወዲያውኑ ወደ ቀሪ ሂሳብዎ የሚገባ ቋሚ የብር ሽልማት ያስገኝልዎታል።",
+  "የ 40% የተቀማጭ ደንብ እንዴት ይሰራል?": "ንቁ የቪአይፒ ፓኬጅ በሚኖርዎት ጊዜ ሁልጊዜ በሂሳብዎ ውስጥ የፓኬጁን ዋጋ 40% ማስቀረት አለብዎት። ለምሳሌ ቪአይፒ 1 (500 ብር) 200 ብር ዝቅተኛ ቀሪ ሂሳብ ይፈልጋል። ይህም የመድረኩን መረጋጋት ያረጋግጣል።",
+  "የግብዣ ኮሚሽን እንዴት ማግኘት እችላለሁ?": "የራስዎን የግብዣ ኮድ ለጓደኞችዎ ያጋሩ። እነሱ ገንዘብ አስገብተው የቪአይፒ ፓኬጅ ሲገዙ ኮሚሽን ያገኛሉ። ናኦሚ ላብስ የ 3 ደረጃ የኮሚሽን ስርአት ይጠቀማል — ከቀጥተኛ ተጋባዦች (ደረጃ 1) እና ከተጋባዦችዎ ተጋባዦች (ደረጃ 2 እና 3) ያገኛሉ።",
+  "የቪአይፒ ፓኬጄ መቼ ያልቃል?": "እያንዳንዱ የቪአይፒ ፓኬጅ በትክክል ለ 7 ቀናት ይሰራል። በዳሽቦርዱ ወይም በፓኬጆች ገጽ ላይ የቀረውን ቀን ማየት ይችላሉ። ካለቀ በኋላ ዕለታዊ ገቢ ማግኘቱን ለመቀጠል በድጋሚ መግዛት ያስፈልግዎታል።",
+};
 
 export default function Support() {
+  const { isAmharic } = useLanguage();
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
+
+  const welcomeText = isAmharic
+    ? "ሰላም! እኔ የናኦሚ ላብስ ረዳት ነኝ። ዛሬ በምን ልርዳዎት? ከታች ካሉት ፈጣን ጥያቄዎች አንዱን ይጫኑ ወይም የራስዎን ጥያቄ ይጻፉ።"
+    : "Hi! I'm the Naomi Labs assistant. How can I help you today? Tap a quick question below or type your own.";
+
+  const defaultResponse = isAmharic
+    ? "ስለ ጥያቄዎ እናመሰግናለን! የድጋፍ ሰጪ ቡድናችን በቅርቡ ይመልስልዎታል። እንዲሁም ከላይ ያሉትን ፈጣን ጥያቄዎች በመጫን መልሶችን ማየት ይችላሉ።"
+    : "Thank you for your question! Our support team will get back to you soon. You can also browse our FAQ by tapping one of the quick-reply buttons above.";
+
   const [messages, setMessages] = useState<Message[]>([
-    { id: "welcome", from: "bot", text: "Hi! I'm the Naomi Labs assistant. How can I help you today? Tap a quick question below or type your own.", ts: new Date() },
+    { id: "welcome", from: "bot", text: welcomeText, ts: new Date() },
   ]);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -45,7 +74,10 @@ export default function Support() {
   const handleQuickReply = (question: string) => {
     addMessage(question, "user");
     setTimeout(() => {
-      addMessage(BOT_RESPONSES[question] ?? DEFAULT_RESPONSE, "bot");
+      const resp = isAmharic
+        ? (BOT_RESPONSES_AM[question] ?? defaultResponse)
+        : (BOT_RESPONSES_EN[question] ?? defaultResponse);
+      addMessage(resp, "bot");
     }, 600);
   };
 
@@ -55,10 +87,13 @@ export default function Support() {
     setInput("");
     addMessage(q, "user");
     setTimeout(() => {
-      const response = Object.entries(BOT_RESPONSES).find(([key]) => q.toLowerCase().includes(key.split(" ")[0].toLowerCase()));
-      addMessage(response ? response[1] : DEFAULT_RESPONSE, "bot");
+      const respDict = isAmharic ? BOT_RESPONSES_AM : BOT_RESPONSES_EN;
+      const response = Object.entries(respDict).find(([key]) => q.toLowerCase().includes(key.split(" ")[0].toLowerCase()));
+      addMessage(response ? response[1] : defaultResponse, "bot");
     }, 800);
   };
+
+  const quickReplies = isAmharic ? QUICK_REPLIES_AM : QUICK_REPLIES_EN;
 
   return (
     <div className="fixed inset-0 flex flex-col bg-background z-[5]">
@@ -72,8 +107,12 @@ export default function Support() {
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="font-bold text-[28px] text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Naomi Labs Support</p>
-            <p className="text-xs text-[#2B7A4B]">Online</p>
+            <p className="font-bold text-[28px] text-foreground" style={displayFont}>
+              {isAmharic ? "ናኦሚ ላብስ ድጋፍ" : "Naomi Labs Support"}
+            </p>
+            <p className="text-xs text-[#2B7A4B]" style={displayFont}>
+              {isAmharic ? "መስመር ላይ" : "Online"}
+            </p>
           </div>
         </div>
       </div>
@@ -87,11 +126,14 @@ export default function Support() {
                 <Bot className="w-3.5 h-3.5 text-white" />
               </div>
             )}
-            <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-              msg.from === "user"
-                ? "bg-primary text-white rounded-br-sm"
-                : "bg-card border border-border text-foreground rounded-bl-sm"
-            }`}>
+            <div
+              className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                msg.from === "user"
+                  ? "bg-primary text-white rounded-br-sm"
+                  : "bg-card border border-border text-foreground rounded-bl-sm"
+              }`}
+              style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
+            >
               {msg.text}
             </div>
           </div>
@@ -100,11 +142,12 @@ export default function Support() {
         {/* Quick replies after last bot message */}
         {messages[messages.length - 1]?.from === "bot" && (
           <div className="flex flex-wrap gap-2 pl-9">
-            {QUICK_REPLIES.map(q => (
+            {quickReplies.map(q => (
               <button
                 key={q}
                 onClick={() => handleQuickReply(q)}
-                className="text-xs px-3 py-2 bg-card border border-border rounded-2xl text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors"
+                className="text-xs px-3 py-2 bg-card border border-border rounded-2xl text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors text-left"
+                style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
               >
                 {q}
               </button>
@@ -122,8 +165,9 @@ export default function Support() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
+            placeholder={isAmharic ? "መልዕክት እዚህ ይጻፉ..." : "Type a message..."}
             className="flex-1 px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+            style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
           />
           <button
             onClick={handleSend}

@@ -2,20 +2,27 @@ import { useState } from "react";
 import { useGetAffiliateNetwork, getGetAffiliateNetworkQueryKey } from "@workspace/api-client-react";
 import { ArrowLeft, Package } from "lucide-react";
 import { Link } from "wouter";
+import { useLanguage } from "@/context/language-context";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-const LEVEL_COLORS = [
-  { tab: "Level 1", badge: "bg-primary/10 text-primary", dot: "bg-primary" },
-  { tab: "Level 2", badge: "bg-[#C9BDF5] text-[#5B44BE]", dot: "bg-[#5B44BE]" },
-  { tab: "Level 3", badge: "bg-[#A8D5B5] text-[#2B7A4B]", dot: "bg-[#2B7A4B]" },
-];
-
 export default function AffiliateNetwork() {
   const [activeTab, setActiveTab] = useState(0);
   const { data: network, isLoading } = useGetAffiliateNetwork({ query: { queryKey: getGetAffiliateNetworkQueryKey() } });
+  const { isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
+
+  const LEVEL_COLORS = [
+    { tab: isAmharic ? "ደረጃ 1" : "Level 1", badge: "bg-primary/10 text-primary", dot: "bg-primary" },
+    { tab: isAmharic ? "ደረጃ 2" : "Level 2", badge: "bg-[#C9BDF5] text-[#5B44BE]", dot: "bg-[#5B44BE]" },
+    { tab: isAmharic ? "ደረጃ 3" : "Level 3", badge: "bg-[#A8D5B5] text-[#2B7A4B]", dot: "bg-[#2B7A4B]" },
+  ];
 
   const levels = [network?.level1 ?? [], network?.level2 ?? [], network?.level3 ?? []];
   const currentLevel = levels[activeTab];
@@ -27,7 +34,9 @@ export default function AffiliateNetwork() {
         <Link href="/referral" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground">Affiliate Network</h1>
+        <h1 className="text-xl font-bold text-foreground" style={displayFont}>
+          {isAmharic ? "የግብዣ አውታረ መረብ" : "Affiliate Network"}
+        </h1>
       </div>
 
       {/* Tabs */}
@@ -39,6 +48,7 @@ export default function AffiliateNetwork() {
             className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
               activeTab === i ? `${c.badge} shadow-sm` : "text-muted-foreground hover:text-foreground"
             }`}
+            style={displayFont}
           >
             {c.tab} <span className="text-xs">({levels[i].length})</span>
           </button>
@@ -57,10 +67,14 @@ export default function AffiliateNetwork() {
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="w-8 h-8 text-muted-foreground" />
           </div>
-          <p className="font-semibold text-foreground">No Level {activeTab + 1} members yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Share your referral code to grow your network</p>
-          <Link href="/referral" className="inline-flex mt-4 px-4 py-2 bg-primary text-white rounded-2xl text-sm font-semibold hover:opacity-90">
-            View Referral Code
+          <p className="font-semibold text-foreground" style={displayFont}>
+            {isAmharic ? `እስካሁን ምንም የደረጃ ${activeTab + 1} አባላት የሉም` : `No Level ${activeTab + 1} members yet`}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {isAmharic ? "አውታረ መረብዎን ለማሳደግ የግብዣ ኮድዎን ያጋሩ" : "Share your referral code to grow your network"}
+          </p>
+          <Link href="/referral" className="inline-flex mt-4 px-4 py-2 bg-primary text-white rounded-2xl text-sm font-semibold hover:opacity-90" style={displayFont}>
+            {isAmharic ? "የግብዣ ኮድን ይመልከቱ" : "View Referral Code"}
           </Link>
         </div>
       ) : (
@@ -74,20 +88,26 @@ export default function AffiliateNetwork() {
                   </div>
                   <div>
                     <p className="font-semibold text-sm text-foreground">@{member.username}</p>
-                    <p className="text-xs text-muted-foreground">Joined {new Date(member.joinedAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                      {isAmharic ? "የተቀላቀሉት፦ " : "Joined "}{new Date(member.joinedAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
+                    </p>
                   </div>
                 </div>
-                <div className={`text-xs font-bold px-2 py-1 rounded-full ${member.hasActivePackage ? colors.badge : "bg-muted text-muted-foreground"}`}>
-                  {member.hasActivePackage ? "Active" : "No package"}
+                <div className={`text-xs font-bold px-2 py-1 rounded-full ${member.hasActivePackage ? colors.badge : "bg-muted text-muted-foreground"}`} style={displayFont}>
+                  {member.hasActivePackage ? (isAmharic ? "ንቁ" : "Active") : (isAmharic ? "ፓኬጅ የለም" : "No package")}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-border">
                 <div>
-                  <p className="text-xs text-muted-foreground">Deposit Volume</p>
+                  <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                    {isAmharic ? "የተቀማጭ መጠን" : "Deposit Volume"}
+                  </p>
                   <p className="font-semibold text-sm text-foreground">{fmt(member.activeDepositAmount)} ETB</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Your Commission</p>
+                  <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                    {isAmharic ? "የእርስዎ ኮሚሽን" : "Your Commission"}
+                  </p>
                   <p className="font-semibold text-sm text-primary">{fmt(member.commissionPaid)} ETB</p>
                 </div>
               </div>

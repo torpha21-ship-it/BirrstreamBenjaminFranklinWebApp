@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import { Lock, Star, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { BSLogo } from "@/components/bs-logo";
+import { useLanguage } from "@/context/language-context";
 import vip1Bg from "@/assets/decor/vip1.svg";
 import vip2Bg from "@/assets/decor/vip2.svg";
 import vip3Bg from "@/assets/decor/vip3.svg";
@@ -50,6 +51,12 @@ export default function Packages() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const purchaseMutation = usePurchasePackage();
+  const { t, isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   const handlePurchase = (id: number, name: string, cost: number) => {
     purchaseMutation.mutate(
@@ -59,20 +66,32 @@ export default function Packages() {
           if (data.success) {
             qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             qc.invalidateQueries({ queryKey: getListPackagesQueryKey() });
-            toast({ title: `${name} activated!`, description: `Daily returns of +${fmt(data.package?.dailyReturn ?? 0)} ETB start now.` });
+            toast({
+              title: isAmharic ? `${name} ነቅቷል!` : `${name} activated!`,
+              description: isAmharic
+                ? `ዕለታዊ የ +${fmt(data.package?.dailyReturn ?? 0)} ብር ትርፍ አሁን ጀምሯል።`
+                : `Daily returns of +${fmt(data.package?.dailyReturn ?? 0)} ETB start now.`
+            });
           } else {
-            toast({ title: "Insufficient balance", description: data.message, variant: "destructive" });
+            toast({
+              title: isAmharic ? "በቂ ያልሆነ ቀሪ ሂሳብ" : "Insufficient balance",
+              description: isAmharic ? "እባክዎ መጀመሪያ ገንዘብ ያስገቡ።" : data.message,
+              variant: "destructive"
+            });
             if (data.shortfallAmount) setLocation("/deposit");
           }
         },
-        onError: () => toast({ title: "Purchase failed", variant: "destructive" }),
+        onError: () => toast({
+          title: isAmharic ? "ግዢው አልተሳካም" : "Purchase failed",
+          variant: "destructive"
+        }),
       }
     );
   };
 
   return (
     <div className="px-4 pt-0 pb-6 max-w-md mx-auto">
-      {/* Centred brand mark — no gap above or below */}
+      {/* Centred brand mark */}
       <div className="flex justify-center mb-0">
         <BSLogo />
       </div>
@@ -81,8 +100,12 @@ export default function Packages() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">VIP Packages</h1>
-          <p className="text-xs text-muted-foreground">Balance: {fmt(summary?.mainBalance ?? 0)} ETB</p>
+          <h1 className="text-xl font-bold text-foreground" style={displayFont}>
+            {t("packages.title")}
+          </h1>
+          <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {isAmharic ? "ቀሪ ሂሳብ፦ " : "Balance: "}{fmt(summary?.mainBalance ?? 0)} ETB
+          </p>
         </div>
       </div>
 
@@ -110,33 +133,41 @@ export default function Packages() {
               )}
               <div className="flex justify-between items-start mb-3 relative z-10">
                 <div>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${colors.badge}`}>{pkg.name}</span>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${colors.badge}`} style={displayFont}>{pkg.name}</span>
                   {pkg.isLocked && (
                     <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-sm bg-white/25 rounded-full px-2.5 py-1 border border-white/30">
                       <Lock className={`w-3 h-3 ${colors.text}`} />
-                      <span className={`text-xs font-medium ${colors.text}`}>Locked — unlock via VIP Upgrades</span>
+                      <span className={`text-xs font-medium ${colors.text}`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                        {isAmharic ? "የተቆለፈ — በቪአይፒ ግቦች ይክፈቱ" : "Locked — unlock via VIP Upgrades"}
+                      </span>
                     </div>
                   )}
                 </div>
                 <div className="text-right">
                   <p className={`text-2xl font-bold ${colors.text}`}>{fmt(pkg.cost)}</p>
-                  <p className={`text-xs ${colors.text} opacity-70`}>ETB</p>
+                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>ETB</p>
                 </div>
               </div>
               <div className={`flex gap-3 mb-4 relative z-10 ${colors.text} backdrop-blur-sm bg-white/20 rounded-2xl px-3 py-2.5 border border-white/30`}>
                 <div className="flex-1">
-                  <p className="text-xs opacity-70">Daily Return</p>
+                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                    {t("packages.daily_return")}
+                  </p>
                   <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} ETB</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">
-                  <p className="text-xs opacity-70">7-Day Total</p>
+                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                    {isAmharic ? "የ 7 ቀን ትርፍ" : "7-Day Total"}
+                  </p>
                   <p className="font-bold text-sm">{fmt(pkg.totalYield)} ETB</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">
-                  <p className="text-xs opacity-70">Duration</p>
-                  <p className="font-bold text-sm">{pkg.durationDays} days</p>
+                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                    {t("packages.duration")}
+                  </p>
+                  <p className="font-bold text-sm">{pkg.durationDays} {isAmharic ? "ቀናት" : "days"}</p>
                 </div>
               </div>
               {!pkg.isLocked && (
@@ -148,15 +179,16 @@ export default function Packages() {
                       ? "bg-white/20 hover:bg-white/30 " + colors.text
                       : "bg-white/10 opacity-50 cursor-not-allowed " + colors.text
                   }`}
+                  style={displayFont}
                 >
                   {!canAfford
-                    ? `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`
-                    : purchaseMutation.isPending ? "Activating..." : `Activate ${pkg.name}`}
+                    ? (isAmharic ? `ተጨማሪ ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} ብር ያስፈልጋል` : `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`)
+                    : purchaseMutation.isPending ? (isAmharic ? "በማንቃት ላይ..." : "Activating...") : (isAmharic ? `${pkg.name} ፓኬጅን ይግዙ` : `Activate ${pkg.name}`)}
                 </button>
               )}
               {pkg.isLocked && (
-                <Link href="/vip-upgrades" className={`block w-full py-3 rounded-2xl font-bold text-sm text-center bg-white/10 relative z-10 ${colors.text}`}>
-                  View Unlock Requirements
+                <Link href="/vip-upgrades" className={`block w-full py-3 rounded-2xl font-bold text-sm text-center bg-white/10 relative z-10 ${colors.text}`} style={displayFont}>
+                  {isAmharic ? "የመክፈቻ መስፈርቶችን ይመልከቱ" : "View Unlock Requirements"}
                 </Link>
               )}
             </div>
@@ -169,10 +201,14 @@ export default function Packages() {
         <div className="mt-6 bg-card rounded-3xl p-5 border border-border">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="w-5 h-5 text-accent-foreground" />
-            <span className="font-bold text-foreground">Active: {summary.activePackageName}</span>
+            <span className="font-bold text-foreground" style={displayFont}>
+              {isAmharic ? "ንቁ ፓኬጅ፦ " : "Active: "}{summary.activePackageName}
+            </span>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Earning +{fmt(summary.activePackageDailyReturn ?? 0)} ETB/day · {summary.daysUntilExpiry} days remaining
+          <p className="text-sm text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {isAmharic
+              ? `ዕለታዊ ገቢ +${fmt(summary.activePackageDailyReturn ?? 0)} ብር/ቀን · ${summary.daysUntilExpiry} ቀናት ቀርተዋል`
+              : `Earning +${fmt(summary.activePackageDailyReturn ?? 0)} ETB/day · ${summary.daysUntilExpiry} days remaining`}
           </p>
         </div>
       )}

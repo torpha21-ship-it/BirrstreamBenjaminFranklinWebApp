@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useLogin } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/context/language-context";
 import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 import jesterImg from "@/assets/jester.png";
 
@@ -10,8 +11,14 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const { login } = useAuth();
   const { toast } = useToast();
+  const { isAmharic } = useLanguage();
   const [form, setForm] = useState({ usernameOrEmail: "", password: "", rememberMe: false });
   const loginMutation = useLogin();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.08em",
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +30,11 @@ export default function Login() {
           setLocation("/dashboard");
         },
         onError: () => {
-          toast({ title: "Login failed", description: "Invalid credentials. Please try again.", variant: "destructive" });
+          toast({
+            title: isAmharic ? "መግባት አልተሳካም" : "Login failed",
+            description: isAmharic ? "የይለፍ ቃል ወይም የተጠቃሚ ስም ትክክል አይደለም።" : "Invalid credentials. Please try again.",
+            variant: "destructive"
+          });
         },
       }
     );
@@ -39,27 +50,27 @@ export default function Login() {
             <img src={logoNaomi} alt="Naomi Labs logo" className="w-10 h-10 object-contain mx-auto" />
             <h1
               className="text-3xl text-foreground"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+              style={displayFont}
             >
-              Naomi Labs
+              {isAmharic ? "ናኦሚ ላብስ" : "Naomi Labs"}
             </h1>
             <p
               className="text-muted-foreground mt-1 text-sm"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+              style={displayFont}
             >
-              Welcome back
+              {isAmharic ? "እንኳን ደህና መጡ" : "Welcome back"}
             </p>
           </div>
 
-          {/* Form — no card wrapper */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
             <div>
               <label
                 htmlFor="login-username-or-email"
                 className="block text-[20px] font-semibold text-foreground mb-2"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+                style={displayFont}
               >
-                Username or Email
+                {isAmharic ? "የተጠቃሚ ስም ወይም ኢሜይል" : "Username or Email"}
               </label>
               <input
                 id="login-username-or-email"
@@ -67,9 +78,10 @@ export default function Login() {
                 type="text"
                 value={form.usernameOrEmail}
                 onChange={e => setForm(f => ({ ...f, usernameOrEmail: e.target.value }))}
-                placeholder="Enter your username or email"
+                placeholder={isAmharic ? "የተጠቃሚ ስም ወይም ኢሜይል ያስገቡ" : "Enter your username or email"}
                 autoComplete="username"
                 className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
+                style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                 required
               />
             </div>
@@ -77,9 +89,9 @@ export default function Login() {
               <label
                 htmlFor="login-password"
                 className="block text-[20px] font-semibold text-foreground mb-2"
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+                style={displayFont}
               >
-                Password
+                {isAmharic ? "የይለፍ ቃል" : "Password"}
               </label>
               <input
                 id="login-password"
@@ -87,9 +99,10 @@ export default function Login() {
                 type="password"
                 value={form.password}
                 onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                placeholder="Enter your password"
+                placeholder={isAmharic ? "የይለፍ ቃልዎን ያስገቡ" : "Enter your password"}
                 autoComplete="current-password"
                 className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/30 text-sm"
+                style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                 required
               />
             </div>
@@ -103,22 +116,31 @@ export default function Login() {
                   onChange={e => setForm(f => ({ ...f, rememberMe: e.target.checked }))}
                   className="w-4 h-4 accent-black rounded"
                 />
-                <span className="text-sm text-muted-foreground">Remember me</span>
+                <span className="text-sm text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                  {isAmharic ? "አስታውሰኝ" : "Remember me"}
+                </span>
               </label>
-              <Link href="/forgot-password" className="text-sm text-black font-semibold">Forgot password?</Link>
+              <Link href="/forgot-password" className="text-sm text-black font-semibold" style={displayFont}>
+                {isAmharic ? "የይለፍ ቃል ረሱ?" : "Forgot password?"}
+              </Link>
             </div>
             <button
               type="submit"
               disabled={loginMutation.isPending}
               className="w-full py-3.5 bg-black text-white rounded-2xl font-bold text-sm shadow-lg shadow-black/25 hover:opacity-80 active:scale-[0.98] transition-all disabled:opacity-60"
+              style={displayFont}
             >
-              {loginMutation.isPending ? "Signing in..." : "Sign In"}
+              {loginMutation.isPending
+                ? (isAmharic ? "በመግባት ላይ..." : "Signing in...")
+                : (isAmharic ? "ግባ" : "Sign In")}
             </button>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-black font-semibold">Create one</Link>
+          <p className="text-center text-sm text-muted-foreground mt-6" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {isAmharic ? "መለያ የለዎትም? " : "Don't have an account? "}
+            <Link href="/register" className="text-black font-semibold" style={displayFont}>
+              {isAmharic ? "አዲስ ይፍጠሩ" : "Create one"}
+            </Link>
           </p>
         </div>
       </div>

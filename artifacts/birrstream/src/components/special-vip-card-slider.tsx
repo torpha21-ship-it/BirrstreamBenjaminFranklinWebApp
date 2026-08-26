@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useToast } from "@/hooks/use-toast";
 import { useGetDashboardSummary, getGetDashboardSummaryQueryKey } from "@workspace/api-client-react";
 import { ChevronLeft, ChevronRight, Lock, CheckCircle2, Sparkles } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 import timeCardsIcon from "@/assets/dashboard-icons/Time Cards.webp";
 
 interface CardData {
@@ -18,6 +19,7 @@ interface CardData {
   number: string;
   qr: string;
   description: string;
+  descriptionAm: string;
 }
 
 const CARDS_DATA: CardData[] = [
@@ -34,6 +36,7 @@ const CARDS_DATA: CardData[] = [
     number: "#no-1",
     qr: "#qr-1",
     description: "Activated when a user purchases VIP2",
+    descriptionAm: "ተጠቃሚው ቪአይፒ 2 ሲገዛ የሚነቃ ልዩ ካርድ",
   },
   {
     id: "vip3-card",
@@ -48,6 +51,7 @@ const CARDS_DATA: CardData[] = [
     number: "#no-1",
     qr: "#qr-1",
     description: "Activated when a user purchases VIP3",
+    descriptionAm: "ተጠቃሚው ቪአይፒ 3 ሲገዛ የሚነቃ ልዩ ካርድ",
   },
   {
     id: "vip4-card",
@@ -62,6 +66,7 @@ const CARDS_DATA: CardData[] = [
     number: "#no-1",
     qr: "#qr-1",
     description: "Activated when a user purchases VIP4",
+    descriptionAm: "ተጠቃሚው ቪአይፒ 4 ሲገዛ የሚነቃ ልዩ ካርድ",
   },
   {
     id: "vip5-card",
@@ -76,6 +81,7 @@ const CARDS_DATA: CardData[] = [
     number: "#no-1",
     qr: "#qr-1",
     description: "Activated when a user purchases VIP5",
+    descriptionAm: "ተጠቃሚው ቪአይፒ 5 ሲገዛ የሚነቃ ልዩ ካርድ",
   },
 ];
 
@@ -114,6 +120,12 @@ function hasReachedVipTier(userPackageName: string | null | undefined, requiredT
 export function SpecialVipCardSlider() {
   const { data: summary } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
   const { toast } = useToast();
+  const { isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -475,20 +487,22 @@ export function SpecialVipCardSlider() {
             </div>
             <h2
               className="text-2xl font-bold text-foreground leading-none"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+              style={displayFont}
             >
-              Time Cards
+              {isAmharic ? "የጊዜ ካርዶች" : "Time Cards"}
             </h2>
           </div>
           <span
             className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/20 text-primary"
-            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
+            style={displayFont}
           >
             {currentCard.vipTier} ({currentIdx + 1}/4)
           </span>
         </div>
-        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-          Speeds up your VIP package daily income so you can top up quick and maximize earnings within the 6-month time frame or until the grand withdrawal day.
+        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+          {isAmharic
+            ? "የቪአይፒ ፓኬጅዎን ዕለታዊ ገቢ ያፋጥናል፣ ይህም በ 6 ወራት ጊዜ ውስጥ ወይም ትልቁ የገንዘብ ማውጫ ቀን እስኪደርስ ገቢዎን በፍጥነት ከፍ እንዲያደርጉ ያስችልዎታል።"
+            : "Speeds up your VIP package daily income so you can top up quick and maximize earnings within the 6-month time frame or until the grand withdrawal day."}
         </p>
       </div>
 
@@ -570,9 +584,9 @@ export function SpecialVipCardSlider() {
                 </div>
                 <p
                   className="description"
-                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
                 >
-                  {CARDS_DATA[0].description}
+                  {isAmharic ? CARDS_DATA[0].descriptionAm : CARDS_DATA[0].description}
                 </p>
                 <div className="qr-wrapper">
                   <svg viewBox="0 0 60 60">
@@ -581,7 +595,7 @@ export function SpecialVipCardSlider() {
                 </div>
               </div>
 
-              {/* Special Activate Button (Highstories Font) */}
+              {/* Special Activate Button */}
               <button
                 onClick={handleActivateClick}
                 disabled={!isActivated}
@@ -590,15 +604,15 @@ export function SpecialVipCardSlider() {
                     ? "bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
                     : "bg-black/40 text-white/70 border border-white/20 cursor-not-allowed pointer-events-none"
                 }`}
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+                style={displayFont}
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> Activate
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : "Activate"}
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3 h-3 opacity-70 inline-block" /> Activate
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : "Activate"}
                   </>
                 )}
               </button>
@@ -645,7 +659,7 @@ export function SpecialVipCardSlider() {
               </svg>
             </div>
 
-            {/* Bottom Content & Highstories Font Description + QR & Number Badges */}
+            {/* Bottom Content & Description + QR & Number Badges */}
             <div className="bottom-wrapper">
               <div className="bottom-row">
                 <div className="number-wrapper">
@@ -655,9 +669,9 @@ export function SpecialVipCardSlider() {
                 </div>
                 <p
                   className="description"
-                  style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
                 >
-                  {CARDS_DATA[1].description}
+                  {isAmharic ? CARDS_DATA[1].descriptionAm : CARDS_DATA[1].description}
                 </p>
                 <div className="qr-wrapper">
                   <svg viewBox="0 0 60 60">
@@ -666,7 +680,7 @@ export function SpecialVipCardSlider() {
                 </div>
               </div>
 
-              {/* Special Activate Button (Highstories Font) */}
+              {/* Special Activate Button */}
               <button
                 onClick={handleActivateClick}
                 disabled={!isActivated}
@@ -675,15 +689,15 @@ export function SpecialVipCardSlider() {
                     ? "bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
                     : "bg-black/40 text-white/70 border border-white/20 cursor-not-allowed pointer-events-none"
                 }`}
-                style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+                style={displayFont}
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> Activate
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : "Activate"}
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3 h-3 opacity-70 inline-block" /> Activate
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : "Activate"}
                   </>
                 )}
               </button>

@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
+import { useLanguage } from "@/context/language-context";
 
 const CONFIRMATION_TEXT = "DELETE MY ACCOUNT";
 
@@ -14,11 +15,20 @@ export default function DeleteAccount() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const deleteMutation = useDeleteAccount();
+  const { isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   const handleDelete = (e: React.FormEvent) => {
     e.preventDefault();
     if (input !== CONFIRMATION_TEXT) {
-      toast({ title: "Incorrect confirmation text", variant: "destructive" });
+      toast({
+        title: isAmharic ? "የማረጋገጫ ጽሑፉ ትክክል አይደለም" : "Incorrect confirmation text",
+        variant: "destructive"
+      });
       return;
     }
     deleteMutation.mutate(
@@ -27,9 +37,12 @@ export default function DeleteAccount() {
         onSuccess: () => {
           logout();
           setLocation("/login");
-          toast({ title: "Account deleted" });
+          toast({ title: isAmharic ? "መለያዎ ተሰርዟል" : "Account deleted" });
         },
-        onError: () => toast({ title: "Confirmation text doesn't match", variant: "destructive" }),
+        onError: () => toast({
+          title: isAmharic ? "የማረጋገጫ ጽሑፉ አይዛመድም" : "Confirmation text doesn't match",
+          variant: "destructive"
+        }),
       }
     );
   };
@@ -42,22 +55,31 @@ export default function DeleteAccount() {
         <Link href="/profile" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground">Delete Account</h1>
+        <h1 className="text-xl font-bold text-foreground" style={displayFont}>
+          {isAmharic ? "መለያ ሰርዝ" : "Delete Account"}
+        </h1>
       </div>
 
       <div className="bg-[#F2A89A] rounded-3xl p-5 mb-5">
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-6 h-6 text-[#C0402E] flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold text-[#C0402E] mb-1">This action cannot be undone</p>
-            <p className="text-[#C0402E]/80 text-sm">Deleting your account will permanently remove all your data, including your balance, transaction history, and referral network.</p>
+            <p className="font-bold text-[#C0402E] mb-1" style={displayFont}>
+              {isAmharic ? "ይህ እርምጃ ወደ ኋላ ሊመለስ አይችልም" : "This action cannot be undone"}
+            </p>
+            <p className="text-[#C0402E]/80 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {isAmharic
+                ? "መለያዎን መሰረዝ ቀሪ ሂሳብዎን፣ የግብይት ታሪክዎን እና የግብዣ አውታረ መረብዎን ጨምሮ ሁሉንም ውሂብዎን በቋሚነት ያጠፋዋል።"
+                : "Deleting your account will permanently remove all your data, including your balance, transaction history, and referral network."}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="bg-card rounded-3xl p-5 border border-border">
-        <p className="text-sm text-muted-foreground mb-4">
-          To confirm, type <span className="font-mono font-bold text-foreground">{CONFIRMATION_TEXT}</span> in the box below:
+        <p className="text-sm text-muted-foreground mb-4" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+          {isAmharic ? "ለማረጋገጥ የሚከተለውን ጽሑፍ ከታች ባለው ሳጥን ውስጥ ይተይቡ፦" : "To confirm, type "}
+          <span className="font-mono font-bold text-foreground">{CONFIRMATION_TEXT}</span>
         </p>
         <form onSubmit={handleDelete} className="space-y-4">
           <input
@@ -73,8 +95,11 @@ export default function DeleteAccount() {
             type="submit"
             disabled={!matches || deleteMutation.isPending}
             className="w-full py-3.5 bg-[#C0402E] text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={displayFont}
           >
-            {deleteMutation.isPending ? "Deleting..." : "Permanently Delete My Account"}
+            {deleteMutation.isPending
+              ? (isAmharic ? "በመሰረዝ ላይ..." : "Deleting...")
+              : (isAmharic ? "መለያዬን በቋሚነት ሰርዝ" : "Permanently Delete My Account")}
           </button>
         </form>
       </div>

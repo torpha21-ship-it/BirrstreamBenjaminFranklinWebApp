@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useLanguage } from "@/context/language-context";
 
 interface CalendarCardProps {
   userCreatedAt?: string;
@@ -127,7 +128,13 @@ function ModularSeparator({ color }: { color: string }) {
 }
 
 export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
+  const { isAmharic } = useLanguage();
   const [now, setNow] = useState(new Date());
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
@@ -555,7 +562,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
                 <div className="week">
                   <p className="en">{daysShort[dy]}</p>
                   <p className="day">{daysEn[dy]}</p>
-                  <p className="lunar">6-MONTH SEASON</p>
+                  <p className="lunar">{isAmharic ? "የ 6 ወራት ጊዜ" : "6-MONTH SEASON"}</p>
                 </div>
                 <div className="icons">
                   <div className="material-icons">wb_sunny</div>
@@ -571,8 +578,10 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
       {/* 6 Months Countdown — Modular Block Counter Animation */}
       <div className="w-full -mx-4 mb-6 relative z-10">
         <div className="modular-countdown-card bg-white border-2 border-[#139AB4] rounded-3xl p-4 sm:p-5 shadow-lg shadow-[#139AB4]/15 text-center w-full">
-          <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-4 tracking-wide leading-snug" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-            6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users
+          <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-4 tracking-wide leading-snug" style={displayFont}>
+            {isAmharic
+              ? "ታማኝ ተጠቃሚዎች ትልቁን የገንዘብ ማውጫ ፕሮግራም እስኪጀምሩ የቀረው የ 6 ወራት የቁጥር ቆጠራ"
+              : "6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users"}
           </p>
 
           {/* Modular Block Counter */}
@@ -586,13 +595,13 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
             padding: "16px 12px 12px",
             border: "1px solid rgba(19, 154, 180, 0.3)",
           }}>
-            <CountdownGroup value={diffDays} label="DAYS" color={accentColor} />
+            <CountdownGroup value={diffDays} label={isAmharic ? "ቀናት" : "DAYS"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffHours} label="HRS" color={accentColor} />
+            <CountdownGroup value={diffHours} label={isAmharic ? "ሰዓት" : "HRS"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffMins} label="MIN" color={accentColor} />
+            <CountdownGroup value={diffMins} label={isAmharic ? "ደቂቃ" : "MIN"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffSecs} label="SEC" color={accentColor} />
+            <CountdownGroup value={diffSecs} label={isAmharic ? "ሰከንድ" : "SEC"} color={accentColor} />
           </div>
         </div>
       </div>

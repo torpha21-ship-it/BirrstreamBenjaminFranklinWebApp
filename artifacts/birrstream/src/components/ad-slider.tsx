@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Phone, Send } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 
 const AD_VIDEOS = [
@@ -12,6 +13,7 @@ const AD_VIDEOS = [
 ];
 
 export function AdSlider() {
+  const { isAmharic } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
   const [nextSlideIdx, setNextSlideIdx] = useState<number | null>(null);
   const [animating, setAnimating] = useState(false);
@@ -129,7 +131,12 @@ export function AdSlider() {
       {/* Top Left: Sharp Ad Badge flush in the far left top corner overlapping the top border */}
       <div className="absolute -top-[1px] -left-[1px] z-30 flex items-center gap-1.5 px-3 py-1 bg-white text-black pointer-events-none select-none shadow-md">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-[11px] font-bold tracking-wider">Ad</span>
+        <span
+          className="text-[11px] font-bold tracking-wider"
+          style={isAmharic ? { fontFamily: "'LogaComic', sans-serif" } : {}}
+        >
+          {isAmharic ? "ማስታወቂያ" : "Ad"}
+        </span>
       </div>
 
       {/* Top Right: Original Naomi Labs Logo without circular outer layer */}

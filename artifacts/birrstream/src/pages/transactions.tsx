@@ -3,6 +3,7 @@ import { useListTransactions, getListTransactionsQueryKey } from "@workspace/api
 import { ArrowLeft, ArrowDownLeft, ArrowUpRight, Star, Users, Flame, TrendingUp, Bell, X, Download, Gamepad2 } from "lucide-react";
 import { Link } from "wouter";
 import { NEW_EVENTS_KEY, type NewTxEvent } from "@/hooks/use-deposit-watcher";
+import { useLanguage } from "@/context/language-context";
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, CartesianGrid, LabelList,
 } from "recharts";
@@ -68,9 +69,15 @@ function exportCSV(rows: Array<{ type: string; description: string; amount: numb
 }
 
 export default function Transactions() {
+  const { t, isAmharic } = useLanguage();
   const [newEvents, setNewEvents] = useState<NewTxEvent[]>([]);
   const [showBanner, setShowBanner] = useState(false);
   const [filter, setFilter] = useState<FilterType>("all");
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   useEffect(() => {
     try {
@@ -85,7 +92,6 @@ export default function Transactions() {
 
   const apiFilter = (filter === "all" || filter === "recent") ? undefined : filter;
 
-  // Monthly chart data — always from the unfiltered set so trends are always visible
   const { data: allTransactions } = useListTransactions(
     {},
     { query: { queryKey: getListTransactionsQueryKey({}) } }
@@ -100,22 +106,25 @@ export default function Transactions() {
       const label = d.toLocaleDateString("en-ET", { month: "short", year: "2-digit" });
       if (!map[key]) map[key] = { month: label, credited: 0, debited: 0, count: 0 };
       const cfg = TX_CONFIG[tx.type] ?? TX_CONFIG.deposit;
-      if (cfg.sign === "+") map[key].credited += tx.amount;
-      else map[key].debited += tx.amount;
-      map[key].count += 1;
+      if (cfg.sign === "+") {
+        map[key].credited += tx.amount;
+      } else {
+        map[key].debited += tx.amount;
+      }
+      map[key].count++;
     });
     return Object.keys(map).sort().map(k => map[k]);
   }, [allTransactions]);
 
   const chartScrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (chartScrollRef.current && monthlyData.length > 0) {
+    if (chartScrollRef.current) {
       chartScrollRef.current.scrollLeft = chartScrollRef.current.scrollWidth;
     }
-  }, [monthlyData.length]);
+  }, [monthlyData]);
 
   const { data: transactions, isLoading } = useListTransactions(
-    { type: apiFilter },
+    apiFilter ? { type: apiFilter } : {},
     { query: { queryKey: getListTransactionsQueryKey({ type: apiFilter }) } }
   );
 
@@ -126,12 +135,12 @@ export default function Transactions() {
   const hasRecent = newEvents.length > 0;
 
   const FILTERS: { key: FilterType; label: string }[] = [
-    { key: "all", label: "All" },
-    ...(hasRecent ? [{ key: "recent" as FilterType, label: `Recent` }] : []),
-    { key: "deposits", label: "Deposits" },
-    { key: "withdrawals", label: "Withdrawals" },
-    { key: "task_earnings", label: "Tasks" },
-    { key: "commissions", label: "Commissions" },
+    { key: "all", label: isAmharic ? "ሁሉም" : "All" },
+    ...(hasRecent ? [{ key: "recent" as FilterType, label: isAmharic ? "አዳዲስ" : "Recent" }] : []),
+    { key: "deposits", label: isAmharic ? "ተቀማጮች" : "Deposits" },
+    { key: "withdrawals", label: isAmharic ? "የወጡ" : "Withdrawals" },
+    { key: "task_earnings", label: isAmharic ? "ተግባራት" : "Tasks" },
+    { key: "commissions", label: isAmharic ? "ኮሚሽኖች" : "Commissions" },
   ];
 
   return (
@@ -140,15 +149,18 @@ export default function Transactions() {
         <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground flex-1">Transactions</h1>
+        <h1 className="text-xl font-bold text-foreground flex-1" style={displayFont}>
+          {t("tx.title")}
+        </h1>
         {displayed.length > 0 && (
           <button
             onClick={() => exportCSV(displayed, filter)}
             className="flex items-center gap-1.5 px-3 py-2 bg-card border border-border rounded-2xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
             title="Export to CSV"
+            style={displayFont}
           >
             <Download className="w-4 h-4" />
-            Export
+            {isAmharic ? "አውርድ" : "Export"}
           </button>
         )}
       </div>
@@ -160,14 +172,17 @@ export default function Transactions() {
             <Bell className="w-4 h-4 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-semibold">
-              {newEvents.length} status update{newEvents.length > 1 ? "s" : ""} since your last visit
+            <p className="text-white text-sm font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {isAmharic
+                ? `ካለፈው ጉብኝትዎ ወዲህ ${newEvents.length} አዳዲስ ለውጦች ተመዝግበዋል`
+                : `${newEvents.length} status update${newEvents.length > 1 ? "s" : ""} since your last visit`}
             </p>
             <button
               onClick={() => setFilter("recent")}
               className="text-primary text-xs font-medium hover:underline"
+              style={displayFont}
             >
-              Show recent changes →
+              {isAmharic ? "አዳዲስ ለውጦችን አሳይ →" : "Show recent changes →"}
             </button>
           </div>
           <button onClick={() => setShowBanner(false)} className="text-gray-500 hover:text-gray-300 flex-shrink-0">
@@ -189,6 +204,7 @@ export default function Transactions() {
                 ? "bg-primary/10 border border-primary/30 text-primary"
                 : "bg-card border border-border text-muted-foreground hover:text-foreground"
             }`}
+            style={displayFont}
           >
             {f.key === "recent" && <Bell className="w-3 h-3" />}
             {f.label}
@@ -220,15 +236,19 @@ export default function Transactions() {
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-xs font-bold text-[#2A4A7A] uppercase tracking-wide">Monthly Overview</p>
-                <p className="text-[10px] text-[#4A6A9A] mt-0.5">Current month highlighted</p>
+                <p className="text-xs font-bold text-[#2A4A7A] uppercase tracking-wide" style={displayFont}>
+                  {isAmharic ? "ወርሃዊ ማጠቃለያ" : "Monthly Overview"}
+                </p>
+                <p className="text-[10px] text-[#4A6A9A] mt-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                  {isAmharic ? "የአሁኑ ወር ጎልቷል" : "Current month highlighted"}
+                </p>
               </div>
               <div className="flex gap-3">
-                <span className="flex items-center gap-1.5 text-[11px] text-[#2B7A4B] font-semibold">
-                  <span className="w-3 h-3 rounded-sm bg-[#2B7A4B] inline-block" />In
+                <span className="flex items-center gap-1.5 text-[11px] text-[#2B7A4B] font-semibold" style={displayFont}>
+                  <span className="w-3 h-3 rounded-sm bg-[#2B7A4B] inline-block" />{isAmharic ? "ገቢ" : "In"}
                 </span>
-                <span className="flex items-center gap-1.5 text-[11px] text-[#C0402E] font-semibold">
-                  <span className="w-3 h-3 rounded-sm bg-[#C0402E] inline-block" />Out
+                <span className="flex items-center gap-1.5 text-[11px] text-[#C0402E] font-semibold" style={displayFont}>
+                  <span className="w-3 h-3 rounded-sm bg-[#C0402E] inline-block" />{isAmharic ? "ወጪ" : "Out"}
                 </span>
               </div>
             </div>
@@ -288,11 +308,11 @@ export default function Transactions() {
                     cursor={{ fill: "rgba(74,106,154,0.08)" }}
                     formatter={(value: number, name: string) =>
                       [`${value.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ETB`,
-                       name === "credited" ? "Money In" : "Money Out"]
+                       name === "credited" ? (isAmharic ? "ገቢ" : "Money In") : (isAmharic ? "ወጪ" : "Money Out")]
                     }
                   />
 
-                  {/* Credited bars — solid green for current, lighter for history */}
+                  {/* Credited bars */}
                   <Bar yAxisId="amt" dataKey="credited" shape={<CreditBar />}>
                     <LabelList
                       dataKey="credited"
@@ -302,7 +322,7 @@ export default function Transactions() {
                     />
                   </Bar>
 
-                  {/* Debited bars — solid red for current, lighter for history */}
+                  {/* Debited bars */}
                   <Bar yAxisId="amt" dataKey="debited" shape={<DebitBar />}>
                     <LabelList
                       dataKey="debited"
@@ -316,7 +336,9 @@ export default function Transactions() {
             </div>
 
             {monthlyData.length > 3 && (
-              <p className="text-[10px] text-[#4A6A9A] text-center mt-1 opacity-70">← swipe to view earlier months</p>
+              <p className="text-[10px] text-[#4A6A9A] text-center mt-1 opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                {isAmharic ? "← ቀደምት ወራትን ለማየት ወደ ጎን ይሳቡ" : "← swipe to view earlier months"}
+              </p>
             )}
           </div>
         );
@@ -334,21 +356,27 @@ export default function Transactions() {
         return (
           <div className="grid grid-cols-3 gap-2 mb-5">
             <div className="bg-card border border-border rounded-2xl px-3 py-3 text-center">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Credited</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1" style={displayFont}>
+                {isAmharic ? "የገባ ብር" : "Credited"}
+              </p>
               <p className="text-sm font-bold text-[#2B7A4B]">+{fmt(credited)}</p>
-              <p className="text-[10px] text-muted-foreground">ETB</p>
+              <p className="text-[10px] text-muted-foreground" style={displayFont}>ETB</p>
             </div>
             <div className="bg-card border border-border rounded-2xl px-3 py-3 text-center">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Debited</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1" style={displayFont}>
+                {isAmharic ? "የወጣ ብር" : "Debited"}
+              </p>
               <p className="text-sm font-bold text-[#C0402E]">-{fmt(debited)}</p>
-              <p className="text-[10px] text-muted-foreground">ETB</p>
+              <p className="text-[10px] text-muted-foreground" style={displayFont}>ETB</p>
             </div>
             <div className="bg-card border border-border rounded-2xl px-3 py-3 text-center">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Net</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1" style={displayFont}>
+                {isAmharic ? "የተጣራ" : "Net"}
+              </p>
               <p className={`text-sm font-bold ${net >= 0 ? "text-[#2B7A4B]" : "text-[#C0402E]"}`}>
                 {net >= 0 ? "+" : ""}{fmt(net)}
               </p>
-              <p className="text-[10px] text-muted-foreground">ETB</p>
+              <p className="text-[10px] text-muted-foreground" style={displayFont}>ETB</p>
             </div>
           </div>
         );
@@ -359,11 +387,15 @@ export default function Transactions() {
           <div key={i} className="h-16 bg-card rounded-2xl animate-pulse border border-border" />
         )) : displayed.length === 0 ? (
           <div className="text-center py-16">
-            <p className="font-semibold text-foreground">
-              {filter === "recent" ? "No recent changes found" : "No transactions yet"}
+            <p className="font-semibold text-foreground" style={displayFont}>
+              {filter === "recent"
+                ? (isAmharic ? "ምንም የቅርብ ጊዜ ለውጦች አልተገኙም" : "No recent changes found")
+                : (isAmharic ? "እስካሁን ምንም ግብይት አልተደረገም" : "No transactions yet")}
             </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {filter === "recent" ? "Recent status updates will appear here" : "Complete tasks or make a deposit to get started"}
+            <p className="text-sm text-muted-foreground mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {filter === "recent"
+                ? (isAmharic ? "አዳዲስ የሁኔታ ለውጦች እዚህ ይታያሉ" : "Recent status updates will appear here")
+                : (isAmharic ? "ተግባራትን በማጠናቀቅ ወይም ተቀማጭ በማድረግ ይጀምሩ" : "Complete tasks or make a deposit to get started")}
             </p>
           </div>
         ) : displayed.map(tx => {
@@ -371,6 +403,9 @@ export default function Transactions() {
           const Icon = cfg.icon;
           const isPositive = cfg.sign === "+";
           const isNew = isNewEvent(tx, newEvents);
+          const statusText = isAmharic
+            ? (tx.status === "pending" ? "በመጠባበቅ ላይ" : tx.status === "rejected" ? "ውድቅ ተደርጓል" : "ተጠናቋል")
+            : tx.status;
           return (
             <div
               key={tx.id}
@@ -387,19 +422,21 @@ export default function Transactions() {
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-sm text-foreground truncate">{tx.description}</p>
                   {isNew && (
-                    <span className="flex-shrink-0 text-[10px] font-bold bg-primary text-white px-1.5 py-0.5 rounded-full leading-none">
-                      NEW
+                    <span className="flex-shrink-0 text-[10px] font-bold bg-primary text-white px-1.5 py-0.5 rounded-full leading-none" style={displayFont}>
+                      {isAmharic ? "አዲስ" : "NEW"}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">{new Date(tx.createdAt).toLocaleDateString()}</p>
+                <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                  {new Date(tx.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
+                </p>
               </div>
               <div className="text-right flex-shrink-0">
                 <p className={`font-bold text-sm ${isPositive ? "text-[#2B7A4B]" : "text-[#C0402E]"}`}>
                   {cfg.sign}{fmt(tx.amount)} ETB
                 </p>
-                <p className={`text-xs capitalize ${tx.status === "pending" ? "text-[#D4B61B]" : tx.status === "rejected" ? "text-[#C0402E]" : "text-muted-foreground"}`}>
-                  {tx.status}
+                <p className={`text-xs capitalize ${tx.status === "pending" ? "text-[#D4B61B]" : tx.status === "rejected" ? "text-[#C0402E]" : "text-muted-foreground"}`} style={displayFont}>
+                  {statusText}
                 </p>
               </div>
             </div>
