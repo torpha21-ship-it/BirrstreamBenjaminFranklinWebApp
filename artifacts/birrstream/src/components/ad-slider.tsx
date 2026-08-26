@@ -124,7 +124,7 @@ export function AdSlider() {
       <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
 
       {/* Top Left: Sharp Ad Badge flush in the far left top corner */}
-      <div className="absolute top-0 left-0 z-20 flex items-center gap-1.5 px-3 py-1 bg-white text-black pointer-events-none select-none shadow-md">
+      <div className="absolute -top-1 -left-1 z-20 flex items-center gap-1.5 px-3 pt-2 pb-1 bg-white text-black pointer-events-none select-none shadow-md">
         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
         <span className="text-[11px] font-bold tracking-wider uppercase">Ad</span>
       </div>
