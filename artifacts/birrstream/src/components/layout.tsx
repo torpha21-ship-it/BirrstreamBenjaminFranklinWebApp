@@ -10,28 +10,9 @@ import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
+import { useLanguage } from "@/context/language-context";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", icon: NavHomeIcon, label: "Dashboard" },
-  { href: "/games", icon: NavGamesIcon, label: "Arcade Games" },
-  { href: "/tasks", icon: NavTasksIcon, label: "Daily Tasks" },
-  { href: "/packages", icon: Package, label: "VIP Packages" },
-  { href: "/referral", icon: Users, label: "Referrals" },
-  { href: "/transactions", icon: Receipt, label: "Transactions" },
-  { href: "/vip-upgrades", icon: Trophy, label: "VIP Upgrades" },
-  { href: "/support", icon: NavSupportIcon, label: "Support" },
-  { href: "/profile", icon: NavProfileIcon, label: "Profile" },
-];
-
-const MOBILE_NAV = [
-  { href: "/dashboard", icon: NavHomeIcon, label: "Dashboard" },
-  { href: "/tasks", icon: NavTasksIcon, label: "Tasks" },
-  { href: "/games", icon: NavGamesIcon, label: "Games", isCenterGame: true },
-  { href: "/support", icon: NavSupportIcon, label: "Support" },
-  { href: "/profile", icon: NavProfileIcon, label: "Profile" },
-];
-
-const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, label: "Admin Panel" };
+const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, labelKey: "nav.admin" };
 
 function DepositWatcher() {
   useDepositWatcher();
@@ -42,6 +23,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location] = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
+  const { t, isAmharic } = useLanguage();
+
+  const NAV_ITEMS = [
+    { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
+    { href: "/games", icon: NavGamesIcon, label: t("nav.games") },
+    { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
+    { href: "/packages", icon: Package, label: isAmharic ? "የቪአይፒ ፓኬጆች" : "VIP Packages" },
+    { href: "/referral", icon: Users, label: isAmharic ? "ሪፈራሎች" : "Referrals" },
+    { href: "/transactions", icon: Receipt, label: isAmharic ? "ግብይቶች" : "Transactions" },
+    { href: "/vip-upgrades", icon: Trophy, label: isAmharic ? "የቪአይፒ ደረጃዎች" : "VIP Upgrades" },
+    { href: "/support", icon: NavSupportIcon, label: isAmharic ? "እርዳታ" : "Support" },
+    { href: "/profile", icon: NavProfileIcon, label: t("nav.profile") },
+  ];
+
+  const MOBILE_NAV = [
+    { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
+    { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
+    { href: "/games", icon: NavGamesIcon, label: t("nav.games"), isCenterGame: true },
+    { href: "/support", icon: NavSupportIcon, label: isAmharic ? "እርዳታ" : "Support" },
+    { href: "/profile", icon: NavProfileIcon, label: t("nav.profile") },
+  ];
 
   useEffect(() => {
     const handler = (e: Event) => {

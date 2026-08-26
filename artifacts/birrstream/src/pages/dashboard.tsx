@@ -19,6 +19,8 @@ import reserveFloorStatic from "@/assets/dashboard-icons/static/Reserve Floor.pn
 import streakImg from "@/assets/decor/173.png";
 import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import { useLanguage } from "@/context/language-context";
 
 import hiIcon from "@/assets/dashboard-icons/Hi.webp";
 import hiDarkIcon from "@/assets/dashboard-icons/dark-theme/Hi.webp";
@@ -102,14 +104,21 @@ export default function Dashboard() {
     });
   };
 
+  const { t, isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
+
   const statCards = [
-    { label: "Total Yield", value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldStatic },
-    { label: "Total Deposited", value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedStatic },
-    { label: "Total Withdrawn", value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnStatic },
-    { label: "Reserve Floor", value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorStatic },
+    { label: t("profile.total_yield", "Total Yield"), value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldStatic },
+    { label: t("profile.total_deposited", "Total Deposited"), value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedStatic },
+    { label: t("profile.total_withdrawn", "Total Withdrawn"), value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnStatic },
+    { label: t("profile.reserve_floor", "Reserve Floor"), value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorStatic },
   ];
 
-  const dayNames = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+  const dayNames = isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"] : ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
   const calendarData = useMemo(() => {
     const now = new Date();
@@ -148,25 +157,32 @@ export default function Dashboard() {
       ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
     ];
 
-    const monthLabel = now.toLocaleDateString("en-ET", { month: "long", year: "numeric" });
-    return { cells, checkedInDays, todayNum };
-  }, [streak]);
+    const monthLabel = now.toLocaleDateString(isAmharic ? "am-ET" : "en-ET", { month: "long", year: "numeric" });
+    return { cells, checkedInDays, todayNum, monthLabel };
+  }, [streak, isAmharic]);
 
   return (
     <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative">
-      {/* Centred brand mark — pulled to very top, cancels space-y-4 gap */}
-      <div className="flex justify-center relative z-20">
-        <BSLogo />
+      {/* Centred brand mark with Language Toggle placed far on the right side */}
+      <div className="relative flex items-center justify-center z-20 min-h-[44px]">
+        <div className="flex justify-center">
+          <BSLogo />
+        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <LanguageToggle />
+        </div>
       </div>
 
       {/* Header: welcome text + Hi.webp + toggle on right + profile avatar */}
       <div className="flex items-center justify-between bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
         <div className="flex items-center gap-2.5 min-w-0">
           <div>
-            <p className="text-xs text-foreground/70 font-medium">Welcome back</p>
+            <p className="text-xs text-foreground/70 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {t("dash.welcome")}
+            </p>
             <h1
               className="text-lg font-bold text-foreground"
-              style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+              style={displayFont}
             >
               {user?.fullName?.split(" ")[0]}
             </h1>
@@ -195,7 +211,9 @@ export default function Dashboard() {
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
           <img src={mainBalanceDarkThemeIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
-          <p className="text-[28px] text-gray-400" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Main Balance</p>
+          <p className="text-[26px] text-gray-400" style={displayFont}>
+            {t("dash.main_balance")}
+          </p>
         </div>
         {isLoading ? (
           <div className="h-12 bg-white/10 rounded-xl animate-pulse w-48 mb-2" />
@@ -203,11 +221,13 @@ export default function Dashboard() {
           <>
             <p className="text-4xl font-bold mb-1">
               {fmt(summary?.mainBalance ?? 0)}{" "}
-              <span className="text-xl font-semibold text-gray-300" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>ETB</span>
+              <span className="text-xl font-semibold text-gray-300" style={displayFont}>ETB</span>
             </p>
             {pendingWithdrawalTotal > 0 && (
               <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
-                <span className="text-xs text-yellow-400 font-medium">⏳ Pending Withdrawal</span>
+                <span className="text-xs text-yellow-400 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                  ⏳ {isAmharic ? "በመጠባበቅ ላይ ያለ ገንዘብ" : "Pending Withdrawal"}
+                </span>
                 <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} ETB</span>
               </div>
             )}
@@ -215,28 +235,30 @@ export default function Dashboard() {
         )}
         {summary?.activePackageName ? (
           <div className="flex items-center gap-2 mt-3 flex-wrap">
-            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold">
+            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               {summary.activePackageName}
             </span>
-            <span className="flex items-center gap-1 text-xs text-gray-400">
+            <span className="flex items-center gap-1 text-xs text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               <TrendingUp className="w-3 h-3" />
-              +{fmt(summary.activePackageDailyReturn ?? 0)} ETB/day
+              +{fmt(summary.activePackageDailyReturn ?? 0)} ETB/{isAmharic ? "ቀን" : "day"}
             </span>
             {summary.daysUntilExpiry !== null && (
-              <span className="text-xs text-gray-500">{summary.daysUntilExpiry}d left</span>
+              <span className="text-xs text-gray-500" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : "d left"}
+              </span>
             )}
           </div>
         ) : (
-          <Link href="/packages" className="inline-flex items-center gap-1 mt-3 px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold">
-            Get a VIP Package <ChevronRight className="w-3 h-3" />
+          <Link href="/packages" className="inline-flex items-center gap-1 mt-3 px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : "Get a VIP Package"} <ChevronRight className="w-3 h-3" />
           </Link>
         )}
 
-        {/* Progress bar to next tier */}
+        {/* Progress bar to next tier — Tiny text uses clean Noto Sans Ethiopic */}
         {summary?.nextTierName && (
           <div className="mt-4">
-            <div className="flex justify-between text-xs text-gray-400 mb-1">
-              <span>Progress to {summary.nextTierName}</span>
+            <div className="flex justify-between text-xs text-gray-400 mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              <span>{t("dash.progress_to_vip")} {summary.nextTierName}</span>
               <span>{Math.round(summary.progressToNextTier)}%</span>
             </div>
             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -262,10 +284,10 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
         {[
-          { iconSrc: depositIcon, label: "Deposit", href: "/deposit", color: "bg-[#FCE7EE]" },
-          { iconSrc: withdrawIcon, label: "Withdraw", href: "/withdraw", color: "bg-[#F5E6A3]" },
-          { iconSrc: packagesIcon, label: "Packages", href: "/packages", color: "bg-[#C9BDF5]" },
-          { iconSrc: tasksIcon, label: "Tasks", href: "/tasks", color: "bg-[#A8D5B5]" },
+          { iconSrc: depositIcon, label: t("dash.deposit"), href: "/deposit", color: "bg-[#FCE7EE]" },
+          { iconSrc: withdrawIcon, label: t("dash.withdraw"), href: "/withdraw", color: "bg-[#F5E6A3]" },
+          { iconSrc: packagesIcon, label: t("nav.deposit", "Packages"), href: "/packages", color: "bg-[#C9BDF5]" },
+          { iconSrc: tasksIcon, label: t("nav.tasks"), href: "/tasks", color: "bg-[#A8D5B5]" },
         ].map(({ iconSrc, label, href, color }) => (
           <Link
             key={href}
@@ -275,7 +297,7 @@ export default function Dashboard() {
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} overflow-hidden p-1.5`}>
               <img src={iconSrc} alt={label} className="w-full h-full object-contain" />
             </div>
-            <span className="text-xs font-semibold text-foreground">{label}</span>
+            <span className="text-xs font-semibold text-foreground text-center line-clamp-1" style={displayFont}>{label}</span>
           </Link>
         ))}
       </div>
@@ -291,9 +313,9 @@ export default function Dashboard() {
               className="absolute right-2 bottom-2 h-8 w-8 object-contain pointer-events-none select-none drop-shadow-sm"
             />
             <div className="relative z-10">
-              <p className={`text-[20px] ${card.textColor} opacity-60 mb-0.5`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{card.label}</p>
-              <p className={`text-[14px] font-bold ${card.textColor}`}>{fmt(card.value)}</p>
-              <p className={`text-[10px] ${card.textColor} opacity-50`}>ETB</p>
+              <p className={`text-[19px] ${card.textColor} opacity-80 mb-0.5`} style={displayFont}>{card.label}</p>
+              <p className={`text-[15px] font-bold ${card.textColor}`}>{fmt(card.value)}</p>
+              <p className={`text-[10px] ${card.textColor} opacity-60 font-semibold`}>ETB</p>
             </div>
           </div>
         ))}
@@ -307,18 +329,24 @@ export default function Dashboard() {
             <div className="w-10 h-10 bg-[#FCE7EE] rounded-xl flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
               <img src={loginStreakIcon} alt="" className="w-full h-full object-contain" />
             </div>
-            <h2 className="text-[32px] font-bold text-foreground leading-none" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Login Streak</h2>
+            <h2 className="text-[28px] font-bold text-foreground leading-none" style={displayFont}>
+              {t("dash.login_streak")}
+            </h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{new Date().toLocaleDateString("en-ET", { month: "long", year: "numeric" })}</span>
+            <span className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {calendarData.monthLabel}
+            </span>
             <span className="text-sm font-bold text-primary">{streak?.currentStreak ?? 0} 🔥</span>
           </div>
         </div>
 
         {/* Day-of-week headers */}
         <div className="grid grid-cols-7 gap-1 mb-1">
-          {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
-            <div key={d} className="text-[10px] font-semibold text-muted-foreground text-center py-0.5">{d}</div>
+          {["Su","Mo","Tu","We","Th","Fr","Sa"].map((d, idx) => (
+            <div key={d} className="text-[10px] font-semibold text-muted-foreground text-center py-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"][idx] : d}
+            </div>
           ))}
         </div>
 
@@ -350,14 +378,17 @@ export default function Dashboard() {
 
         {/* Legend + decorative image filling the right space */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
-          <span className="flex items-center gap-1.5 text-[22px] text-muted-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-            <span className="w-3 h-3 rounded-full bg-primary inline-block flex-shrink-0" />Checked in
+          <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
+            <span className="w-3 h-3 rounded-full bg-primary inline-block flex-shrink-0" />
+            {isAmharic ? "የተመዘገበ" : "Checked in"}
           </span>
-          <span className="flex items-center gap-1.5 text-[22px] text-muted-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-            <span className="w-3 h-3 rounded-full border-2 border-primary inline-block flex-shrink-0" />Today
+          <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
+            <span className="w-3 h-3 rounded-full border-2 border-primary inline-block flex-shrink-0" />
+            {isAmharic ? "ዛሬ" : "Today"}
           </span>
-          <span className="flex items-center gap-1.5 text-[22px] text-muted-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}>
-            <span className="w-3 h-3 rounded-full bg-muted-foreground/25 inline-block flex-shrink-0" />Missed
+          <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
+            <span className="w-3 h-3 rounded-full bg-muted-foreground/25 inline-block flex-shrink-0" />
+            {isAmharic ? "ያመለጠ" : "Missed"}
           </span>
           <img
             src={streakImg}
@@ -372,14 +403,14 @@ export default function Dashboard() {
             onClick={handleCheckin}
             disabled={checkinMutation.isPending}
             className="w-full py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}
+            style={displayFont}
           >
             <img src={checkInIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
-            <span>{checkinMutation.isPending ? "Checking in..." : "Check In — Earn +5 ETB"}</span>
+            <span>{checkinMutation.isPending ? (isAmharic ? "በመመዝገብ ላይ..." : "Checking in...") : (isAmharic ? "ተሳትፎ ይመዝግቡ — +5 ብር ያግኙ" : "Check In — Earn +5 ETB")}</span>
           </button>
         ) : (
-          <div className="w-full py-3 bg-accent/30 text-accent-foreground rounded-2xl font-semibold text-sm text-center">
-            ✓ Checked in today!
+          <div className="w-full py-3 bg-accent/30 text-accent-foreground rounded-2xl font-semibold text-sm text-center" style={displayFont}>
+            ✓ {t("dash.checked_in")}
           </div>
         )}
       </div>
@@ -387,8 +418,8 @@ export default function Dashboard() {
       {/* Navigate to more */}
       <div className="grid grid-cols-1 gap-3 relative z-10 -mx-4">
         {[
-          { label: "My Referral Network", desc: "View your affiliate downline", href: "/affiliate-network", iconSrc: referralNetworkIcon },
-          { label: "VIP Upgrade Goals", desc: "Earn premium packages through referrals", href: "/vip-upgrades", iconSrc: vipUpgradeGoalsIcon },
+          { label: t("dash.referral_network"), desc: t("dash.referral_sub"), href: "/affiliate-network", iconSrc: referralNetworkIcon },
+          { label: t("dash.vip_upgrade"), desc: t("dash.vip_upgrade_sub"), href: "/vip-upgrades", iconSrc: vipUpgradeGoalsIcon },
         ].map(({ label, desc, href, iconSrc }) => (
           <Link
             key={href}
@@ -400,8 +431,8 @@ export default function Dashboard() {
                 <img src={iconSrc} alt="" className="w-full h-full object-contain" />
               </div>
               <div>
-                <p className="font-semibold text-[28px] text-foreground leading-tight" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{label}</p>
-                <p className="text-xs text-muted-foreground">{desc}</p>
+                <p className="font-semibold text-[24px] text-foreground leading-tight" style={displayFont}>{label}</p>
+                <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{desc}</p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />

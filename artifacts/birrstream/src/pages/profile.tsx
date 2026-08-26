@@ -8,6 +8,7 @@ import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { BSLogo } from "@/components/bs-logo";
 import { useProfilePhoto } from "@/hooks/use-profile-photo";
+import { useLanguage } from "@/context/language-context";
 import mainBalanceIcon from "@/assets/decor/profile-main-balance-card.svg";
 import depositedIcon from "@/assets/decor/profile-deposited-card.svg";
 import totalYieldIcon from "@/assets/decor/profile-total-yield-card.svg";
@@ -31,6 +32,12 @@ export default function Profile() {
   const { data: profile } = useGetUserProfile({ query: { queryKey: getGetUserProfileQueryKey() } });
   const logoutMutation = useLogout();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t, isAmharic } = useLanguage();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   const user = profile ?? authUser;
   const { photo, upload, uploading } = useProfilePhoto((profile as any)?.profilePhoto);
@@ -40,7 +47,7 @@ export default function Profile() {
       onSuccess: () => {
         logout();
         setLocation("/login");
-        toast({ title: "Signed out" });
+        toast({ title: isAmharic ? "በተሳካ ሁኔታ ወጥተዋል" : "Signed out" });
       },
     });
   };
@@ -51,9 +58,9 @@ export default function Profile() {
     try {
       await upload(file);
       qc.invalidateQueries({ queryKey: getGetUserProfileQueryKey() });
-      toast({ title: "Profile photo updated!" });
+      toast({ title: isAmharic ? "የመገለጫ ፎቶ ተዘምኗል!" : "Profile photo updated!" });
     } catch {
-      toast({ title: "Upload failed", variant: "destructive" });
+      toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : "Upload failed", variant: "destructive" });
     }
     // reset so same file can be picked again
     e.target.value = "";
@@ -63,24 +70,24 @@ export default function Profile() {
 
   const sections = [
     {
-      title: "Account",
+      title: isAmharic ? "መለያ" : "Account",
       items: [
-        { imgSrc: withdrawalSettingsIcon, label: "Withdrawal Settings", href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
-        { imgSrc: transactionHistoryIcon, label: "Transaction History", href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
+        { imgSrc: withdrawalSettingsIcon, label: t("profile.withdrawal_settings"), href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
+        { imgSrc: transactionHistoryIcon, label: t("profile.transaction_history"), href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
       ],
     },
     {
-      title: "Network",
+      title: isAmharic ? "አውታረ መረብ" : "Network",
       items: [
-        { imgSrc: referralIcon, label: "My Referral Code", href: "/referral", color: "bg-[#F5E6A3] text-[#8B7200]" },
-        { imgSrc: affiliateIcon, label: "Affiliate Network", href: "/affiliate-network", color: "bg-primary/10 text-primary" },
-        { imgSrc: vipUpgradeIcon, label: "VIP Upgrade Goals", href: "/vip-upgrades", color: "bg-[#F2A89A] text-[#C0402E]" },
+        { imgSrc: referralIcon, label: t("profile.my_referrals"), href: "/referral", color: "bg-[#F5E6A3] text-[#8B7200]" },
+        { imgSrc: affiliateIcon, label: t("profile.affiliate_network"), href: "/affiliate-network", color: "bg-primary/10 text-primary" },
+        { imgSrc: vipUpgradeIcon, label: t("profile.vip_upgrades"), href: "/vip-upgrades", color: "bg-[#F2A89A] text-[#C0402E]" },
       ],
     },
     {
-      title: "Danger Zone",
+      title: isAmharic ? "አደገኛ እርምጃ" : "Danger Zone",
       items: [
-        { icon: Trash2, label: "Delete Account", href: "/delete-account", color: "bg-[#F2A89A] text-[#C0402E]" },
+        { icon: Trash2, label: t("profile.delete_account"), href: "/delete-account", color: "bg-[#F2A89A] text-[#C0402E]" },
       ],
     },
   ];
@@ -104,9 +111,10 @@ export default function Profile() {
         <button
           onClick={handleLogout}
           className="ml-auto flex items-center gap-1.5 text-sm text-black hover:text-black transition-colors bg-white rounded-2xl px-3.5 py-2 border border-gray-200 shadow-sm font-bold"
+          style={displayFont}
         >
           <LogOut className="w-4 h-4 text-black" />
-          <span className="text-black">Sign out</span>
+          <span className="text-black">{t("profile.sign_out")}</span>
         </button>
       </div>
 
@@ -138,7 +146,7 @@ export default function Profile() {
           />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{user?.fullName}</h2>
+          <h2 className="text-2xl font-bold text-foreground" style={displayFont}>{user?.fullName}</h2>
           <p className="text-muted-foreground text-sm">@{user?.username}</p>
           <p className="text-muted-foreground text-xs">{user?.email}</p>
         </div>
@@ -148,14 +156,6 @@ export default function Profile() {
       <CalendarCard userCreatedAt={user?.createdAt} />
 
       {/* ── NAOMI LABS MEMBER CARD ── */}
-      {/*
-        The two cartoon-hand SVGs act as left/right holders framing the card content.
-          • hand2 (viewBox 0 0 38 84) — concave opens RIGHT  → placed on the LEFT  side
-          • hand1 (viewBox 0 0 38 84) — concave opens LEFT   → placed on the RIGHT side
-        Both are rendered at h-32 (128 px tall) so they are tall enough to frame the card.
-        The content uses px-14 (56 px) horizontal padding, giving ~6 px of clearance
-        beyond each hand's ~50 px rendered width.
-      */}
       <div
         className="bg-[#A8D5B5] rounded-3xl mb-6 relative z-10 overflow-hidden -mx-4"
         style={{ minHeight: 136 }}
@@ -177,17 +177,17 @@ export default function Profile() {
 
         {/* Centred card content, padded so the hands don't overlap text */}
         <div className="relative z-10 flex flex-col items-center text-center px-14 pt-5 pb-5">
-          <p className="text-[#2B7A4B] text-[20px] font-bold uppercase mb-3" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.12em" }}>
-            Naomi Labs Member
+          <p className="text-[#2B7A4B] text-[20px] font-bold uppercase mb-3" style={displayFont}>
+            {isAmharic ? "ናኦሚ ላብስ አባል" : "Naomi Labs Member"}
           </p>
           <div className="bg-[#2B7A4B]/15 rounded-2xl px-4 py-2 w-full mb-2">
             <p className="font-bold text-[#2B7A4B] text-[28px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.15em" }}>
               {user?.referralCode ?? "——————"}
             </p>
           </div>
-          <p className="text-[#2B7A4B]/60 text-[20px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
-            Member since{" "}
-            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
+          <p className="text-[#2B7A4B]/80 text-[16px]" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : displayFont}>
+            {isAmharic ? "የተመዘገቡበት ቀን፦ " : "Member since "}
+            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET") : "—"}
           </p>
         </div>
       </div>
@@ -195,10 +195,10 @@ export default function Profile() {
       {/* Balance summary grid */}
       <div className="grid grid-cols-2 gap-3 mb-6 relative z-10 -mx-4">
         {[
-          { label: "Main Balance",  value: user?.mainBalance  ?? 0, color: "bg-[#1A1A1A] text-white",         icon: mainBalanceIcon },
-          { label: "Total Yield",   value: user?.totalYield   ?? 0, color: "bg-[#F5E6A3] text-[#8B7200]",     icon: totalYieldIcon  },
-          { label: "Deposited",     value: user?.totalDeposited ?? 0, color: "bg-[#C9BDF5] text-[#5B44BE]",   icon: depositedIcon   },
-          { label: "Withdrawn",     value: user?.totalWithdrawn ?? 0, color: "bg-[#F2A89A] text-[#C0402E]",   icon: withdrawnIcon   },
+          { label: t("profile.main_balance"),  value: user?.mainBalance  ?? 0, color: "bg-[#1A1A1A] text-white",         icon: mainBalanceIcon },
+          { label: t("profile.total_yield"),   value: user?.totalYield   ?? 0, color: "bg-[#F5E6A3] text-[#8B7200]",     icon: totalYieldIcon  },
+          { label: t("profile.total_deposited"), value: user?.totalDeposited ?? 0, color: "bg-[#C9BDF5] text-[#5B44BE]",   icon: depositedIcon   },
+          { label: t("profile.total_withdrawn"), value: user?.totalWithdrawn ?? 0, color: "bg-[#F2A89A] text-[#C0402E]",   icon: withdrawnIcon   },
         ].map(item => (
           <div key={item.label} className={`${item.color} rounded-2xl p-2.5 relative overflow-hidden`}>
             <img
@@ -208,14 +208,14 @@ export default function Profile() {
               className="absolute -right-2 -bottom-2 h-10 w-10 object-contain pointer-events-none select-none opacity-90"
             />
             <div className="relative z-10">
-              <p className="text-[20px] opacity-60 mb-0.5" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{item.label}</p>
+              <p className="text-[18px] opacity-80 mb-0.5" style={displayFont}>{item.label}</p>
               <p className="text-[14px] font-bold">
                 {(item.value as number).toLocaleString("en-ET", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-[10px] opacity-50">ETB</p>
+              <p className="text-[10px] opacity-60 font-semibold">ETB</p>
             </div>
           </div>
         ))}
@@ -224,7 +224,7 @@ export default function Profile() {
       {/* Navigation sections */}
       {sections.map(section => (
         <div key={section.title} className="mb-5 relative z-10">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
             {section.title}
           </p>
           <div className="bg-card rounded-3xl border border-border overflow-hidden -mx-4">
@@ -245,7 +245,7 @@ export default function Profile() {
                         : <Icon className="w-4 h-4" />
                       }
                     </div>
-                    <span className="font-semibold text-[28px] text-foreground" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>{item.label}</span>
+                    <span className="font-semibold text-[22px] text-foreground" style={displayFont}>{item.label}</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 </Link>

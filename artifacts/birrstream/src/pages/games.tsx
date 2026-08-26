@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { getGetDashboardSummaryQueryKey, getGetUserProfileQueryKey, getGetMeQueryKey, customFetch } from "@workspace/api-client-react";
 import { withApiBaseUrl } from "@/lib/api-base-url";
+import { useLanguage } from "@/context/language-context";
 
 /* ================================================================
    MOB DATA — 15 Minecraft Mobs with Local Assets & RPG Stats
@@ -324,10 +325,16 @@ export default function Games() {
     step();
   }
 
+  const { t, isAmharic } = useLanguage();
   const currentMob = MOBS[selectedIndex];
 
-  const HS = { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" } as const;
-  const HSsm = { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" } as const;
+  const HS = isAmharic
+    ? ({ fontFamily: "'LogaComic', sans-serif" } as const)
+    : ({ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" } as const);
+
+  const HSsm = isAmharic
+    ? ({ fontFamily: "'Noto Sans Ethiopic', sans-serif" } as const)
+    : ({ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" } as const);
 
   /* ================================================================
      FULL-PAGE GAME VIEW

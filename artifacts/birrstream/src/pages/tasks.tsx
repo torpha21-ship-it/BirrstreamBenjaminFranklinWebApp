@@ -5,6 +5,7 @@ import { CheckCircle2, Circle, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import dailyTipBg from "@/assets/decor/daily-tip-card-bg.svg";
+import { useLanguage } from "@/context/language-context";
 
 import videoIcon from "@/assets/daily-tasks/wired-outline-1876-video.webp";
 import homepageIcon from "@/assets/daily-tasks/wired-outline-27-homepage.webp";
@@ -34,8 +35,14 @@ const TASK_COLORS: Record<string, string> = {
 export default function Tasks() {
   const qc = useQueryClient();
   const { toast } = useToast();
+  const { t, isAmharic } = useLanguage();
   const { data: tasks, isLoading } = useListDailyTasks({ query: { queryKey: getListDailyTasksQueryKey() } });
   const completeMutation = useCompleteTask();
+
+  const displayFont = {
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
+    letterSpacing: isAmharic ? "0" : "0.06em",
+  };
 
   const handleComplete = (id: number, title: string) => {
     completeMutation.mutate(
@@ -45,7 +52,7 @@ export default function Tasks() {
           qc.invalidateQueries({ queryKey: getListDailyTasksQueryKey() });
           toast({ title: `+${data.rewardEarned} ETB earned!`, description: title });
         },
-        onError: () => toast({ title: "Task already completed today", variant: "destructive" }),
+        onError: () => toast({ title: isAmharic ? "ተግባሩ ዛሬ አስቀድሞ ተጠናቋል" : "Task already completed today", variant: "destructive" }),
       }
     );
   };
@@ -61,7 +68,9 @@ export default function Tasks() {
           <ArrowLeft className="w-4 h-4 text-black" />
         </Link>
         <div className="bg-white rounded-2xl px-4 py-2 shadow-sm border border-gray-200">
-          <h1 className="text-[20px] font-bold text-black" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Daily Tasks</h1>
+          <h1 className="text-[20px] font-bold text-black" style={displayFont}>
+            {t("tasks.title")}
+          </h1>
         </div>
       </div>
 
@@ -74,7 +83,9 @@ export default function Tasks() {
           className="absolute right-0 top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90"
         />
         <div className="relative z-10 pr-32">
-          <p className="text-gray-400 text-[20px] mb-1" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>Tasks completed today</p>
+          <p className="text-gray-400 text-[18px] mb-1" style={displayFont}>
+            {t("tasks.completed_today")}
+          </p>
           <p className="text-3xl font-bold text-white">{completed}<span className="text-gray-400 text-xl">/{total}</span></p>
         </div>
         <div className="mt-3 h-2 bg-white/10 rounded-full overflow-hidden relative z-10">
@@ -84,7 +95,9 @@ export default function Tasks() {
           />
         </div>
         {totalEarnable > 0 && (
-          <p className="text-primary text-sm mt-2 font-semibold relative z-10">+{totalEarnable.toFixed(2)} ETB available to earn</p>
+          <p className="text-primary text-sm mt-2 font-semibold relative z-10" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            +{totalEarnable.toFixed(2)} ETB {isAmharic ? "ለማግኘት ይገኛል" : "available to earn"}
+          </p>
         )}
       </div>
 
@@ -100,14 +113,18 @@ export default function Tasks() {
         <div className="absolute inset-0 bg-[#4A35A8]/65" aria-hidden="true" />
         {/* Text above both layers */}
         <div className="relative z-10 p-4">
-          <p className="text-white font-bold text-[20px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>💡 Daily Tip</p>
-          <p className="text-white/90 text-xs mt-1.5 leading-relaxed">
-            Complete all tasks daily to maximise your earnings. Tasks reset at midnight.
+          <p className="text-white font-bold text-[20px]" style={displayFont}>
+            💡 {t("tasks.tip_title")}
+          </p>
+          <p className="text-white/90 text-xs mt-1.5 leading-relaxed" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            {t("tasks.tip_desc")}
           </p>
         </div>
       </div>
 
-      <h2 className="font-bold text-foreground mb-3 text-sm relative z-10">New habits for you</h2>
+      <h2 className="font-bold text-foreground mb-3 text-sm relative z-10" style={displayFont}>
+        {isAmharic ? "አዳዲስ ልምዶች ለእርስዎ" : "New habits for you"}
+      </h2>
 
       <div className="space-y-3 relative z-10 -mx-4">
         {isLoading ? Array(4).fill(0).map((_, i) => (
@@ -125,12 +142,12 @@ export default function Tasks() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <p className={`font-semibold text-[20px] leading-tight ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" }}>
+                  <p className={`font-semibold text-[18px] leading-tight ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={displayFont}>
                     {task.title}
                   </p>
                   <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} ETB</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">{task.description}</p>
+                <p className="text-xs text-muted-foreground mt-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{task.description}</p>
               </div>
               <button
                 onClick={() => !task.isCompleted && handleComplete(task.id, task.title)}
@@ -147,8 +164,8 @@ export default function Tasks() {
         })}
         {tasks?.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            <p className="font-semibold">No tasks today</p>
-            <p className="text-sm mt-1">Check back later</p>
+            <p className="font-semibold" style={displayFont}>{isAmharic ? "ዛሬ ምንም ተግባራት የሉም" : "No tasks today"}</p>
+            <p className="text-sm mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{isAmharic ? "በኋላ እንደገና ይመልከቱ" : "Check back later"}</p>
           </div>
         )}
       </div>
