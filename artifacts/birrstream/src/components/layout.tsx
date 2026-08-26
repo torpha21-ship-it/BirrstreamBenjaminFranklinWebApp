@@ -152,7 +152,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {/* Mobile Bottom Nav — consistent rectangle floating bar */}
+      {/* Mobile Bottom Nav — White, Black & Green palette with original two-tone icons */}
       <nav className="md:hidden fixed bottom-4 left-4 right-4 h-[64px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-white/10 flex items-center justify-around px-2 z-40">
         {MOBILE_NAV.map(({ href, icon: Icon }) => {
           const active = location === href || (href !== "/dashboard" && location.startsWith(href));
@@ -166,11 +166,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
               onClick={href === "/dashboard" ? clearBadge : undefined}
               className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all ${
                 active 
-                  ? "bg-primary text-[#1A1A1A] shadow-md shadow-primary/30 scale-105" 
-                  : "bg-primary/15 text-primary hover:bg-primary/25"
+                  ? "bg-white border-2 border-primary shadow-lg shadow-primary/30 scale-105" 
+                  : "bg-white/90 hover:bg-white"
               }`}
             >
-              <Icon className="w-6 h-6" />
+              <Icon
+                className="w-6 h-6"
+                blackStroke="#121331"
+                greenStroke={active ? "#15803D" : "#185219"}
+              />
               {showBadge && (
                 <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-[#1A1A1A] flex items-center justify-center px-0.5">
                   <span className="text-white text-[10px] font-bold leading-none">{unreadCount > 9 ? "9+" : unreadCount}</span>
