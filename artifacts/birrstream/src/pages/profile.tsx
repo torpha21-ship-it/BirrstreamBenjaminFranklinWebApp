@@ -35,8 +35,8 @@ export default function Profile() {
   const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const displayFont = {
-    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
-    letterSpacing: isAmharic ? "0" : "0.06em",
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
+    letterSpacing: isAmharic ? "0" : "-0.01em",
   };
 
   const user = profile ?? authUser;
@@ -181,7 +181,7 @@ export default function Profile() {
             {isAmharic ? "ናኦሚ ላብስ አባል" : isOromo ? "Miseensa Naomi Labs" : "Naomi Labs Member"}
           </p>
           <div className="bg-[#2B7A4B]/15 rounded-2xl px-4 py-2 w-full mb-2">
-            <p className="font-bold text-[#2B7A4B] text-[28px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.15em" }}>
+            <p className="font-bold text-[#2B7A4B] text-[24px]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "0.08em" }}>
               {user?.referralCode ?? "——————"}
             </p>
           </div>

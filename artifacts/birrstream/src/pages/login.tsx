@@ -16,8 +16,8 @@ export default function Login() {
   const loginMutation = useLogin();
 
   const displayFont = {
-    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
-    letterSpacing: isAmharic ? "0" : "0.08em",
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
+    letterSpacing: isAmharic ? "0" : "-0.01em",
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

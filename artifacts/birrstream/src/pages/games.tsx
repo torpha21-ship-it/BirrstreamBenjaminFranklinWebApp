@@ -292,8 +292,8 @@ export default function Games() {
   }
 
   const currentMob = MOBS[selectedIndex];
-  const HS = isAmharic ? ({ fontFamily: "'LogaComic', sans-serif" } as const) : ({ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" } as const);
-  const HSsm = isAmharic ? ({ fontFamily: "'Noto Sans Ethiopic', sans-serif" } as const) : ({ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" } as const);
+  const HS = isAmharic ? ({ fontFamily: "'LogaComic', sans-serif" } as const) : ({ fontFamily: "'Plus Jakarta Sans', sans-serif" } as const);
+  const HSsm = isAmharic ? ({ fontFamily: "'Noto Sans Ethiopic', sans-serif" } as const) : ({ fontFamily: "'Plus Jakarta Sans', sans-serif" } as const);
 
   if (isFullPageGame) {
     return (

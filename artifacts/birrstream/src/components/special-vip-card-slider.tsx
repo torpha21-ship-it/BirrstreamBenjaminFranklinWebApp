@@ -128,8 +128,8 @@ export function SpecialVipCardSlider() {
   const { t, isAmharic, isOromo } = useLanguage();
 
   const displayFont = {
-    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
-    letterSpacing: isAmharic ? "0" : "0.06em",
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
+    letterSpacing: isAmharic ? "0" : "-0.01em",
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -592,7 +592,7 @@ export function SpecialVipCardSlider() {
                 </div>
                 <p
                   className="description"
-                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
                 >
                   {isAmharic ? CARDS_DATA[0].descriptionAm : isOromo ? CARDS_DATA[0].descriptionOr : CARDS_DATA[0].description}
                 </p>
@@ -677,7 +677,7 @@ export function SpecialVipCardSlider() {
                 </div>
                 <p
                   className="description"
-                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
+                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
                 >
                   {isAmharic ? CARDS_DATA[1].descriptionAm : isOromo ? CARDS_DATA[1].descriptionOr : CARDS_DATA[1].description}
                 </p>

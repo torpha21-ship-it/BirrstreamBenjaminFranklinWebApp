@@ -6,8 +6,8 @@ import { useLanguage } from "@/context/language-context";
 export default function NotFound() {
   const { isAmharic } = useLanguage();
   const displayFont = {
-    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
-    letterSpacing: isAmharic ? "0" : "0.06em",
+    fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
+    letterSpacing: isAmharic ? "0" : "-0.01em",
   };
 
   return (

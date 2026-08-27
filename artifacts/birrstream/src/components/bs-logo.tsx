@@ -10,9 +10,10 @@ export function BSLogo({ className = "" }: { className?: string }) {
       />
       <span
         style={{
-          fontFamily: "'Highstories', sans-serif",
-          fontSize: "22px",
-          letterSpacing: "0.12em",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: "20px",
+          fontWeight: 700,
+          letterSpacing: "-0.02em",
           lineHeight: 1,
         }}
         className="text-foreground font-normal"

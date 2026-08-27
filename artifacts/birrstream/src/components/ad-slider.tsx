@@ -148,7 +148,7 @@ export function AdSlider() {
         />
         <span
           className="text-white text-[15px] font-bold tracking-wider"
-          style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.08em" }}
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
           Naomi Labs
         </span>

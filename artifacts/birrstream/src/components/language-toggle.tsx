@@ -21,7 +21,7 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
             ? "bg-primary text-black shadow-sm scale-105"
             : "text-foreground/70 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
         }`}
-        style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         EN
       </button>
@@ -43,7 +43,7 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
             ? "bg-primary text-black shadow-sm scale-105"
             : "text-foreground/70 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
         }`}
-        style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         OR
       </button>
