@@ -98,11 +98,11 @@ export default function Deposit() {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-400">{isAmharic ? "ዝቅተኛ መጠን" : "Min Amount"}</span>
-            <span className="font-bold">500 ETB</span>
+            <span className="font-bold">500 {isAmharic ? "ብር" : "ETB"}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-400">{isAmharic ? "ከፍተኛ መጠን" : "Max Amount"}</span>
-            <span className="font-bold">50,000 ETB</span>
+            <span className="font-bold">50,000 {isAmharic ? "ብር" : "ETB"}</span>
           </div>
         </div>
         <div className="mt-4 p-3 bg-primary/20 rounded-2xl">
@@ -206,7 +206,7 @@ export default function Deposit() {
                       <Icon className={`w-4 h-4 ${cfg?.color}`} />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-foreground">{dep.amount.toLocaleString()} ETB</p>
+                      <p className="font-semibold text-sm text-foreground">{dep.amount.toLocaleString()} {isAmharic ? "ብር" : "ETB"}</p>
                       <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                         {new Date(dep.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
                       </p>

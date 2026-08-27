@@ -155,7 +155,7 @@ export function SpecialVipCardSlider() {
     if (logoUse) logoUse.setAttribute("href", data.logo);
     if (numberUse) numberUse.setAttribute("href", data.number);
     if (qrUse) qrUse.setAttribute("href", data.qr);
-    if (descEl) descEl.innerHTML = data.description;
+    if (descEl) descEl.innerHTML = isAmharic ? data.descriptionAm : data.description;
 
     gsap.set(cardEl, {
       background: data.cardBg,
@@ -170,13 +170,14 @@ export function SpecialVipCardSlider() {
   };
 
   useEffect(() => {
-    // Set initial card attributes on render
-    const card0 = cardRefs.current[0];
-    if (card0) {
-      applyCardAttrs(card0, CARDS_DATA[0]);
-      gsap.set(card0, { autoAlpha: 1, rotateY: 0, x: 0, xPercent: 0, rotateX: 0 });
+    // Set initial card attributes on render and when language toggles
+    const activeDomIdx = activeCardDomIdxRef.current;
+    const activeCard = cardRefs.current[activeDomIdx];
+    if (activeCard) {
+      applyCardAttrs(activeCard, CARDS_DATA[currentCardDataIdxRef.current]);
+      gsap.set(activeCard, { autoAlpha: 1, rotateY: 0, x: 0, xPercent: 0, rotateX: 0 });
     }
-  }, []);
+  }, [isAmharic]);
 
   // Setup GSAP 3D mouse & touch tilt parallax effect
   useEffect(() => {

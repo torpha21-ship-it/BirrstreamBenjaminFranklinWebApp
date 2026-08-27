@@ -70,7 +70,7 @@ export default function Referral() {
           {isAmharic ? "ጠቅላላ የተገኘ የኮሚሽን ትርፍ" : "Total Commissions Earned"}
         </p>
         <p className="text-[#2B7A4B] text-2xl font-bold mt-1">
-          {(info?.totalCommissionsEarned ?? 0).toLocaleString("en-ET", { minimumFractionDigits: 2 })} ETB
+          {(info?.totalCommissionsEarned ?? 0).toLocaleString("en-ET", { minimumFractionDigits: 2 })} {isAmharic ? "ብር" : "ETB"}
         </p>
       </div>
 

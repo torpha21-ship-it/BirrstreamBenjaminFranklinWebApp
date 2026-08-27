@@ -54,6 +54,7 @@ async function creditDailyYield(token: string | null) {
 
 export default function Dashboard() {
   const { user, token } = useAuth();
+  const { t, isAmharic } = useLanguage();
   const qc = useQueryClient();
   const { toast } = useToast();
   const { data: summary, isLoading } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
@@ -84,9 +85,9 @@ export default function Dashboard() {
         qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
         showEarningAlert({
           type: "yield",
-          title: "Daily Yield Credited!",
-          amount: `+${fmt(result.yieldAmount)} ETB`,
-          description: `${result.packageName} daily return added to your balance.`,
+          title: isAmharic ? "የዕለት ትርፍ ተገኝቷል!" : "Daily Yield Credited!",
+          amount: `+${fmt(result.yieldAmount)} ${isAmharic ? "ብር" : "ETB"}`,
+          description: isAmharic ? `${result.packageName} የዕለት ትርፍ ወደ ሂሳብዎ ተጨምሯል።` : `${result.packageName} daily return added to your balance.`,
         });
       }
     });
@@ -98,13 +99,11 @@ export default function Dashboard() {
       onSuccess: (data) => {
         qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
         qc.invalidateQueries({ queryKey: getGetLoginStreakQueryKey() });
-        toast({ title: `+${data.bonusEarned} ETB streak bonus!`, description: `Day ${data.newStreak} streak!` });
+        toast({ title: isAmharic ? `+${data.bonusEarned} ብር ጉርሻ!` : `+${data.bonusEarned} ETB streak bonus!`, description: isAmharic ? `ቀን ${data.newStreak} ተከታታይ ተሳትፎ!` : `Day ${data.newStreak} streak!` });
       },
-      onError: () => toast({ title: "Already checked in today", variant: "destructive" }),
+      onError: () => toast({ title: isAmharic ? "ዛሬ አስቀድመው ተሳትፈዋል" : "Already checked in today", variant: "destructive" }),
     });
   };
-
-  const { t, isAmharic } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -112,10 +111,10 @@ export default function Dashboard() {
   };
 
   const statCards = [
-    { label: t("profile.total_yield", "Total Yield"), value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldStatic },
-    { label: t("profile.total_deposited", "Total Deposited"), value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedStatic },
-    { label: t("profile.total_withdrawn", "Total Withdrawn"), value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnStatic },
-    { label: t("profile.reserve_floor", "Reserve Floor"), value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorStatic },
+    { label: t("stats.total_yield", "Total Yield"), value: summary?.totalYield ?? 0, color: "bg-[#F5E6A3]", textColor: "text-[#8B7200]", image: totalYieldStatic },
+    { label: t("stats.total_deposited", "Total Deposited"), value: summary?.totalDeposited ?? 0, color: "bg-[#C9BDF5]", textColor: "text-[#5B44BE]", image: totalDepositedStatic },
+    { label: t("stats.total_withdrawn", "Total Withdrawn"), value: summary?.totalWithdrawn ?? 0, color: "bg-[#F2A89A]", textColor: "text-[#C0402E]", image: totalWithdrawnStatic },
+    { label: t("stats.reserve_floor", "Reserve Floor"), value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorStatic },
   ];
 
   const dayNames = isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"] : ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
@@ -221,14 +220,14 @@ export default function Dashboard() {
           <>
             <p className="text-4xl font-bold mb-1">
               {fmt(summary?.mainBalance ?? 0)}{" "}
-              <span className="text-xl font-semibold text-gray-300" style={displayFont}>ETB</span>
+              <span className="text-xl font-semibold text-gray-300" style={displayFont}>{isAmharic ? "ብር" : "ETB"}</span>
             </p>
             {pendingWithdrawalTotal > 0 && (
               <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
                 <span className="text-xs text-yellow-400 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                   ⏳ {isAmharic ? "በመጠባበቅ ላይ ያለ ገንዘብ" : "Pending Withdrawal"}
                 </span>
-                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} ETB</span>
+                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} {isAmharic ? "ብር" : "ETB"}</span>
               </div>
             )}
           </>
@@ -240,7 +239,7 @@ export default function Dashboard() {
             </span>
             <span className="flex items-center gap-1 text-xs text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               <TrendingUp className="w-3 h-3" />
-              +{fmt(summary.activePackageDailyReturn ?? 0)} ETB/{isAmharic ? "ቀን" : "day"}
+              +{fmt(summary.activePackageDailyReturn ?? 0)} {isAmharic ? "ብር" : "ETB"}/{isAmharic ? "ቀን" : "day"}
             </span>
             {summary.daysUntilExpiry !== null && (
               <span className="text-xs text-gray-500" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
@@ -315,7 +314,7 @@ export default function Dashboard() {
             <div className="relative z-10">
               <p className={`text-[19px] ${card.textColor} opacity-80 mb-0.5`} style={displayFont}>{card.label}</p>
               <p className={`text-[15px] font-bold ${card.textColor}`}>{fmt(card.value)}</p>
-              <p className={`text-[10px] ${card.textColor} opacity-60 font-semibold`}>ETB</p>
+              <p className={`text-[10px] ${card.textColor} opacity-60 font-semibold`}>{isAmharic ? "ብር" : "ETB"}</p>
             </div>
           </div>
         ))}

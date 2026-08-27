@@ -215,7 +215,7 @@ export default function Profile() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-[10px] opacity-60 font-semibold">ETB</p>
+              <p className="text-[10px] opacity-60 font-semibold">{isAmharic ? "ብር" : "ETB"}</p>
             </div>
           </div>
         ))}

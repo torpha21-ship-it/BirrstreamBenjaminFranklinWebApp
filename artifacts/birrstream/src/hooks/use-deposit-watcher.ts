@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useListDeposits, getListDepositsQueryKey, useListWithdrawals, getListWithdrawalsQueryKey } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { showEarningAlert } from "@/components/earning-alert";
+import { useLanguage } from "@/context/language-context";
 
 export type NewTxEvent = { txType: "deposit" | "withdrawal"; amount: number };
 
@@ -17,6 +18,7 @@ export function addNewEvent(event: NewTxEvent) {
 
 export function useDepositWatcher() {
   const { user } = useAuth();
+  const { isAmharic } = useLanguage();
 
   const { data: deposits } = useListDeposits({
     query: {
@@ -54,15 +56,15 @@ export function useDepositWatcher() {
       if (prev === "pending" && dep.status === "approved") {
         showEarningAlert({
           type: "deposit",
-          title: "Deposit Approved!",
-          amount: `+${dep.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ETB`,
-          description: "Your deposit has been verified and added to your balance.",
+          title: isAmharic ? "ተቀማጩ ተቀባይነት አግኝቷል!" : "Deposit Approved!",
+          amount: `+${dep.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ${isAmharic ? "ብር" : "ETB"}`,
+          description: isAmharic ? "ተቀማጩ ተረጋግጦ ወደ ሂሳብዎ ተጨምሯል።" : "Your deposit has been verified and added to your balance.",
         });
         addNewEvent({ txType: "deposit", amount: dep.amount });
       }
       knownDepositStatuses.current[dep.id] = dep.status;
     });
-  }, [deposits]);
+  }, [deposits, isAmharic]);
 
   useEffect(() => {
     if (!withdrawals) return;
@@ -78,21 +80,21 @@ export function useDepositWatcher() {
       if (prev === "pending" && w.status === "approved") {
         showEarningAlert({
           type: "withdrawal_approved",
-          title: "Withdrawal Approved!",
-          amount: `${w.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ETB`,
-          description: "Your withdrawal has been processed and is on its way.",
+          title: isAmharic ? "ማውጣቱ ተፈቅዷል!" : "Withdrawal Approved!",
+          amount: `${w.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ${isAmharic ? "ብር" : "ETB"}`,
+          description: isAmharic ? "ገንዘቡ ወደ ሂሳብዎ በመላክ ላይ ነው።" : "Your withdrawal has been processed and is on its way.",
         });
         addNewEvent({ txType: "withdrawal", amount: w.amount });
       } else if (prev === "pending" && w.status === "rejected") {
         showEarningAlert({
           type: "withdrawal_rejected",
-          title: "Withdrawal Rejected",
-          amount: `${w.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ETB`,
-          description: "Your withdrawal was not approved. Contact support for details.",
+          title: isAmharic ? "ማውጣቱ ውድቅ ተደርጓል" : "Withdrawal Rejected",
+          amount: `${w.amount.toLocaleString("en-ET", { minimumFractionDigits: 2 })} ${isAmharic ? "ብር" : "ETB"}`,
+          description: isAmharic ? "ማውጣቱ ውድቅ ሆኗል። ለበለጠ መረጃ ድጋፍን ያግኙ።" : "Your withdrawal was not approved. Contact support for details.",
         });
         addNewEvent({ txType: "withdrawal", amount: w.amount });
       }
       knownWithdrawalStatuses.current[w.id] = w.status;
     });
-  }, [withdrawals]);
+  }, [withdrawals, isAmharic]);
 }

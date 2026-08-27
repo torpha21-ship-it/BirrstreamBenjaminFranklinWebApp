@@ -95,9 +95,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {/* Balance pill */}
         <div className="px-4 mb-4">
           <div className="bg-[#1A1A1A] rounded-2xl px-4 py-3">
-            <p className="text-gray-400 text-xs">Balance</p>
+            <p className="text-gray-400 text-xs">{isAmharic ? "ቀሪ ሂሳብ" : "Balance"}</p>
             <p className="text-white font-bold">
-              {(user as any).mainBalance?.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? "0.00"} ETB
+              {(user as any).mainBalance?.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? "0.00"} {isAmharic ? "ብር" : "ETB"}
             </p>
           </div>
         </div>

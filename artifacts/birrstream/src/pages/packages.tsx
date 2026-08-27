@@ -104,7 +104,7 @@ export default function Packages() {
             {t("packages.title")}
           </h1>
           <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "ቀሪ ሂሳብ፦ " : "Balance: "}{fmt(summary?.mainBalance ?? 0)} ETB
+            {isAmharic ? "ቀሪ ሂሳብ፦ " : "Balance: "}{fmt(summary?.mainBalance ?? 0)} {isAmharic ? "ብር" : "ETB"}
           </p>
         </div>
       </div>
@@ -145,7 +145,7 @@ export default function Packages() {
                 </div>
                 <div className="text-right">
                   <p className={`text-2xl font-bold ${colors.text}`}>{fmt(pkg.cost)}</p>
-                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>ETB</p>
+                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>{isAmharic ? "ብር" : "ETB"}</p>
                 </div>
               </div>
               <div className={`flex gap-3 mb-4 relative z-10 ${colors.text} backdrop-blur-sm bg-white/20 rounded-2xl px-3 py-2.5 border border-white/30`}>
@@ -153,14 +153,14 @@ export default function Packages() {
                   <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {t("packages.daily_return")}
                   </p>
-                  <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} ETB</p>
+                  <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} {isAmharic ? "ብር" : "ETB"}</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">
                   <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {isAmharic ? "የ 7 ቀን ትርፍ" : "7-Day Total"}
                   </p>
-                  <p className="font-bold text-sm">{fmt(pkg.totalYield)} ETB</p>
+                  <p className="font-bold text-sm">{fmt(pkg.totalYield)} {isAmharic ? "ብር" : "ETB"}</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">

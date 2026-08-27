@@ -32,6 +32,50 @@ const TASK_COLORS: Record<string, string> = {
   other: "bg-[#F2A89A] text-[#C0402E]",
 };
 
+const TASK_TRANSLATIONS: Record<string, { titleAm: string; descAm: string }> = {
+  "Watch a BirrStream video": {
+    titleAm: "የብርስትሪም ቪዲዮ ይመልከቱ",
+    descAm: "በፕላትፎርማችን ላይ ማንኛውንም ቪዲዮ ለ 5 ደቂቃዎች ይመልከቱ"
+  },
+  "Visit the BirrStream homepage": {
+    titleAm: "የብርስትሪም መነሻ ገጽን ይጎብኙ",
+    descAm: "የብርስትሪም ዋናውን ገጽ ከፍተው ለ 2 ደቂቃዎች ያስሱ"
+  },
+  "Join BirrStream Telegram": {
+    titleAm: "የብርስትሪም ቴሌግራምን ይቀላቀሉ",
+    descAm: "ለአዳዲስ መረጃዎች እና ጉርሻዎች ይፋዊ የቴሌግራም ቻናላችንን ይቀላቀሉ"
+  },
+  "Share your referral link": {
+    titleAm: "የግብዣ ሊንክዎን ያጋሩ",
+    descAm: "የእርስዎን ልዩ የግብዣ ሊንክ ዛሬ ቢያንስ ለአንድ ሰው ያጋሩ"
+  },
+  "Complete your profile": {
+    titleAm: "የመገለጫ መረጃዎን ያሟሉ",
+    descAm: "ሙሉ ስምዎ እና ኢሜይልዎ በመገለጫዎ ውስጥ ትክክል መሆናቸውን ያረጋግጡ"
+  },
+  "Watch 2 more videos": {
+    titleAm: "ተጨማሪ 2 ቪዲዮዎችን ይመልከቱ",
+    descAm: "በብርስትሪም ላይ 2 ተጨማሪ ቪዲዮዎችን ይመልከቱ"
+  },
+};
+
+function getLocalizedTask(title: string, desc: string, isAmharic: boolean) {
+  if (!isAmharic) return { title, description: desc };
+  const match = TASK_TRANSLATIONS[title];
+  if (match) return { title: match.titleAm, description: match.descAm };
+  
+  // Generic fallback translators if dynamic backend tasks added
+  let tAm = title;
+  let dAm = desc;
+  if (title.toLowerCase().includes("video")) tAm = "ቪዲዮ ይመልከቱ";
+  if (title.toLowerCase().includes("telegram")) tAm = "የቴሌግራም ቻናል ይቀላቀሉ";
+  if (title.toLowerCase().includes("referral")) tAm = "የግብዣ ሊንክ ያጋሩ";
+  if (title.toLowerCase().includes("profile")) tAm = "መገለጫዎን ያሟሉ";
+  if (title.toLowerCase().includes("home") || title.toLowerCase().includes("visit")) tAm = "መነሻ ገጹን ይጎብኙ";
+
+  return { title: tAm, description: dAm };
+}
+
 export default function Tasks() {
   const qc = useQueryClient();
   const { toast } = useToast();
@@ -45,12 +89,16 @@ export default function Tasks() {
   };
 
   const handleComplete = (id: number, title: string) => {
+    const localized = getLocalizedTask(title, "", isAmharic);
     completeMutation.mutate(
       { id },
       {
         onSuccess: (data) => {
           qc.invalidateQueries({ queryKey: getListDailyTasksQueryKey() });
-          toast({ title: `+${data.rewardEarned} ETB earned!`, description: title });
+          toast({
+            title: isAmharic ? `+${data.rewardEarned} ብር ${t("tasks.earned")}` : `+${data.rewardEarned} ETB earned!`,
+            description: localized.title
+          });
         },
         onError: () => toast({ title: isAmharic ? "ተግባሩ ዛሬ አስቀድሞ ተጠናቋል" : "Task already completed today", variant: "destructive" }),
       }
@@ -96,7 +144,7 @@ export default function Tasks() {
         </div>
         {totalEarnable > 0 && (
           <p className="text-primary text-sm mt-2 font-semibold relative z-10" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            +{totalEarnable.toFixed(2)} ETB {isAmharic ? "ለማግኘት ይገኛል" : "available to earn"}
+            +{totalEarnable.toFixed(2)} {isAmharic ? "ብር" : "ETB"} {isAmharic ? "ለማግኘት ይገኛል" : "available to earn"}
           </p>
         )}
       </div>
@@ -132,6 +180,7 @@ export default function Tasks() {
         )) : tasks?.map(task => {
           const iconSrc = getTaskIcon(task.title, task.taskType);
           const colors = TASK_COLORS[task.taskType] ?? TASK_COLORS.other;
+          const loc = getLocalizedTask(task.title, task.description, isAmharic);
           return (
             <div
               key={task.id}
@@ -143,11 +192,11 @@ export default function Tasks() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p className={`font-semibold text-[18px] leading-tight ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={displayFont}>
-                    {task.title}
+                    {loc.title}
                   </p>
-                  <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} ETB</span>
+                  <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} {isAmharic ? "ብር" : "ETB"}</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{task.description}</p>
+                <p className="text-xs text-muted-foreground mt-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{loc.description}</p>
               </div>
               <button
                 onClick={() => !task.isCompleted && handleComplete(task.id, task.title)}

@@ -102,13 +102,13 @@ export default function AffiliateNetwork() {
                   <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {isAmharic ? "የተቀማጭ መጠን" : "Deposit Volume"}
                   </p>
-                  <p className="font-semibold text-sm text-foreground">{fmt(member.activeDepositAmount)} ETB</p>
+                  <p className="font-semibold text-sm text-foreground">{fmt(member.activeDepositAmount)} {isAmharic ? "ብር" : "ETB"}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {isAmharic ? "የእርስዎ ኮሚሽን" : "Your Commission"}
                   </p>
-                  <p className="font-semibold text-sm text-primary">{fmt(member.commissionPaid)} ETB</p>
+                  <p className="font-semibold text-sm text-primary">{fmt(member.commissionPaid)} {isAmharic ? "ብር" : "ETB"}</p>
                 </div>
               </div>
             </div>
