@@ -129,7 +129,7 @@ export default function Support() {
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="font-bold text-[28px] text-foreground" style={displayFont}>
+            <p className="font-bold text-base sm:text-lg text-foreground whitespace-nowrap leading-tight" style={displayFont}>
               {isAmharic ? "ናኦሚ ላብስ ድጋፍ" : isOromo ? "Deeggarsa Naomi Labs" : "Naomi Labs Support"}
             </p>
             <p className="text-xs text-[#2B7A4B]" style={displayFont}>

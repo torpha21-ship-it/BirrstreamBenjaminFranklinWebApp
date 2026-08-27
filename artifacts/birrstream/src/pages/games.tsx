@@ -298,93 +298,160 @@ export default function Games() {
   if (isFullPageGame) {
     return (
       <div className="fixed inset-0 bg-[#1A1A1A] text-white flex flex-col overflow-hidden" style={{ zIndex: 30 }}>
+        {/* Top bar */}
         <div className="flex items-center justify-between bg-white/5 border-b border-white/10 px-4 py-3 flex-shrink-0">
-          <button onClick={() => setIsFullPageGame(false)} className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-2xl shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" style={HS}>
-            <ArrowLeft className="w-5 h-5 text-black" />
-            <span className="text-base font-semibold text-black">{t("games.back_to_arcade")}</span>
+          <button
+            onClick={() => setIsFullPageGame(false)}
+            className="flex items-center gap-2 bg-white text-black px-3.5 py-2 rounded-2xl shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors text-sm font-semibold"
+            style={HS}
+          >
+            <ArrowLeft className="w-4 h-4 text-black" />
+            <span>{t("games.back_to_arcade")}</span>
           </button>
-          <div className="flex items-center gap-2 bg-black/60 px-4 py-1.5 rounded-xl border border-yellow-500/30">
+          <div className="flex items-center gap-1.5 bg-black/60 px-3.5 py-1.5 rounded-xl border border-yellow-500/30">
             <Coins className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-semibold text-yellow-400" style={HS}>
+            <span className="text-xs sm:text-sm font-bold text-yellow-400" style={HS}>
               {balance.toLocaleString()} {currency}
             </span>
           </div>
         </div>
+
+        {/* Scrollable Game Canvas */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden">
-          <div className="max-w-lg mx-auto w-full px-4 py-4 space-y-5">
-            <div className="text-center">
-              <h1 className="text-[26px] font-bold text-white mb-1" style={HS}>
-                🎮 {isAmharic ? "የማይንክራፍት ካራክተር መምረጫ" : isOromo ? "FILATTUU KAARAAKTERII MAAYINKIRAAFTII" : "MINECRAFT MOB SPINNER"}
+          <div className="max-w-md mx-auto w-full px-4 py-4 space-y-4">
+            {/* Title Header */}
+            <div className="text-center pt-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-white mb-1 tracking-tight" style={HS}>
+                🎮 {isAmharic ? "የማይንክራፍት ካራክተር መምረጫ" : isOromo ? "Filattuu Kaaraakterii Maayinkiraaftii" : "Minecraft Mob Spinner"}
               </h1>
-              <p className="text-xs text-gray-400" style={HSsm}>
+              <p className="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed" style={HSsm}>
                 {isAmharic ? "ካራክተር በማሽከርከር እስከ +215 ብር ያሸንፉ ወይም ወጥመዶችን ያስወግዱ!" : isOromo ? "Kaaraakterii naannessuun hanga +215 Qarshii mo'adhaa ykn kiyyoo irraa fagaadhaa!" : `Spin to select 1 of 15 mobs. Win up to +215 ${currency} or dodge traps!`}
               </p>
             </div>
+
+            {/* VIP Status banner */}
             {arcadeStatus && (
-              <div className={`px-4 py-2.5 rounded-2xl text-xs font-semibold text-center flex items-center justify-center gap-2 border shadow-lg ${!arcadeStatus.hasActiveVip ? "bg-red-500/15 border-red-500/40 text-red-300" : arcadeStatus.isUnlimited ? "bg-amber-500/20 border-amber-500/50 text-amber-300 font-bold" : arcadeStatus.canSpin ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-red-500/15 border-red-500/40 text-red-300"}`} style={HSsm}>
-                {arcadeStatus.isUnlimited ? <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" /> : <ShieldAlert className="w-4 h-4" />}
-                <span>{localizeArcadeMessage(arcadeStatus.message, isAmharic, isOromo)}</span>
+              <div
+                className={`px-3.5 py-2 rounded-2xl text-xs font-semibold text-center flex items-center justify-center gap-2 border shadow-sm ${
+                  !arcadeStatus.hasActiveVip
+                    ? "bg-red-500/15 border-red-500/40 text-red-300"
+                    : arcadeStatus.isUnlimited
+                    ? "bg-amber-500/20 border-amber-500/50 text-amber-300 font-bold"
+                    : arcadeStatus.canSpin
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
+                    : "bg-red-500/15 border-red-500/40 text-red-300"
+                }`}
+                style={HSsm}
+              >
+                {arcadeStatus.isUnlimited ? <Sparkles className="w-4 h-4 text-amber-400 animate-pulse flex-shrink-0" /> : <ShieldAlert className="w-4 h-4 flex-shrink-0" />}
+                <span className="leading-snug">{localizeArcadeMessage(arcadeStatus.message, isAmharic, isOromo)}</span>
               </div>
             )}
-            <div className="flex justify-center">
-              <Button onClick={startSpin} disabled={isSpinning || (arcadeStatus ? !arcadeStatus.canSpin : false)} className={`w-full max-w-sm py-6 rounded-2xl text-lg font-bold shadow-xl transition-all ${isSpinning ? "bg-amber-500 text-black animate-pulse" : arcadeStatus && !arcadeStatus.canSpin ? "bg-gray-700 text-gray-400 cursor-not-allowed border border-white/10" : "bg-primary text-[#1A1A1A] hover:bg-primary/90 shadow-primary/30"}`} style={{ ...HS, letterSpacing: isAmharic ? "0" : "0.08em" }}>
-                <RefreshCw className={`w-5 h-5 mr-2 ${isSpinning ? "animate-spin" : ""}`} />
-                {isSpinning ? (isAmharic ? "በማሽከርከር ላይ..." : isOromo ? "NAANNA'AA JIRA..." : "SPINNING AUTO-PICKER...") : arcadeStatus && !arcadeStatus.canSpin ? (isAmharic ? "የዕለት ጣሪያ ደርሷል" : isOromo ? "DAANGAAN GUYYAA GA'EERA" : "DAILY LIMIT REACHED") : (isAmharic ? "አሽከርክር እና ምረጥ" : isOromo ? "NAANNESSI FI FILADHU" : "START AUTO-PICKER (SPIN)")}
+
+            {/* Action Spin Button */}
+            <div className="flex justify-center pt-1">
+              <Button
+                onClick={startSpin}
+                disabled={isSpinning || (arcadeStatus ? !arcadeStatus.canSpin : false)}
+                className={`w-full py-4 rounded-2xl text-base font-bold shadow-lg transition-all ${
+                  isSpinning
+                    ? "bg-amber-500 text-black animate-pulse"
+                    : arcadeStatus && !arcadeStatus.canSpin
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed border border-white/10"
+                    : "bg-primary text-[#1A1A1A] hover:bg-primary/90 shadow-primary/30"
+                }`}
+                style={HS}
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isSpinning ? "animate-spin" : ""}`} />
+                {isSpinning
+                  ? (isAmharic ? "በማሽከርከር ላይ..." : isOromo ? "Naanna'aa jira..." : "Spinning Auto-Picker...")
+                  : arcadeStatus && !arcadeStatus.canSpin
+                  ? (isAmharic ? "የዕለት ጣሪያ ደርሷል" : isOromo ? "Daangaan Guyyaa Ga'eera" : "Daily Limit Reached")
+                  : (isAmharic ? "አሽከርክር እና ምረጥ" : isOromo ? "Naannessi fi Filadhu" : "Start Auto-Picker (Spin)")}
               </Button>
             </div>
+
+            {/* Mob Roster Grid */}
             <div>
-              <p className="text-xs text-gray-400 mb-2 uppercase" style={HS}>{t("games.roster_title")}</p>
-              <div className="grid grid-cols-5 gap-2">
+              <p className="text-xs text-gray-400 mb-2 font-semibold uppercase tracking-wider" style={HS}>{t("games.roster_title")}</p>
+              <div className="grid grid-cols-5 gap-1.5 bg-black/40 p-2 rounded-2xl border border-white/10">
                 {MOBS.map((mob, idx) => (
-                  <button key={mob.id} onClick={() => !isSpinning && setSelectedIndex(idx)} className={`relative p-2 rounded-2xl flex flex-col items-center justify-center transition-all ${idx === selectedIndex ? "ring-2 ring-primary/60 scale-110 z-10" : "opacity-75 hover:opacity-100"}`}>
-                    <img src={mob.previewUrl} alt={isAmharic ? mob.nameAm : isOromo ? mob.nameOr : mob.name} className="w-10 h-10 object-contain mb-1" />
-                    <span className={`text-[11px] font-semibold ${mob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HSsm}>{mob.amount >= 0 ? `+${mob.amount}` : mob.amount}</span>
+                  <button
+                    key={mob.id}
+                    onClick={() => !isSpinning && setSelectedIndex(idx)}
+                    className={`relative p-1.5 rounded-xl flex flex-col items-center justify-center transition-all ${
+                      idx === selectedIndex ? "ring-2 ring-primary bg-white/10 scale-105 z-10" : "opacity-75 hover:opacity-100 hover:bg-white/5"
+                    }`}
+                  >
+                    <img src={mob.previewUrl} alt={isAmharic ? mob.nameAm : isOromo ? mob.nameOr : mob.name} className="w-8 h-8 sm:w-9 sm:h-9 object-contain mb-0.5" />
+                    <span className={`text-[10px] font-bold ${mob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HSsm}>
+                      {mob.amount >= 0 ? `+${mob.amount}` : mob.amount}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 items-center shadow-2xl">
-              <div className="w-40 h-40 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                <SpriteWalkAnimation mob={currentMob} displayWidth={120} />
+
+            {/* Selected Mob Highlight Card */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center shadow-xl">
+              <div className="w-32 h-32 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                <SpriteWalkAnimation mob={currentMob} displayWidth={110} />
               </div>
-              <div className="flex-1 w-full space-y-3 text-left">
+              <div className="flex-1 w-full space-y-2.5 text-left">
                 <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <h3 className="font-bold text-white text-xl" style={HS}>{isAmharic ? currentMob.nameAm : isOromo ? currentMob.nameOr : currentMob.name}</h3>
-                  <Badge className={currentMob.rarityColor} style={HSsm}>{isAmharic ? currentMob.rarityAm : isOromo ? currentMob.rarityOr : currentMob.rarity}</Badge>
+                  <h3 className="font-bold text-white text-lg" style={HS}>
+                    {isAmharic ? currentMob.nameAm : isOromo ? currentMob.nameOr : currentMob.name}
+                  </h3>
+                  <Badge className={`${currentMob.rarityColor} text-xs font-semibold px-2 py-0.5`} style={HSsm}>
+                    {isAmharic ? currentMob.rarityAm : isOromo ? currentMob.rarityOr : currentMob.rarity}
+                  </Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-gray-400 text-xs block" style={HSsm}>{t("games.power_rating")}</span>
-                    <span className="font-semibold text-yellow-400 text-base" style={HSsm}>{currentMob.power}</span>
+                    <span className="text-gray-400 text-[11px] block" style={HSsm}>{t("games.power_rating")}</span>
+                    <span className="font-bold text-yellow-400 text-sm" style={HSsm}>{currentMob.power}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-xs block" style={HSsm}>{t("games.agility_stat")}</span>
-                    <span className="font-semibold text-cyan-400 text-base" style={HSsm}>{currentMob.agility}</span>
+                    <span className="text-gray-400 text-[11px] block" style={HSsm}>{t("games.agility_stat")}</span>
+                    <span className="font-bold text-cyan-400 text-sm" style={HSsm}>{currentMob.agility}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-xs block" style={HSsm}>{t("games.birr_potential")}</span>
-                    <span className={`font-bold text-base ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HSsm}>{currentMob.amount >= 0 ? `+${currentMob.amount} ${currency}` : `${currentMob.amount} ${currency}`}</span>
+                    <span className="text-gray-400 text-[11px] block" style={HSsm}>{t("games.birr_potential")}</span>
+                    <span className={`font-bold text-sm ${currentMob.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HSsm}>
+                      {currentMob.amount >= 0 ? `+${currentMob.amount} ${currency}` : `${currentMob.amount} ${currency}`}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-xs block" style={HSsm}>{t("games.special_skill")}</span>
-                    <span className="font-semibold text-gray-200 text-sm" style={HSsm}>{isAmharic ? currentMob.abilityAm : isOromo ? currentMob.abilityOr : currentMob.ability}</span>
+                    <span className="text-gray-400 text-[11px] block" style={HSsm}>{t("games.special_skill")}</span>
+                    <span className="font-semibold text-gray-200 text-xs line-clamp-1" style={HSsm}>
+                      {isAmharic ? currentMob.abilityAm : isOromo ? currentMob.abilityOr : currentMob.ability}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="h-20 flex-shrink-0" />
+
+            <div className="h-16 flex-shrink-0" />
           </div>
         </div>
+
+        {/* Spin Result Modal */}
         {modalResult && (
           <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
             <div className="bg-[#1A1A1A] border-2 border-primary rounded-3xl p-6 text-center max-w-sm w-full space-y-4 shadow-2xl">
-              <div className="text-5xl">{modalResult.amount >= 200 ? "💎" : modalResult.amount >= 0 ? "🎉" : "💣"}</div>
-              <h3 className={`text-2xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>
+              <div className="text-4xl">{modalResult.amount >= 200 ? "💎" : modalResult.amount >= 0 ? "🎉" : "💣"}</div>
+              <h3 className={`text-xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>
                 {modalResult.amount >= 200 ? t("games.jackpot") : modalResult.amount >= 0 ? t("games.you_won") : t("games.penalty")}
               </h3>
-              <p className="text-sm text-gray-300" style={HSsm}>{t("games.landed_on")} <strong className="text-white">{isAmharic ? modalResult.nameAm : isOromo ? modalResult.nameOr : modalResult.name}</strong> ({isAmharic ? modalResult.abilityAm : isOromo ? modalResult.abilityOr : modalResult.ability})</p>
-              <div className={`text-3xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>{modalResult.amount >= 0 ? `+${modalResult.amount} ${currency}` : `${modalResult.amount} ${currency}`}</div>
-              <Button onClick={() => setModalResult(null)} className="w-full bg-primary text-[#1A1A1A] font-semibold py-3 rounded-xl" style={{ ...HS, letterSpacing: isAmharic ? "0" : "0.08em" }}>{t("games.continue_playing")}</Button>
+              <p className="text-xs text-gray-300 leading-relaxed" style={HSsm}>
+                {t("games.landed_on")} <strong className="text-white font-semibold">{isAmharic ? modalResult.nameAm : isOromo ? modalResult.nameOr : modalResult.name}</strong> ({isAmharic ? modalResult.abilityAm : isOromo ? modalResult.abilityOr : modalResult.ability})
+              </p>
+              <div className={`text-2xl font-bold ${modalResult.amount >= 0 ? "text-emerald-400" : "text-red-400"}`} style={HS}>
+                {modalResult.amount >= 0 ? `+${modalResult.amount} ${currency}` : `${modalResult.amount} ${currency}`}
+              </div>
+              <Button onClick={() => setModalResult(null)} className="w-full bg-primary text-[#1A1A1A] font-bold py-3 rounded-xl shadow-md" style={HS}>
+                {t("games.continue_playing")}
+              </Button>
             </div>
           </div>
         )}
@@ -393,54 +460,90 @@ export default function Games() {
   }
 
   return (
-    <div className="space-y-6 max-w-md mx-auto md:max-w-none">
-      <div className="flex items-center justify-between px-2 pt-2">
+    <div className="px-4 pt-4 pb-8 space-y-5 max-w-md mx-auto">
+      {/* Top Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] text-[#2B7A4B] font-bold" style={{ ...HS, letterSpacing: isAmharic ? "0" : "0.08em" }}>{t("games.title")}</h1>
-          <p className="text-gray-400 text-[18px]" style={HSsm}>{t("games.subtitle")}</p>
+          <h1 className="text-2xl font-bold text-[#2B7A4B] leading-tight" style={HS}>
+            {t("games.title")}
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5" style={HSsm}>
+            {t("games.subtitle")}
+          </p>
         </div>
-        <div className="bg-[#1A1A1A] px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-2">
-          <Coins className="w-4 h-4 text-yellow-400" />
-          <span className="text-sm font-semibold text-white" style={HS}>{balance.toLocaleString()} {currency}</span>
+        <div className="bg-card px-3.5 py-2 rounded-2xl border border-border shadow-sm flex items-center gap-1.5">
+          <Coins className="w-4 h-4 text-yellow-500" />
+          <span className="text-sm font-bold text-foreground" style={HS}>
+            {balance.toLocaleString()} {currency}
+          </span>
         </div>
       </div>
-      <div className="relative flex flex-col space-y-4">
-        <div className="relative w-full h-64 rounded-3xl overflow-hidden border border-border shadow-lg">
+
+      {/* Featured Game Card */}
+      <div className="relative flex flex-col space-y-3">
+        <div className="relative w-full h-56 rounded-3xl overflow-hidden border border-border shadow-lg">
           <img src="/game-thumbnail.jpg" alt={t("games.featured")} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent p-4 flex flex-col justify-end">
-            <h2 className="text-[26px] font-bold text-white mb-1" style={HS}>{t("games.featured")}</h2>
-            <p className="text-gray-200 text-xs leading-snug" style={HSsm}>{t("games.featured_desc")}</p>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-4 flex flex-col justify-end">
+            <h2 className="text-xl font-bold text-white mb-0.5" style={HS}>
+              {t("games.featured")}
+            </h2>
+            <p className="text-gray-200 text-xs leading-relaxed line-clamp-2" style={HSsm}>
+              {t("games.featured_desc")}
+            </p>
           </div>
         </div>
-        <div className="space-y-4 pt-1">
-          <div className="flex flex-wrap gap-2">
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-semibold" style={HSsm}>{isAmharic ? "ጃክፖት፦ +215 ብር" : isOromo ? "Badhaasa Guddaa፦ +215 Qarshii" : "Jackpot: +215 ETB"}</span>
-            <span className="px-3 py-1 bg-red-500/20 text-red-600 dark:text-red-400 rounded-full text-xs font-semibold" style={HSsm}>{isAmharic ? "የቅጣት ወጥመዶች ተካትተዋል" : isOromo ? "Kiyyoowwan Balaa Qabata" : "Danger Traps Included"}</span>
+
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-1.5">
+            <span className="px-2.5 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-full text-[11px] font-semibold" style={HSsm}>
+              {isAmharic ? `ጃክፖት፦ +215 ${currency}` : isOromo ? `Badhaasa Guddaa፦ +215 ${currency}` : `Jackpot: +215 ${currency}`}
+            </span>
+            <span className="px-2.5 py-1 bg-red-500/15 text-red-600 dark:text-red-400 rounded-full text-[11px] font-semibold" style={HSsm}>
+              {isAmharic ? "የቅጣት ወጥመዶች ተካትተዋል" : isOromo ? "Kiyyoowwan Balaa Qabata" : "Danger Traps Included"}
+            </span>
             {arcadeStatus && (
-              <span className={`px-3 py-1 rounded-full text-xs font-bold border ${!arcadeStatus.hasActiveVip ? "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30" : arcadeStatus.isUnlimited ? "bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/40" : arcadeStatus.canSpin ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"}`} style={HSsm}>{localizeArcadeMessage(arcadeStatus.message, isAmharic, isOromo)}</span>
+              <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${!arcadeStatus.hasActiveVip ? "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30" : arcadeStatus.isUnlimited ? "bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/40" : arcadeStatus.canSpin ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30"}`} style={HSsm}>
+                {localizeArcadeMessage(arcadeStatus.message, isAmharic, isOromo)}
+              </span>
             )}
           </div>
-          <div>
-            <Button onClick={() => setIsFullPageGame(true)} className="w-full bg-primary text-[#1A1A1A] hover:bg-primary/90 font-bold text-lg py-6 rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ ...HS, letterSpacing: isAmharic ? "0" : "0.08em" }}>
-              <Play className="w-5 h-5 fill-current mr-2" />
-              {t("games.play_now")}
-            </Button>
-          </div>
+          <Button
+            onClick={() => setIsFullPageGame(true)}
+            className="w-full bg-primary text-[#1A1A1A] hover:bg-primary/90 font-bold text-base py-4 rounded-2xl shadow-md shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.98]"
+            style={HS}
+          >
+            <Play className="w-4 h-4 fill-current mr-2" />
+            {t("games.play_now")}
+          </Button>
         </div>
       </div>
-      <div className="space-y-4 pt-2">
-        <p className="text-[22px] text-muted-foreground font-semibold" style={HS}>{isAmharic ? "በቅርቡ የሚመጡ ጨዋታዎች" : isOromo ? "Taphawwan Dhiyootti Dhufan" : "Upcoming Arcade Games"}</p>
-        <div className="relative flex flex-col space-y-3">
-          <div className="relative w-full h-48 rounded-3xl overflow-hidden border border-border shadow-md">
+
+      {/* Upcoming Games Section */}
+      <div className="space-y-3 pt-2">
+        <p className="text-lg font-bold text-foreground" style={HS}>
+          {isAmharic ? "በቅርቡ የሚመጡ ጨዋታዎች" : isOromo ? "Taphawwan Dhiyootti Dhufan" : "Upcoming Arcade Games"}
+        </p>
+        <div className="relative flex flex-col space-y-3 bg-card p-3.5 rounded-3xl border border-border shadow-sm">
+          <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-border">
             <video src="/Gamevid.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
-            <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md text-black px-3 py-1 rounded-full text-xs font-extrabold shadow-lg" style={HS}>🔒 {isAmharic ? "በቅርቡ" : isOromo ? "DHIYOOTTI" : "COMING SOON"}</div>
-            <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-xs font-bold text-white" style={HS}>🎬 {isAmharic ? "አኒሜሽን ቅድመ እይታ" : isOromo ? "Agarsiisa Socho'aa" : "Animated Preview"}</div>
+            <div className="absolute top-2.5 right-2.5 bg-amber-500/90 backdrop-blur-md text-black px-2.5 py-0.5 rounded-full text-[10px] font-extrabold shadow-sm" style={HS}>
+              🔒 {isAmharic ? "በቅርቡ" : isOromo ? "DHIYOOTTI" : "COMING SOON"}
+            </div>
+            <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-xl text-[10px] font-bold text-white" style={HS}>
+              🎬 {isAmharic ? "አኒሜሽን ቅድመ እይታ" : isOromo ? "Agarsiisa Socho'aa" : "Animated Preview"}
+            </div>
           </div>
           <div>
-            <h3 className="text-[22px] font-bold text-foreground mb-1" style={HS}>{isAmharic ? "የብር ፈንጂ ፍለጋ" : isOromo ? "Sakatta'aa Dhoohoo Qarshii" : "Birr Mine Sweeper"}</h3>
-            <p className="text-muted-foreground text-sm" style={HSsm}>{isAmharic ? "የተደበቁ ኤመራልድ ሳጥኖችን ያግኙ እና ቲኤንቲ ፈንጂዎችን ያስወግዱ! ከፍተኛ ሽልማት!" : isOromo ? "Saanduqa Eemeraaldii dhokate barbaadaa dhoohoo TNT jalaa miliqaa! Badhaasa guddaa!" : "Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!"}</p>
+            <h3 className="text-base font-bold text-foreground mb-0.5" style={HS}>
+              {isAmharic ? "የብር ፈንጂ ፍለጋ" : isOromo ? "Sakatta'aa Dhoohoo Qarshii" : "Birr Mine Sweeper"}
+            </h3>
+            <p className="text-muted-foreground text-xs leading-relaxed" style={HSsm}>
+              {isAmharic ? "የተደበቁ ኤመራልድ ሳጥኖችን ያግኙ እና ቲኤንቲ ፈንጂዎችን ያስወግዱ! ከፍተኛ ሽልማት!" : isOromo ? "Saanduqa Eemeraaldii dhokate barbaadaa dhoohoo TNT jalaa miliqaa! Badhaasa guddaa!" : "Uncover hidden emerald tiles while dodging TNT mines. High risk multipliers!"}
+            </p>
           </div>
-          <Button disabled variant="outline" className="w-full text-muted-foreground border-border bg-muted/40 py-5 rounded-2xl" style={HS}>{isAmharic ? "በቅርቡ ይጠብቁ" : isOromo ? "Dhiyootti Eegaa" : "Coming Soon"}</Button>
+          <Button disabled variant="outline" className="w-full text-muted-foreground border-border bg-muted/40 py-3 rounded-xl text-xs font-semibold" style={HS}>
+            {isAmharic ? "በቅርቡ ይጠብቁ" : isOromo ? "Dhiyootti Eegaa" : "Coming Soon"}
+          </Button>
         </div>
       </div>
     </div>

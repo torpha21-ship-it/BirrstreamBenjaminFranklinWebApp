@@ -184,12 +184,12 @@ export default function Dashboard() {
 
   return (
     <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative">
-      {/* Centred brand mark with Language Toggle placed far on the right side */}
-      <div className="relative flex items-center justify-center z-20 min-h-[44px]">
-        <div className="flex justify-center">
+      {/* Top Bar: Brand Logo on left with Language Toggle on right */}
+      <div className="flex items-center justify-between z-20 min-h-[44px] px-1">
+        <div className="flex items-center">
           <BSLogo />
         </div>
-        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+        <div className="flex-shrink-0">
           <LanguageToggle />
         </div>
       </div>
@@ -350,7 +350,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 bg-[#FCE7EE] rounded-xl flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
               <img src={loginStreakIcon} alt="" className="w-full h-full object-contain" />
             </div>
-            <h2 className="text-[28px] font-bold text-foreground leading-none" style={displayFont}>
+            <h2 className="text-lg sm:text-xl font-bold text-foreground leading-tight whitespace-nowrap" style={displayFont}>
               {t("dash.login_streak")}
             </h2>
           </div>

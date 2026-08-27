@@ -18,10 +18,10 @@ import hand2 from "@/assets/decor/member-hand-2.svg";
 import hand1 from "@/assets/decor/member-hand-1.svg";
 import { CalendarCard } from "@/components/calendar-card";
 
-import withdrawalSettingsIcon from "@/assets/profile-icons/wired-outline-2540-Withdrawal Settings.webp";
+import withdrawalSettingsIcon from "@/assets/profile-icons/wired-outline-409-wrench-hover-oscillate.webp";
 import transactionHistoryIcon from "@/assets/profile-icons/wired-outline-948-Transaction History.webp";
 import referralIcon from "@/assets/profile-icons/My Referal Network.webp";
-import affiliateIcon from "@/assets/profile-icons/wired-outline-409-wrench-hover-oscillate.webp";
+import affiliateIcon from "@/assets/profile-icons/wired-outline-2723-logo-linktree-hover-pinch.webp";
 import vipUpgradeIcon from "@/assets/profile-icons/VIP Upgrade Goals.webp";
 
 export default function Profile() {
