@@ -54,7 +54,7 @@ async function creditDailyYield(token: string | null) {
 
 export default function Dashboard() {
   const { user, token } = useAuth();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
   const qc = useQueryClient();
   const { toast } = useToast();
   const { data: summary, isLoading } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
@@ -85,23 +85,45 @@ export default function Dashboard() {
         qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
         showEarningAlert({
           type: "yield",
-          title: isAmharic ? "የዕለት ትርፍ ተገኝቷል!" : "Daily Yield Credited!",
-          amount: `+${fmt(result.yieldAmount)} ${isAmharic ? "ብር" : "ETB"}`,
-          description: isAmharic ? `${result.packageName} የዕለት ትርፍ ወደ ሂሳብዎ ተጨምሯል።` : `${result.packageName} daily return added to your balance.`,
+          title: isAmharic ? "የዕለት ትርፍ ተገኝቷል!" : isOromo ? "Bu'aan Guyyaa Galameera!" : "Daily Yield Credited!",
+          amount: `+${fmt(result.yieldAmount)} ${currency}`,
+          description: isAmharic
+            ? `${result.packageName} የዕለት ትርፍ ወደ ሂሳብዎ ተጨምሯል።`
+            : isOromo
+            ? `${result.packageName} bu'aan guyyaa gara herrega keessanitti dabalameera.`
+            : `${result.packageName} daily return added to your balance.`,
         });
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, isAmharic, isOromo, currency]);
 
   const handleCheckin = () => {
     checkinMutation.mutate(undefined, {
       onSuccess: (data) => {
         qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
         qc.invalidateQueries({ queryKey: getGetLoginStreakQueryKey() });
-        toast({ title: isAmharic ? `+${data.bonusEarned} ብር ጉርሻ!` : `+${data.bonusEarned} ETB streak bonus!`, description: isAmharic ? `ቀን ${data.newStreak} ተከታታይ ተሳትፎ!` : `Day ${data.newStreak} streak!` });
+        toast({
+          title: isAmharic
+            ? `+${data.bonusEarned} ብር ጉርሻ!`
+            : isOromo
+            ? `+${data.bonusEarned} Qarshii Badhaasa!`
+            : `+${data.bonusEarned} ETB streak bonus!`,
+          description: isAmharic
+            ? `ቀን ${data.newStreak} ተከታታይ ተሳትፎ!`
+            : isOromo
+            ? `Guyyaa ${data.newStreak} walitti fufiinsaan!`
+            : `Day ${data.newStreak} streak!`
+        });
       },
-      onError: () => toast({ title: isAmharic ? "ዛሬ አስቀድመው ተሳትፈዋል" : "Already checked in today", variant: "destructive" }),
+      onError: () => toast({
+        title: isAmharic
+          ? "ዛሬ አስቀድመው ተሳትፈዋል"
+          : isOromo
+          ? "Har'a duraan galmooftaniittu"
+          : "Already checked in today",
+        variant: "destructive"
+      }),
     });
   };
 
@@ -220,14 +242,14 @@ export default function Dashboard() {
           <>
             <p className="text-4xl font-bold mb-1">
               {fmt(summary?.mainBalance ?? 0)}{" "}
-              <span className="text-xl font-semibold text-gray-300" style={displayFont}>{isAmharic ? "ብር" : "ETB"}</span>
+              <span className="text-xl font-semibold text-gray-300" style={displayFont}>{currency}</span>
             </p>
             {pendingWithdrawalTotal > 0 && (
               <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
                 <span className="text-xs text-yellow-400 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                  ⏳ {isAmharic ? "በመጠባበቅ ላይ ያለ ገንዘብ" : "Pending Withdrawal"}
+                  ⏳ {isAmharic ? "በመጠባበቅ ላይ ያለ ገንዘብ" : isOromo ? "Qarshii eeggamaa jiru" : "Pending Withdrawal"}
                 </span>
-                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} {isAmharic ? "ብር" : "ETB"}</span>
+                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} {currency}</span>
               </div>
             )}
           </>
@@ -239,17 +261,17 @@ export default function Dashboard() {
             </span>
             <span className="flex items-center gap-1 text-xs text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               <TrendingUp className="w-3 h-3" />
-              +{fmt(summary.activePackageDailyReturn ?? 0)} {isAmharic ? "ብር" : "ETB"}/{isAmharic ? "ቀን" : "day"}
+              +{fmt(summary.activePackageDailyReturn ?? 0)} {currency}/{isAmharic ? "ቀን" : isOromo ? "guyyaa" : "day"}
             </span>
             {summary.daysUntilExpiry !== null && (
               <span className="text-xs text-gray-500" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : "d left"}
+                {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
               </span>
             )}
           </div>
         ) : (
           <Link href="/packages" className="inline-flex items-center gap-1 mt-3 px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : "Get a VIP Package"} <ChevronRight className="w-3 h-3" />
+            {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"} <ChevronRight className="w-3 h-3" />
           </Link>
         )}
 
@@ -285,8 +307,8 @@ export default function Dashboard() {
         {[
           { iconSrc: depositIcon, label: t("dash.deposit"), href: "/deposit", color: "bg-[#FCE7EE]" },
           { iconSrc: withdrawIcon, label: t("dash.withdraw"), href: "/withdraw", color: "bg-[#F5E6A3]" },
-          { iconSrc: packagesIcon, label: t("nav.deposit", "Packages"), href: "/packages", color: "bg-[#C9BDF5]" },
-          { iconSrc: tasksIcon, label: t("nav.tasks"), href: "/tasks", color: "bg-[#A8D5B5]" },
+          { iconSrc: packagesIcon, label: t("dash.packages", "Packages"), href: "/packages", color: "bg-[#C9BDF5]" },
+          { iconSrc: tasksIcon, label: t("dash.tasks", "Tasks"), href: "/tasks", color: "bg-[#A8D5B5]" },
         ].map(({ iconSrc, label, href, color }) => (
           <Link
             key={href}
@@ -314,7 +336,7 @@ export default function Dashboard() {
             <div className="relative z-10">
               <p className={`text-[19px] ${card.textColor} opacity-80 mb-0.5`} style={displayFont}>{card.label}</p>
               <p className={`text-[15px] font-bold ${card.textColor}`}>{fmt(card.value)}</p>
-              <p className={`text-[10px] ${card.textColor} opacity-60 font-semibold`}>{isAmharic ? "ብር" : "ETB"}</p>
+              <p className={`text-[10px] ${card.textColor} opacity-60 font-semibold`}>{currency}</p>
             </div>
           </div>
         ))}
@@ -344,7 +366,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-7 gap-1 mb-1">
           {["Su","Mo","Tu","We","Th","Fr","Sa"].map((d, idx) => (
             <div key={d} className="text-[10px] font-semibold text-muted-foreground text-center py-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"][idx] : d}
+              {isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"][idx] : isOromo ? ["DIL", "WIX", "KIB", "ROO", "KAM", "JMI", "SAN"][idx] : d}
             </div>
           ))}
         </div>
@@ -379,15 +401,15 @@ export default function Dashboard() {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
             <span className="w-3 h-3 rounded-full bg-primary inline-block flex-shrink-0" />
-            {isAmharic ? "የተመዘገበ" : "Checked in"}
+            {t("dash.checked_in_legend")}
           </span>
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
             <span className="w-3 h-3 rounded-full border-2 border-primary inline-block flex-shrink-0" />
-            {isAmharic ? "ዛሬ" : "Today"}
+            {t("dash.today_legend")}
           </span>
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
             <span className="w-3 h-3 rounded-full bg-muted-foreground/25 inline-block flex-shrink-0" />
-            {isAmharic ? "ያመለጠ" : "Missed"}
+            {t("dash.missed_legend")}
           </span>
           <img
             src={streakImg}
@@ -405,7 +427,7 @@ export default function Dashboard() {
             style={displayFont}
           >
             <img src={checkInIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
-            <span>{checkinMutation.isPending ? (isAmharic ? "በመመዝገብ ላይ..." : "Checking in...") : (isAmharic ? "ተሳትፎ ይመዝግቡ — +5 ብር ያግኙ" : "Check In — Earn +5 ETB")}</span>
+            <span>{checkinMutation.isPending ? t("dash.checking_in") : t("dash.check_in")}</span>
           </button>
         ) : (
           <div className="w-full py-3 bg-accent/30 text-accent-foreground rounded-2xl font-semibold text-sm text-center" style={displayFont}>

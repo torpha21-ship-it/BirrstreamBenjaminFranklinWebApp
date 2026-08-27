@@ -8,7 +8,7 @@ import pointingHand from "@/assets/decor/pointing-hand.webp";
 
 export default function Referral() {
   const { toast } = useToast();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
   const { data: info, isLoading } = useGetReferralInfo({ query: { queryKey: getGetReferralInfoQueryKey() } });
 
   const displayFont = {
@@ -18,7 +18,7 @@ export default function Referral() {
 
   const copy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: isAmharic ? `${label} ተቀድቷል!` : `${label} copied!` });
+    toast({ title: isAmharic ? `${label} ተቀድቷል!` : isOromo ? `${label} garagalfameera!` : `${label} copied!` });
   };
 
   return (
@@ -43,17 +43,17 @@ export default function Referral() {
         <img src={pointingHand} alt="" aria-hidden="true" className="absolute right-0 top-0 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
         <div className="relative z-10">
         <p className="text-gray-400 text-sm mb-3" style={displayFont}>
-          {isAmharic ? "የእርስዎ የአውታረ መረብ መጠን" : "Your network size"}
+          {isAmharic ? "የእርስዎ የአውታረ መረብ መጠን" : isOromo ? "Bal'ina Netwoorkii Keessanii" : "Your network size"}
         </p>
         <p className="text-4xl font-bold">{info?.totalNetworkSize ?? 0}</p>
         <p className="text-gray-400 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-          {isAmharic ? "ጠቅላላ አባላት" : "total members"}
+          {isAmharic ? "ጠቅላላ አባላት" : isOromo ? "waliigala miseensotaa" : "total members"}
         </p>
         <div className="grid grid-cols-3 gap-3 mt-4">
           {[
-            { label: isAmharic ? "ደረጃ 1" : "Level 1", value: info?.level1Count ?? 0, color: "bg-primary/20 text-primary" },
-            { label: isAmharic ? "ደረጃ 2" : "Level 2", value: info?.level2Count ?? 0, color: "bg-[#C9BDF5]/20 text-[#C9BDF5]" },
-            { label: isAmharic ? "ደረጃ 3" : "Level 3", value: info?.level3Count ?? 0, color: "bg-[#A8D5B5]/20 text-[#A8D5B5]" },
+            { label: isAmharic ? "ደረጃ 1" : isOromo ? "Sadarkaa 1" : "Level 1", value: info?.level1Count ?? 0, color: "bg-primary/20 text-primary" },
+            { label: isAmharic ? "ደረጃ 2" : isOromo ? "Sadarkaa 2" : "Level 2", value: info?.level2Count ?? 0, color: "bg-[#C9BDF5]/20 text-[#C9BDF5]" },
+            { label: isAmharic ? "ደረጃ 3" : isOromo ? "Sadarkaa 3" : "Level 3", value: info?.level3Count ?? 0, color: "bg-[#A8D5B5]/20 text-[#A8D5B5]" },
           ].map(stat => (
             <div key={stat.label} className={`${stat.color} rounded-2xl p-3 text-center`}>
               <p className="text-xl font-bold">{stat.value}</p>
@@ -67,10 +67,10 @@ export default function Referral() {
       {/* Commissions earned */}
       <div className="bg-[#A8D5B5] rounded-2xl p-4 mb-5">
         <p className="text-[#2B7A4B] text-sm font-semibold" style={displayFont}>
-          {isAmharic ? "ጠቅላላ የተገኘ የኮሚሽን ትርፍ" : "Total Commissions Earned"}
+          {isAmharic ? "ጠቅላላ የተገኘ የኮሚሽን ትርፍ" : isOromo ? "Waliigala Komishinii Argame" : "Total Commissions Earned"}
         </p>
         <p className="text-[#2B7A4B] text-2xl font-bold mt-1">
-          {(info?.totalCommissionsEarned ?? 0).toLocaleString("en-ET", { minimumFractionDigits: 2 })} {isAmharic ? "ብር" : "ETB"}
+          {(info?.totalCommissionsEarned ?? 0).toLocaleString("en-ET", { minimumFractionDigits: 2 })} {currency}
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export default function Referral() {
             {isLoading ? "••••••" : info?.referralCode}
           </span>
           <button
-            onClick={() => info?.referralCode && copy(info.referralCode, isAmharic ? "የግብዣ ኮድ" : "Referral code")}
+            onClick={() => info?.referralCode && copy(info.referralCode, isAmharic ? "የግብዣ ኮድ" : isOromo ? "Koodii afeerraa" : "Referral code")}
             className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center hover:bg-primary/20 transition-colors"
           >
             <Copy className="w-4 h-4 text-primary" />
@@ -102,7 +102,7 @@ export default function Referral() {
             <p className="text-xs text-muted-foreground truncate">{info?.referralLink}</p>
           </div>
           <button
-            onClick={() => info?.referralLink && copy(info.referralLink, isAmharic ? "የግብዣ ሊንክ" : "Referral link")}
+            onClick={() => info?.referralLink && copy(info.referralLink, isAmharic ? "የግብዣ ሊንክ" : isOromo ? "Liinkii afeerraa" : "Referral link")}
             className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center hover:bg-primary/20 flex-shrink-0"
           >
             <Copy className="w-4 h-4 text-primary" />
@@ -115,7 +115,7 @@ export default function Referral() {
             style={displayFont}
           >
             <Share2 className="w-4 h-4" />
-            {isAmharic ? "የግብዣ ሊንክ ያጋሩ" : "Share Referral Link"}
+            {isAmharic ? "የግብዣ ሊንክ ያጋሩ" : isOromo ? "Liinkii Afeerraa Qoodaa" : "Share Referral Link"}
           </button>
         )}
       </div>
@@ -128,10 +128,10 @@ export default function Referral() {
           </div>
           <div>
             <p className="font-semibold text-sm text-foreground" style={displayFont}>
-              {isAmharic ? "የግብዣ አውታረ መረብን ይመልከቱ" : "View Affiliate Network"}
+              {isAmharic ? "የግብዣ አውታረ መረብን ይመልከቱ" : isOromo ? "Netwoorkii Afeerraa Ilaalaa" : "View Affiliate Network"}
             </p>
             <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {isAmharic ? "የ 3 ደረጃ ተጋባዦችን ዝርዝር ይመልከቱ" : "See your 3-tier downline"}
+              {isAmharic ? "የ 3 ደረጃ ተጋባዦችን ዝርዝር ይመልከቱ" : isOromo ? "Tarree afeeramtoota sadarkaa 3 ilaalaa" : "See your 3-tier downline"}
             </p>
           </div>
         </div>

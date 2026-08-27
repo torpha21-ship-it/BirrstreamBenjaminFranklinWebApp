@@ -23,17 +23,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location] = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, currency } = useLanguage();
 
   const NAV_ITEMS = [
     { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
     { href: "/games", icon: NavGamesIcon, label: t("nav.games") },
     { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
-    { href: "/packages", icon: Package, label: isAmharic ? "የቪአይፒ ፓኬጆች" : "VIP Packages" },
-    { href: "/referral", icon: Users, label: isAmharic ? "ሪፈራሎች" : "Referrals" },
-    { href: "/transactions", icon: Receipt, label: isAmharic ? "ግብይቶች" : "Transactions" },
-    { href: "/vip-upgrades", icon: Trophy, label: isAmharic ? "የቪአይፒ ደረጃዎች" : "VIP Upgrades" },
-    { href: "/support", icon: NavSupportIcon, label: isAmharic ? "እርዳታ" : "Support" },
+    { href: "/packages", icon: Package, label: t("nav.packages") },
+    { href: "/referral", icon: Users, label: t("nav.referrals") },
+    { href: "/transactions", icon: Receipt, label: t("nav.transactions") },
+    { href: "/vip-upgrades", icon: Trophy, label: t("nav.vip_upgrades") },
+    { href: "/support", icon: NavSupportIcon, label: t("nav.support") },
     { href: "/profile", icon: NavProfileIcon, label: t("nav.profile") },
   ];
 
@@ -41,7 +41,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
     { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
     { href: "/games", icon: NavGamesIcon, label: t("nav.games"), isCenterGame: true },
-    { href: "/support", icon: NavSupportIcon, label: isAmharic ? "እርዳታ" : "Support" },
+    { href: "/support", icon: NavSupportIcon, label: t("nav.support") },
     { href: "/profile", icon: NavProfileIcon, label: t("nav.profile") },
   ];
 
@@ -95,9 +95,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {/* Balance pill */}
         <div className="px-4 mb-4">
           <div className="bg-[#1A1A1A] rounded-2xl px-4 py-3">
-            <p className="text-gray-400 text-xs">{isAmharic ? "ቀሪ ሂሳብ" : "Balance"}</p>
+            <p className="text-gray-400 text-xs">{t("nav.balance")}</p>
             <p className="text-white font-bold">
-              {(user as any).mainBalance?.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? "0.00"} {isAmharic ? "ብር" : "ETB"}
+              {(user as any).mainBalance?.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? "0.00"} {currency}
             </p>
           </div>
         </div>

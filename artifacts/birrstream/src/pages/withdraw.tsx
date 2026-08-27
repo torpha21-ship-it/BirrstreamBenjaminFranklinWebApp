@@ -13,7 +13,7 @@ function fmt(n: number) {
 export default function Withdraw() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
   const [amount, setAmount] = useState("");
   const submitMutation = useSubmitWithdrawal();
   const { data: summary } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
@@ -26,9 +26,9 @@ export default function Withdraw() {
   };
 
   const STATUS_CONFIG = {
-    pending: { icon: Clock, color: "text-[#D4B61B]", bg: "bg-[#F5E6A3]", label: isAmharic ? "በመጠባበቅ ላይ" : "Pending" },
-    approved: { icon: CheckCircle2, color: "text-[#2B7A4B]", bg: "bg-[#A8D5B5]", label: isAmharic ? "ተቀባይነት አግኝቷል" : "Approved" },
-    rejected: { icon: XCircle, color: "text-[#C0402E]", bg: "bg-[#F2A89A]", label: isAmharic ? "ውድቅ ተደርጓል" : "Rejected" },
+    pending: { icon: Clock, color: "text-[#D4B61B]", bg: "bg-[#F5E6A3]", label: t("common.pending") },
+    approved: { icon: CheckCircle2, color: "text-[#2B7A4B]", bg: "bg-[#A8D5B5]", label: t("common.approved") },
+    rejected: { icon: XCircle, color: "text-[#C0402E]", bg: "bg-[#F2A89A]", label: t("common.rejected") },
   };
 
   const available = Math.max(0, (summary?.mainBalance ?? 0) - (summary?.reserveFloor ?? 0));
@@ -37,7 +37,10 @@ export default function Withdraw() {
     e.preventDefault();
     const amountNum = parseFloat(amount);
     if (isNaN(amountNum) || amountNum <= 0) {
-      toast({ title: isAmharic ? "ትክክለኛ ያልሆነ የብር መጠን" : "Invalid amount", variant: "destructive" });
+      toast({
+        title: isAmharic ? "ትክክለኛ ያልሆነ የብር መጠን" : isOromo ? "Hamma Qarshii dogoggoraa" : "Invalid amount",
+        variant: "destructive"
+      });
       return;
     }
     submitMutation.mutate(
@@ -47,15 +50,19 @@ export default function Withdraw() {
           qc.invalidateQueries({ queryKey: getListWithdrawalsQueryKey() });
           qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
           toast({
-            title: isAmharic ? "የማውጣት ጥያቄ ገብቷል!" : "Withdrawal submitted!",
-            description: isAmharic ? "በ 24 ሰዓታት ውስጥ ወደ ሂሳብዎ ይላካል።" : "Will be processed within 24 hours."
+            title: isAmharic ? "የማውጣት ጥያቄ ገብቷል!" : isOromo ? "Gaaffiin baasii dhiyaateera!" : "Withdrawal submitted!",
+            description: isAmharic ? "በ 24 ሰዓታት ውስጥ ወደ ሂሳብዎ ይላካል።" : isOromo ? "Sa'aatii 24 keessatti isiniif ergama." : "Will be processed within 24 hours."
           });
           setAmount("");
         },
         onError: () => {
           toast({
-            title: isAmharic ? "ማውጣት አልተሳካም" : "Withdrawal failed",
-            description: isAmharic ? "የ 40% የተቀማጭ ገንዘብ ደንብን መጣስ አይቻልም።" : "Cannot breach the 40% reserve requirement.",
+            title: isAmharic ? "ማውጣት አልተሳካም" : isOromo ? "Baasuun hin danda'amne" : "Withdrawal failed",
+            description: isAmharic
+              ? "የ 40% የተቀማጭ ገንዘብ ደንብን መጣስ አይቻልም።"
+              : isOromo
+              ? "Seera qusannoo 40% eeguun dirqama."
+              : "Cannot breach the 40% reserve requirement.",
             variant: "destructive"
           });
         },
@@ -85,14 +92,14 @@ export default function Withdraw() {
               {t("profile.main_balance")}
             </p>
             <p className="text-2xl font-bold">{fmt(summary?.mainBalance ?? 0)}</p>
-            <p className="text-gray-400 text-xs" style={displayFont}>ETB</p>
+            <p className="text-gray-400 text-xs" style={displayFont}>{currency}</p>
           </div>
           <div>
             <p className="text-gray-400 text-xs mb-1" style={displayFont}>
-              {isAmharic ? "ለማውጣት የሚገኝ" : "Available to Withdraw"}
+              {isAmharic ? "ለማውጣት የሚገኝ" : isOromo ? "Baasuuf kan qophaa'e" : "Available to Withdraw"}
             </p>
             <p className="text-2xl font-bold text-primary">{fmt(available)}</p>
-            <p className="text-gray-400 text-xs" style={displayFont}>ETB</p>
+            <p className="text-gray-400 text-xs" style={displayFont}>{currency}</p>
           </div>
         </div>
         {summary?.reserveFloor && summary.reserveFloor > 0 && (
@@ -101,6 +108,8 @@ export default function Withdraw() {
             <p className="text-gray-400 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               {isAmharic
                 ? `የ 40% የተቀማጭ ደንብ፦ ${summary.activePackageName} እየሰራ ባለበት ጊዜ ${fmt(summary.reserveFloor)} ብር በሂሳብዎ ውስጥ መቆየት አለበት።`
+                : isOromo
+                ? `Seera qusannoo 40%፦ ${summary.activePackageName} yeroo hojjetu ${fmt(summary.reserveFloor)} Qarshiin herrega keessan keessa turuu qaba.`
                 : `40% reserve rule: ${fmt(summary.reserveFloor)} ETB must remain in your account while ${summary.activePackageName} is active.`}
             </p>
           </div>
@@ -113,10 +122,10 @@ export default function Withdraw() {
           <AlertTriangle className="w-5 h-5 text-[#8B7200] flex-shrink-0" />
           <div>
             <p className="font-semibold text-[#8B7200] text-sm" style={displayFont}>
-              {isAmharic ? "መጀመሪያ የባንክ ሂሳብዎን ያስተካክሉ" : "Configure bank settings first"}
+              {isAmharic ? "መጀመሪያ የባንክ ሂሳብዎን ያስተካክሉ" : isOromo ? "Duraan dursaa herrega baankii qindeeffadhaa" : "Configure bank settings first"}
             </p>
             <p className="text-[#8B7200]/70 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {isAmharic ? "የባንክ ወይም የዋሌት ዝርዝሮችን ለማስገባት ይጫኑ" : "Tap to set your bank/wallet details"}
+              {isAmharic ? "የባንክ ወይም የዋሌት ዝርዝሮችን ለማስገባት ይጫኑ" : isOromo ? "Herrega baankii ykn walatii galchuuf tuqaa" : "Tap to set your bank/wallet details"}
             </p>
           </div>
         </Link>
@@ -125,7 +134,7 @@ export default function Withdraw() {
       {settings?.isConfigured && (
         <div className="bg-card rounded-2xl p-4 mb-5 border border-border">
           <p className="text-xs text-muted-foreground mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "ገንዘቡ የሚላክበት፦" : "Withdrawing to"}
+            {isAmharic ? "ገንዘቡ የሚላክበት፦" : isOromo ? "Herrega itti ergamu፦" : "Withdrawing to"}
           </p>
           <p className="font-semibold text-foreground text-sm" style={displayFont}>
             {settings.bankName} — {settings.accountName}
@@ -139,13 +148,13 @@ export default function Withdraw() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የማውጫ ብር መጠን (ብር)" : "Withdrawal Amount (ETB)"}
+              {isAmharic ? `የማውጫ ብር መጠን (${currency})` : isOromo ? `Hamma Qarshii Baafamu (${currency})` : `Withdrawal Amount (${currency})`}
             </label>
             <input
               type="number" min="1" step="0.01"
               value={amount}
               onChange={e => setAmount(e.target.value)}
-              placeholder={`${isAmharic ? "ከፍተኛ፦" : "Max:"} ${fmt(available)} ETB`}
+              placeholder={`${isAmharic ? "ከፍተኛ፦" : isOromo ? "Hamma Olaanaa፦" : "Max:"} ${fmt(available)} ${currency}`}
               required
               className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -158,8 +167,8 @@ export default function Withdraw() {
             style={displayFont}
           >
             {submitMutation.isPending
-              ? (isAmharic ? "በማስገባት ላይ..." : "Submitting...")
-              : (isAmharic ? "ገንዘቡ እንዲላክ ጠይቅ" : "Request Withdrawal")}
+              ? (isAmharic ? "በማስገባት ላይ..." : isOromo ? "Ergamaa jira..." : "Submitting...")
+              : (isAmharic ? "ገንዘቡ እንዲላክ ጠይቅ" : isOromo ? "Qarshiin akka ergamu gaafadhaa" : "Request Withdrawal")}
           </button>
         </form>
       </div>
@@ -168,7 +177,7 @@ export default function Withdraw() {
       {withdrawals && withdrawals.length > 0 && (
         <div>
           <h2 className="font-bold text-foreground mb-3" style={displayFont}>
-            {isAmharic ? "የቅርብ ጊዜ የወጡ ገንዘቦች" : "Recent Withdrawals"}
+            {isAmharic ? "የቅርብ ጊዜ የወጡ ገንዘቦች" : isOromo ? "Baasiiwwan Dhihoo" : "Recent Withdrawals"}
           </h2>
           <div className="space-y-3">
             {withdrawals.slice(0, 5).map(w => {
@@ -181,7 +190,7 @@ export default function Withdraw() {
                       <Icon className={`w-4 h-4 ${cfg?.color}`} />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-foreground">{fmt(w.amount)} ETB</p>
+                      <p className="font-semibold text-sm text-foreground">{fmt(w.amount)} {currency}</p>
                       <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                         {w.bankName} · {new Date(w.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
                       </p>

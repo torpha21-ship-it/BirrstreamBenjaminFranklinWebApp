@@ -11,7 +11,7 @@ const BANKS = ["Commercial Bank of Ethiopia (CBE)", "Dashen Bank", "Awash Bank",
 export default function WithdrawalSettings() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo } = useLanguage();
   const { data: settings, isLoading } = useGetWithdrawalSettings({ query: { queryKey: getGetWithdrawalSettingsQueryKey() } });
   const updateMutation = useUpdateWithdrawalSettings();
   const [form, setForm] = useState({ bankName: "", accountName: "", walletId: "" });
@@ -39,12 +39,16 @@ export default function WithdrawalSettings() {
         onSuccess: () => {
           qc.invalidateQueries({ queryKey: getGetWithdrawalSettingsQueryKey() });
           toast({
-            title: isAmharic ? "ቅንብሩ ተቀምጧል!" : "Settings saved!",
-            description: isAmharic ? "የማውጫ መረጃዎችዎ በተሳካ ሁኔታ ተዘምነዋል።" : "Your withdrawal settings have been updated."
+            title: isAmharic ? "ቅንብሩ ተቀምጧል!" : isOromo ? "Qindaa'inni olkaa'ameera!" : "Settings saved!",
+            description: isAmharic
+              ? "የማውጫ መረጃዎችዎ በተሳካ ሁኔታ ተዘምነዋል።"
+              : isOromo
+              ? "Oodeeffannoon baasii keessanii milkaa'inaan haaromeera."
+              : "Your withdrawal settings have been updated."
           });
         },
         onError: () => toast({
-          title: isAmharic ? "ቅንብሩን ማስቀመጥ አልተሳካም" : "Failed to save settings",
+          title: isAmharic ? "ቅንብሩን ማስቀመጥ አልተሳካም" : isOromo ? "Qindaa'ina olkaawuun hin danda'amne" : "Failed to save settings",
           variant: "destructive"
         }),
       }
@@ -66,7 +70,7 @@ export default function WithdrawalSettings() {
         <div className="flex items-center gap-2 bg-[#A8D5B5] rounded-2xl p-4 mb-5">
           <CheckCircle2 className="w-5 h-5 text-[#2B7A4B]" />
           <p className="text-[#2B7A4B] text-sm font-semibold" style={displayFont}>
-            {isAmharic ? "የባንክ ሂሳብ ተስተካክሏል" : "Bank account configured"}
+            {isAmharic ? "የባንክ ሂሳብ ተስተካክሏል" : isOromo ? "Herregni baankii qindaa'eera" : "Bank account configured"}
           </p>
         </div>
       )}
@@ -75,7 +79,7 @@ export default function WithdrawalSettings() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የባንክ ወይም የዋሌት አይነት" : "Bank / Wallet Type"}
+              {isAmharic ? "የባንክ ወይም የዋሌት አይነት" : isOromo ? "Gosa Baankii ykn Walatii" : "Bank / Wallet Type"}
             </label>
             <select
               value={form.bankName}
@@ -84,19 +88,19 @@ export default function WithdrawalSettings() {
               className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
             >
-              <option value="">{isAmharic ? "ባንክ ወይም ዋሌት ይምረጡ" : "Select a bank or wallet"}</option>
+              <option value="">{isAmharic ? "ባንክ ወይም ዋሌት ይምረጡ" : isOromo ? "Baankii ykn walatii filadhaa" : "Select a bank or wallet"}</option>
               {BANKS.map(b => <option key={b} value={b}>{b}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የሂሳብ ባለቤት ሙሉ ስም" : "Account Name"}
+              {isAmharic ? "የሂሳብ ባለቤት ሙሉ ስም" : isOromo ? "Maqaa Abbaa Herregaa Guutuu" : "Account Name"}
             </label>
             <input
               type="text"
               value={form.accountName}
               onChange={e => setForm(f => ({ ...f, accountName: e.target.value }))}
-              placeholder={isAmharic ? "በሂሳቡ ላይ ያለ ሙሉ ስም" : "Full name on account"}
+              placeholder={isAmharic ? "በሂሳቡ ላይ ያለ ሙሉ ስም" : isOromo ? "Maqaa guutuu herregarratti jiru" : "Full name on account"}
               required
               className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -104,13 +108,13 @@ export default function WithdrawalSettings() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የሂሳብ ወይም የዋሌት ቁጥር" : "Account / Wallet ID"}
+              {isAmharic ? "የሂሳብ ወይም የዋሌት ቁጥር" : isOromo ? "Lakkoofsa Herregaa ykn Walatii" : "Account / Wallet ID"}
             </label>
             <input
               type="text"
               value={form.walletId}
               onChange={e => setForm(f => ({ ...f, walletId: e.target.value }))}
-              placeholder={isAmharic ? "የባንክ ሂሳብ ቁጥር ወይም የስልክ ቁጥር" : "Account number or wallet ID"}
+              placeholder={isAmharic ? "የባንክ ሂሳብ ቁጥር ወይም የስልክ ቁጥር" : isOromo ? "Lakkoofsa herrega baankii ykn bilbilaa" : "Account number or wallet ID"}
               required
               className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -120,6 +124,8 @@ export default function WithdrawalSettings() {
             <p className="text-[#8B7200] text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               {isAmharic
                 ? "ይህ መረጃ ለወደፊት የገንዘብ ማውጫ ጥያቄዎች ሁሉ ያገለግላል። ከማስቀመጥዎ በፊት ትክክለኛ መሆኑን ያረጋግጡ።"
+                : isOromo
+                ? "Oodeeffannoon kun gaaffiiwwan baasii gara fuulduraa hundaaf tajaajila. Olkaawuun dura sirrii ta'uusaa mirkaneeffadhaa."
                 : "This information is used for all future withdrawal requests. Ensure it's accurate before saving."}
             </p>
           </div>
@@ -129,7 +135,9 @@ export default function WithdrawalSettings() {
             className="w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60"
             style={displayFont}
           >
-            {updateMutation.isPending ? (isAmharic ? "በማስቀመጥ ላይ..." : "Saving...") : (isAmharic ? "ቅንብሩን አስቀምጥ" : "Save Settings")}
+            {updateMutation.isPending
+              ? (isAmharic ? "በማስቀመጥ ላይ..." : isOromo ? "Olkaawaa jira..." : "Saving...")
+              : (isAmharic ? "ቅንብሩን አስቀምጥ" : isOromo ? "Qindaa'ina Olkaawi" : "Save Settings")}
           </button>
         </form>
       </div>

@@ -32,7 +32,7 @@ export default function Profile() {
   const { data: profile } = useGetUserProfile({ query: { queryKey: getGetUserProfileQueryKey() } });
   const logoutMutation = useLogout();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -47,7 +47,7 @@ export default function Profile() {
       onSuccess: () => {
         logout();
         setLocation("/login");
-        toast({ title: isAmharic ? "በተሳካ ሁኔታ ወጥተዋል" : "Signed out" });
+        toast({ title: isAmharic ? "በተሳካ ሁኔታ ወጥተዋል" : isOromo ? "Milkaa'inaan baatan" : "Signed out" });
       },
     });
   };
@@ -58,9 +58,9 @@ export default function Profile() {
     try {
       await upload(file);
       qc.invalidateQueries({ queryKey: getGetUserProfileQueryKey() });
-      toast({ title: isAmharic ? "የመገለጫ ፎቶ ተዘምኗል!" : "Profile photo updated!" });
+      toast({ title: isAmharic ? "የመገለጫ ፎቶ ተዘምኗል!" : isOromo ? "Suuraan piroofaayilii haaromeera!" : "Profile photo updated!" });
     } catch {
-      toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : "Upload failed", variant: "destructive" });
+      toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : isOromo ? "Suuraa fe'uun hin danda'amne" : "Upload failed", variant: "destructive" });
     }
     // reset so same file can be picked again
     e.target.value = "";
@@ -70,14 +70,14 @@ export default function Profile() {
 
   const sections = [
     {
-      title: isAmharic ? "መለያ" : "Account",
+      title: t("profile.account_section"),
       items: [
         { imgSrc: withdrawalSettingsIcon, label: t("profile.withdrawal_settings"), href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
         { imgSrc: transactionHistoryIcon, label: t("profile.transaction_history"), href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
       ],
     },
     {
-      title: isAmharic ? "አውታረ መረብ" : "Network",
+      title: t("profile.network_section"),
       items: [
         { imgSrc: referralIcon, label: t("profile.my_referrals"), href: "/referral", color: "bg-[#F5E6A3] text-[#8B7200]" },
         { imgSrc: affiliateIcon, label: t("profile.affiliate_network"), href: "/affiliate-network", color: "bg-primary/10 text-primary" },
@@ -85,7 +85,7 @@ export default function Profile() {
       ],
     },
     {
-      title: isAmharic ? "አደገኛ እርምጃ" : "Danger Zone",
+      title: t("profile.danger_zone"),
       items: [
         { icon: Trash2, label: t("profile.delete_account"), href: "/delete-account", color: "bg-[#F2A89A] text-[#C0402E]" },
       ],
@@ -178,7 +178,7 @@ export default function Profile() {
         {/* Centred card content, padded so the hands don't overlap text */}
         <div className="relative z-10 flex flex-col items-center text-center px-14 pt-5 pb-5">
           <p className="text-[#2B7A4B] text-[20px] font-bold uppercase mb-3" style={displayFont}>
-            {isAmharic ? "ናኦሚ ላብስ አባል" : "Naomi Labs Member"}
+            {isAmharic ? "ናኦሚ ላብስ አባል" : isOromo ? "Miseensa Naomi Labs" : "Naomi Labs Member"}
           </p>
           <div className="bg-[#2B7A4B]/15 rounded-2xl px-4 py-2 w-full mb-2">
             <p className="font-bold text-[#2B7A4B] text-[28px]" style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.15em" }}>
@@ -186,8 +186,8 @@ export default function Profile() {
             </p>
           </div>
           <p className="text-[#2B7A4B]/80 text-[16px]" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : displayFont}>
-            {isAmharic ? "የተመዘገቡበት ቀን፦ " : "Member since "}
-            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET") : "—"}
+            {isAmharic ? "የተመዘገቡበት ቀን፦ " : isOromo ? "Miseensa kan ta'e፦ " : "Member since "}
+            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(isAmharic ? "am-ET" : isOromo ? "om-ET" : "en-ET") : "—"}
           </p>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function Profile() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-[10px] opacity-60 font-semibold">{isAmharic ? "ብር" : "ETB"}</p>
+              <p className="text-[10px] opacity-60 font-semibold">{currency}</p>
             </div>
           </div>
         ))}

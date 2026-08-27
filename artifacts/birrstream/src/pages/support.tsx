@@ -26,6 +26,14 @@ const QUICK_REPLIES_AM = [
   "የቪአይፒ ፓኬጄ መቼ ያልቃል?",
 ];
 
+const QUICK_REPLIES_OR = [
+  "Gaaffiin baasii koo maaliif eeggamaa jira?",
+  "Hojiiwwan guyyaa akkamittiin xumura?",
+  "Seerri qusannoo 40% akkamitti hojjeta?",
+  "Komishinii afeerraa akkamittiin argadha?",
+  "Paakeejiin VIP koo yoom xumurama?",
+];
+
 const BOT_RESPONSES_EN: Record<string, string> = {
   "Why is my withdrawal pending?": "Withdrawals are reviewed manually by our team within 24 hours. Once approved, funds are sent to your registered bank/wallet. If it's been more than 24 hours, please contact us directly.",
   "How to complete daily tasks?": "Navigate to the Tasks page using the calendar icon in the navigation bar. Tap on any uncompleted task and follow the instructions. Each task earns you a fixed ETB reward credited instantly to your balance.",
@@ -42,8 +50,16 @@ const BOT_RESPONSES_AM: Record<string, string> = {
   "የቪአይፒ ፓኬጄ መቼ ያልቃል?": "እያንዳንዱ የቪአይፒ ፓኬጅ በትክክል ለ 7 ቀናት ይሰራል። በዳሽቦርዱ ወይም በፓኬጆች ገጽ ላይ የቀረውን ቀን ማየት ይችላሉ። ካለቀ በኋላ ዕለታዊ ገቢ ማግኘቱን ለመቀጠል በድጋሚ መግዛት ያስፈልግዎታል።",
 };
 
+const BOT_RESPONSES_OR: Record<string, string> = {
+  "Gaaffiin baasii koo maaliif eeggamaa jira?": "Gaaffiiwwan baasii sa'aatii 24 keessatti garee keenyaan to'atamu. Erga fudhatama argatanii booda gara herrega baankii ykn walatii keessanitti ergama. Sa'aatii 24 yoo darbe kallattiin nu qunnamaa.",
+  "Hojiiwwan guyyaa akkamittiin xumura?": "Kutaa Hojiiwwan Guyyaa seenuun hojii kamiyyuu banaatii qajeelfama hordofaa. Hojiin xumurame hundi badhaasa Qarshii battalumatti herrega keessanitti dabala.",
+  "Seerri qusannoo 40% akkamitti hojjeta?": "Yeroo paakeejii VIP qabdan gatii paakeejichaa keessaa yoo xiqqaate 40% herrega keessan keessa turuu qaba. Fakkeenyaaf, VIP 1 (Qarshii 500) haftee Qarshii 200 barbaada. Kunis tasgabbii sirnichaa mirkaneessa.",
+  "Komishinii afeerraa akkamittiin argadha?": "Koodii afeerraa keessan hiriyaa keessaniif qoodaa. Yeroo isaan qarshii galchuun paakeejii VIP bitatan komishinii sadarkaa 3 irraa argattu.",
+  "Paakeejiin VIP koo yoom xumurama?": "Paakeejiin VIP hundi guyyoota 7f qofa tajaajila. Guyyoota hafan daashboordii ykn fuula Paakeejotaa irratti ilaaluu dandeessu. Erga xumuramee booda bu'aa itti fufsiisuuf irra deebitanii bitattu.",
+};
+
 export default function Support() {
-  const { isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo } = useLanguage();
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
     letterSpacing: isAmharic ? "0" : "0.06em",
@@ -51,10 +67,14 @@ export default function Support() {
 
   const welcomeText = isAmharic
     ? "ሰላም! እኔ የናኦሚ ላብስ ረዳት ነኝ። ዛሬ በምን ልርዳዎት? ከታች ካሉት ፈጣን ጥያቄዎች አንዱን ይጫኑ ወይም የራስዎን ጥያቄ ይጻፉ።"
+    : isOromo
+    ? "Akkam! Ani gargaaraa Naomi Labs ti. Har'a maaliin isin gargaaru? Gaaffiiwwan armaan gadii tuqaa ykn gaaffii keessan barreessaa."
     : "Hi! I'm the Naomi Labs assistant. How can I help you today? Tap a quick question below or type your own.";
 
   const defaultResponse = isAmharic
     ? "ስለ ጥያቄዎ እናመሰግናለን! የድጋፍ ሰጪ ቡድናችን በቅርቡ ይመልስልዎታል። እንዲሁም ከላይ ያሉትን ፈጣን ጥያቄዎች በመጫን መልሶችን ማየት ይችላሉ።"
+    : isOromo
+    ? "Gaaffii keessaniif galatoomaa! Gareen deeggarsa keenyaa dhiyootti isiniif deebisa. Gaaffiiwwan yeroo baay'ee gaafataman tuquunis deebii argachuu dandeessu."
     : "Thank you for your question! Our support team will get back to you soon. You can also browse our FAQ by tapping one of the quick-reply buttons above.";
 
   const [messages, setMessages] = useState<Message[]>([
@@ -76,6 +96,8 @@ export default function Support() {
     setTimeout(() => {
       const resp = isAmharic
         ? (BOT_RESPONSES_AM[question] ?? defaultResponse)
+        : isOromo
+        ? (BOT_RESPONSES_OR[question] ?? defaultResponse)
         : (BOT_RESPONSES_EN[question] ?? defaultResponse);
       addMessage(resp, "bot");
     }, 600);
@@ -87,13 +109,13 @@ export default function Support() {
     setInput("");
     addMessage(q, "user");
     setTimeout(() => {
-      const respDict = isAmharic ? BOT_RESPONSES_AM : BOT_RESPONSES_EN;
+      const respDict = isAmharic ? BOT_RESPONSES_AM : isOromo ? BOT_RESPONSES_OR : BOT_RESPONSES_EN;
       const response = Object.entries(respDict).find(([key]) => q.toLowerCase().includes(key.split(" ")[0].toLowerCase()));
       addMessage(response ? response[1] : defaultResponse, "bot");
     }, 800);
   };
 
-  const quickReplies = isAmharic ? QUICK_REPLIES_AM : QUICK_REPLIES_EN;
+  const quickReplies = isAmharic ? QUICK_REPLIES_AM : isOromo ? QUICK_REPLIES_OR : QUICK_REPLIES_EN;
 
   return (
     <div className="fixed inset-0 flex flex-col bg-background z-[5]">
@@ -108,10 +130,10 @@ export default function Support() {
           </div>
           <div>
             <p className="font-bold text-[28px] text-foreground" style={displayFont}>
-              {isAmharic ? "ናኦሚ ላብስ ድጋፍ" : "Naomi Labs Support"}
+              {isAmharic ? "ናኦሚ ላብስ ድጋፍ" : isOromo ? "Deeggarsa Naomi Labs" : "Naomi Labs Support"}
             </p>
             <p className="text-xs text-[#2B7A4B]" style={displayFont}>
-              {isAmharic ? "መስመር ላይ" : "Online"}
+              {isAmharic ? "መስመር ላይ" : isOromo ? "Toora Irra" : "Online"}
             </p>
           </div>
         </div>
@@ -165,7 +187,7 @@ export default function Support() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSend()}
-            placeholder={isAmharic ? "መልዕክት እዚህ ይጻፉ..." : "Type a message..."}
+            placeholder={isAmharic ? "መልዕክት እዚህ ይጻፉ..." : isOromo ? "Ergaa asitti barreessaa..." : "Type a message..."}
             className="flex-1 px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
             style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
           />

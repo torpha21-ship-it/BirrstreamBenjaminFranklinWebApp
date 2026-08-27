@@ -13,7 +13,7 @@ const AD_VIDEOS = [
 ];
 
 export function AdSlider() {
-  const { isAmharic } = useLanguage();
+  const { isAmharic, isOromo } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
   const [nextSlideIdx, setNextSlideIdx] = useState<number | null>(null);
   const [animating, setAnimating] = useState(false);
@@ -135,7 +135,7 @@ export function AdSlider() {
           className="text-[11px] font-bold tracking-wider"
           style={isAmharic ? { fontFamily: "'LogaComic', sans-serif" } : {}}
         >
-          {isAmharic ? "ማስታወቂያ" : "Ad"}
+          {isAmharic ? "ማስታወቂያ" : isOromo ? "Beeksisa" : "Ad"}
         </span>
       </div>
 

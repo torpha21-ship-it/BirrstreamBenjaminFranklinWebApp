@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-export type Language = "en" | "am";
+export type Language = "en" | "am" | "or";
 
 interface LanguageContextType {
   lang: Language;
@@ -8,6 +8,8 @@ interface LanguageContextType {
   toggleLang: () => void;
   t: (key: string, fallback?: string) => string;
   isAmharic: boolean;
+  isOromo: boolean;
+  currency: string;
 }
 
 const DICTIONARY: Record<Language, Record<string, string>> = {
@@ -117,6 +119,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "profile.total_yield": "Total Yield",
     "profile.total_deposited": "Total Deposited",
     "profile.total_withdrawn": "Total Withdrawn",
+    "profile.reserve_floor": "Reserve Floor",
     "profile.photo_updated": "Profile photo updated!",
     "profile.upload_failed": "Upload failed",
 
@@ -324,6 +327,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "profile.total_yield": "ጠቅላላ ትርፍ",
     "profile.total_deposited": "ጠቅላላ ተቀማጭ",
     "profile.total_withdrawn": "ጠቅላላ የወጣ",
+    "profile.reserve_floor": "የተቀመጠ ገንዘብ",
     "profile.photo_updated": "የመገለጫ ፎቶ በተሳካ ሁኔታ ተዘምኗል!",
     "profile.upload_failed": "ፎቶ መጫን አልተሳካም",
 
@@ -424,6 +428,214 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "games.spins_remaining": "ዛሬ የቀሩ ማሽከርከሪያዎች፦",
     "games.unlimited": "ያልተገደበ",
     "games.tier_info": "የደረጃ ማሽከርከሪያዎች",
+  },
+  or: {
+    // Nav & Common
+    "nav.home": "Mana",
+    "nav.tasks": "Hojii Guyyaa",
+    "nav.deposit": "Galchuu",
+    "nav.withdraw": "Baasuu",
+    "nav.packages": "Paakeejota VIP",
+    "nav.games": "Arkeedii",
+    "nav.profile": "Piroofaayilii",
+    "nav.admin": "Kutaa Bulchiinsaa",
+    "nav.balance": "Haftee Qarshii",
+    "nav.referrals": "Afeerraa",
+    "nav.transactions": "Seenaa Daldalaa",
+    "nav.vip_upgrades": "Sadarkaalee VIP",
+    "nav.support": "Deeggarsa",
+
+    // Common words
+    "common.back": "Duubatti",
+    "common.continue": "Itti Fufi",
+    "common.confirm": "Mirkaneessi",
+    "common.cancel": "Haqi",
+    "common.submit": "Galchi",
+    "common.loading": "Fe'amaa jira...",
+    "common.save": "Olkaawi",
+    "common.copy": "Garagalchi",
+    "common.copied": "Garagalfameera!",
+    "common.status": "Haala",
+    "common.amount": "Hamma Qarshii",
+    "common.date": "Guyyaa",
+    "common.etb": "Qarshii",
+    "common.day": "guyyaa",
+    "common.days": "guyyoota",
+    "common.days_left": "guyyoota hafan",
+    "common.completed": "Xumurameera",
+    "common.pending": "Eeggamaa jira",
+    "common.rejected": "Kukufameera",
+    "common.approved": "Fudhatama argateera",
+
+    // Dashboard
+    "dash.welcome": "Baga nagaan dhuftan",
+    "dash.main_balance": "Haftee Bu'uuraa",
+    "dash.current_balance": "Haftee Qarshii Ammaa",
+    "dash.deposit": "Qarshii Galchi",
+    "dash.withdraw": "Qarshii Baasi",
+    "dash.packages": "Paakeejota",
+    "dash.tasks": "Hojiiwwan",
+    "dash.deposit_sub": "Qarshii saffisaan galchaa",
+    "dash.withdraw_sub": "Kaffaltii ariifataa argadhaa",
+    "dash.referral_network": "Netwoorkii Afeerraa Koo",
+    "dash.referral_sub": "Miseensota afeertanii fi bu'aa keessan ilaalaa",
+    "dash.daily_tasks": "Hojiiwwan Guyyaa",
+    "dash.daily_tasks_sub": "Hojiiwwan xumuruun guyyaa guyyaan Qarshii argadhaa",
+    "dash.time_cards": "Kaardiiwwan Yeroo",
+    "dash.time_cards_sub": "Guddistuu bu'aa sa'aatii",
+    "dash.login_streak": "Hirmaannaa Guyyaa",
+    "dash.login_streak_sub": "Badhaasa seenuu guyyaa guyyaa",
+    "dash.check_in": "Hirmaannaa Galmeessi — +5 Qarshii Argadhu",
+    "dash.checking_in": "Galmeessaa jira...",
+    "dash.checked_in": "Hirmaannaan har'aa galmaa'eera!",
+    "dash.vip_upgrade": "Galma Sadarkaa VIP",
+    "dash.vip_upgrade_sub": "Afeerraadhaan paakeejota gatii malee argadhaa",
+    "dash.progress_to_vip": "Guddina gara sadarkaa VIP፦",
+    "dash.get_vip": "Paakeejii VIP Fudhadhaa",
+    "dash.pending_withdrawal": "Qarshii baasuuf eegamaa jiru",
+    "dash.checked_in_legend": "Galmaa'eera",
+    "dash.today_legend": "Har'a",
+    "dash.missed_legend": "Darbameera",
+    "dash.partner_brands": "Dhaabbilee Shariikaa Seera Qabeessa",
+
+    // Stat Cards
+    "stats.total_yield": "Waliigala Bu'aa",
+    "stats.total_deposited": "Waliigala Galfame",
+    "stats.total_withdrawn": "Waliigala Baafame",
+    "stats.reserve_floor": "Haftee Qusannoo",
+
+    // Tasks
+    "tasks.title": "Hojiiwwan Guyyaa",
+    "tasks.subtitle": "Hojiiwwan xumuruun badhaasa Qarshii battalumatti argadhaa",
+    "tasks.completed_today": "Hojiiwwan har'a xumuraman",
+    "tasks.available_to_earn": "argachuuf kan qophaa'e",
+    "tasks.tip_title": "Gorsa Guyyaa",
+    "tasks.tip_desc": "Galii keessan guddisuuf hojiiwwan guyyaa hunda xumuraa. Hojiiwwan walakkaa halkanitti haaromu.",
+    "tasks.new_habits": "Amaloota haaraa isiniif",
+    "tasks.no_tasks": "Har'a hojiin hin jiru",
+    "tasks.check_back": "Booda irra deebi'aa ilaalaa",
+    "tasks.earned": "Qarshii argattaniittu!",
+    "tasks.already_completed": "Hojiin kun har'a xumurameera",
+
+    // Profile
+    "profile.title": "Piroofaayilii Koo",
+    "profile.account_section": "Oodeeffannoo Herregaa",
+    "profile.network_section": "Netwoorkii",
+    "profile.danger_zone": "Tarkaanfii Nageenyaa",
+    "profile.withdrawal_settings": "Qindaa'ina Baasii",
+    "profile.transaction_history": "Seenaa Daldalaa",
+    "profile.my_referrals": "Koodii Afeerraa Koo",
+    "profile.affiliate_network": "Netwoorkii Afeerraa",
+    "profile.vip_upgrades": "Galma Sadarkaa VIP",
+    "profile.delete_account": "Herrega Haqi",
+    "profile.sign_out": "Ba'i",
+    "profile.member_since": "Miseensa kan ta'e፦",
+    "profile.naomi_member": "Miseensa Naomi Labs",
+    "profile.main_balance": "Haftee Bu'uuraa",
+    "profile.total_yield": "Waliigala Bu'aa",
+    "profile.total_deposited": "Waliigala Galfame",
+    "profile.total_withdrawn": "Waliigala Baafame",
+    "profile.reserve_floor": "Haftee Qusannoo",
+    "profile.photo_updated": "Suuraan piroofaayilii milkaa'inaan haaromeera!",
+    "profile.upload_failed": "Suuraa fe'uun hin danda'amne",
+
+    // Packages / VIP
+    "packages.title": "Paakeejota VIP",
+    "packages.subtitle": "Paakeejii bitachuun bu'aa guyyaa guyyaa kallattiin herrega keessanitti argadhaa.",
+    "packages.active_package": "Paakeejii Hojjechaa Jiru",
+    "packages.daily_return": "Galii Guyyaa",
+    "packages.duration": "Turtii Guyyootaa",
+    "packages.total_return": "Waliigala Bu'aa",
+    "packages.price": "Gatii",
+    "packages.buy_now": "Paakeejii Biti",
+    "packages.expires_in": "Yeroo itti xumuru",
+    "packages.current_active": "Amma kan hojjetu",
+    "packages.insufficient_funds": "Hafteen qarshii gahaa miti. Duraan dursaa qarshii galchaa.",
+    "packages.activated_success": "Paakeejiin milkaa'inaan hojjechuu eegaleera!",
+
+    // Deposit Page
+    "deposit.title": "Qarshii Galchuu",
+    "deposit.subtitle": "Mala kaffaltii filadhaatii hamma qarshii galchuu barbaaddan galchaa.",
+    "deposit.enter_amount": "Hamma Qarshii Galfamu",
+    "deposit.select_method": "Mala Kaffaltii Filadhaa",
+    "deposit.telebirr": "Telebirr",
+    "deposit.cbe_birr": "CBE Birr",
+    "deposit.bank_transfer": "Daddabarsa Baankii (CBE / Awash / Dashen)",
+    "deposit.min_deposit": "Galfama xiqqaa፦ 100 Qarshii",
+    "deposit.account_number": "Lakkoofsa Herregaa",
+    "deposit.account_name": "Maqaa Herregaa",
+    "deposit.reference": "Lakk. Mirkaneessa Daldalaa / Iskiriinshootii",
+    "deposit.upload_proof": "Nagahee Kaffaltii Fe'aa",
+    "deposit.confirm_deposit": "Galcha Mirkaneessi",
+    "deposit.deposit_pending": "Gaaffiin galchaa dhiyaateera, mirkanaa'aa jira.",
+    "deposit.instructions": "Hamma qarshii sirrii herrega armaan gadiitti ergaatii nagahee dhiyeessaa.",
+
+    // Withdraw Page
+    "withdraw.title": "Qarshii Baasuu",
+    "withdraw.subtitle": "Bu'aa argattan kallattiin gara walatii mobaayilaa ykn baankii keessaniitti baafadhaa.",
+    "withdraw.enter_amount": "Hamma Qarshii Baafamu Galchaa",
+    "withdraw.available_balance": "Qarshii baafamuuf qophaa'e",
+    "withdraw.min_withdraw": "Baasii xiqqaa፦ 200 Qarshii",
+    "withdraw.withdrawal_fee": "Kaffaltii Tajaajilaa፦ 0%",
+    "withdraw.select_destination": "Herrega Itti Fudhattan Filadhaa",
+    "withdraw.confirm_withdraw": "Qarshiin akka ergamu gaafadhaa",
+    "withdraw.success_msg": "Gaaffiin qarshii baasuu dhiyaateera! Yeroo dhiyootti isiniif ergama.",
+
+    // Referral & Affiliate
+    "referral.title": "Sagantaa Afeerraa",
+    "referral.subtitle": "Liinkii afeerraa keessan qooduun namoota afeertan irraa komishinii argadhaa.",
+    "referral.your_code": "Koodii Afeerraa Keessan",
+    "referral.your_link": "Liinkii Afeerraa Keessan",
+    "referral.copy_link": "Liinkii Garagalchi",
+    "referral.total_referrals": "Waliigala Afeeraman",
+    "referral.referral_earnings": "Galii Afeerraa Irraa Argame",
+    "referral.tier1": "Sadarkaa 1 (Kallattiin)፦ 10%",
+    "referral.tier2": "Sadarkaa 2፦ 5%",
+    "referral.tier3": "Sadarkaa 3፦ 2%",
+    "referral.how_it_works": "Akkamitti Hojjeta?",
+    "referral.step1": "Liinkii keessan hiriyaa keessaniif qoodaa",
+    "referral.step2": "Galmaa'uun paakeejii VIP kamiyyuu bitatu",
+    "referral.step3": "Battalumatti komishiniin gara herrega keessanitti gala",
+
+    // Transactions Page
+    "tx.title": "Seenaa Daldalaa",
+    "tx.subtitle": "Galfama, baasii, bu'aa fi badhaasa hojii hunda hordofaa.",
+    "tx.all": "Hunda",
+    "tx.deposits": "Galfamtoota",
+    "tx.withdrawals": "Baafamtoota",
+    "tx.earnings": "Bu'aawwan",
+    "tx.no_transactions": "Daldalli galmaa'e hin jiru",
+
+    // Support Page
+    "support.title": "Deeggarsa Maamilaa",
+    "support.subtitle": "Gargaarsa barbaadduu? Gareen deeggarsaa keenya yeroo hunda qophiidha.",
+    "support.telegram_channel": "Chaanaalii Telegiraamii Seera Qabeessa",
+    "support.telegram_bot": "Bootii Telegiraamii Deeggarsa 24/7",
+    "support.email": "Deeggarsa Imeelii",
+    "support.faq": "Gaaffiiwwan Yeroo Baay'ee Gaafataman",
+
+    // Games / Arcade
+    "games.title": "Naomi Arkeedii",
+    "games.subtitle": "Taphawwan taphadhaatii badhaasa Qarshii argadhaa",
+    "games.featured": "Filattuu Kaaraakterii Maayinkiraaftii",
+    "games.featured_desc": "Kaaraakterii naannessuun hanga 215 Qarshii battalumatti mo'adhaa! Sadarkaa hundaaf naannessuu guyyaa ni jiraata.",
+    "games.play_now": "Tapha Eegali",
+    "games.spin_button": "Naannessi fi Filadhu",
+    "games.spinning": "Naanna'aa jira...",
+    "games.back_to_arcade": "Gara Arkeediitti Deebi'i",
+    "games.roster_title": "Kaaraakteroota 15 Filataman",
+    "games.power_rating": "Sadarkaa Humnasaa፦",
+    "games.agility_stat": "Saffisa፦" ,
+    "games.birr_potential": "Hamma Qarshii፦",
+    "games.special_skill": "Dandeettii Addaa፦",
+    "games.jackpot": "BADHAASA GUYYAA (JACKPOT)!",
+    "games.you_won": "QARSHII MO'ATTANIITTU!",
+    "games.penalty": "Kiyyoo Adabbii!",
+    "games.landed_on": "Kaaraakterii irratti bu'e፦",
+    "games.continue_playing": "Taphachuu Itti Fufaa",
+    "games.spins_remaining": "Naannessuuwwan Har'a Hafan፦",
+    "games.unlimited": "Daangaa Malee",
+    "games.tier_info": "Naannessuu Sadarkaa",
   }
 };
 
@@ -432,7 +644,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(() => {
     const saved = localStorage.getItem("birrstream_lang");
-    return saved === "am" || saved === "en" ? saved : "en";
+    return saved === "am" || saved === "or" || saved === "en" ? saved : "en";
   });
 
   const setLang = (newLang: Language) => {
@@ -441,7 +653,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const toggleLang = () => {
-    setLang(lang === "en" ? "am" : "en");
+    setLang(lang === "en" ? "am" : lang === "am" ? "or" : "en");
   };
 
   const t = (key: string, fallback?: string): string => {
@@ -449,9 +661,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const isAmharic = lang === "am";
+  const isOromo = lang === "or";
+  const currency = lang === "am" ? "ብር" : lang === "or" ? "Qarshii" : "ETB";
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, toggleLang, t, isAmharic }}>
+    <LanguageContext.Provider value={{ lang, setLang, toggleLang, t, isAmharic, isOromo, currency }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -128,7 +128,7 @@ function ModularSeparator({ color }: { color: string }) {
 }
 
 export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
-  const { isAmharic } = useLanguage();
+  const { isAmharic, isOromo } = useLanguage();
   const [now, setNow] = useState(new Date());
 
   const displayFont = {
@@ -562,7 +562,7 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
                 <div className="week">
                   <p className="en">{daysShort[dy]}</p>
                   <p className="day">{daysEn[dy]}</p>
-                  <p className="lunar">{isAmharic ? "የ 6 ወራት ጊዜ" : "6-MONTH SEASON"}</p>
+                  <p className="lunar">{isAmharic ? "የ 6 ወራት ጊዜ" : isOromo ? "WAQTII JI'A 6" : "6-MONTH SEASON"}</p>
                 </div>
                 <div className="icons">
                   <div className="material-icons">wb_sunny</div>
@@ -581,6 +581,8 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
           <p className="text-[#139AB4] text-xl sm:text-2xl font-bold mb-4 tracking-wide leading-snug" style={displayFont}>
             {isAmharic
               ? "ታማኝ ተጠቃሚዎች ትልቁን የገንዘብ ማውጫ ፕሮግራም እስኪጀምሩ የቀረው የ 6 ወራት የቁጥር ቆጠራ"
+              : isOromo
+              ? "Lakkoofsa Ji'oota 6 Hanga Sagantaan Baasii Guddaan Miseensota Amanamoof Eegalutti"
               : "6 Months Countdown Until The Sites Great Withdrawal Program For Its Loyal Users"}
           </p>
 
@@ -595,13 +597,13 @@ export function CalendarCard({ userCreatedAt }: CalendarCardProps) {
             padding: "16px 12px 12px",
             border: "1px solid rgba(19, 154, 180, 0.3)",
           }}>
-            <CountdownGroup value={diffDays} label={isAmharic ? "ቀናት" : "DAYS"} color={accentColor} />
+            <CountdownGroup value={diffDays} label={isAmharic ? "ቀናት" : isOromo ? "GUYYAA" : "DAYS"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffHours} label={isAmharic ? "ሰዓት" : "HRS"} color={accentColor} />
+            <CountdownGroup value={diffHours} label={isAmharic ? "ሰዓት" : isOromo ? "SA'AATII" : "HRS"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffMins} label={isAmharic ? "ደቂቃ" : "MIN"} color={accentColor} />
+            <CountdownGroup value={diffMins} label={isAmharic ? "ደቂቃ" : isOromo ? "DAQIIQAA" : "MIN"} color={accentColor} />
             <ModularSeparator color={accentColor} />
-            <CountdownGroup value={diffSecs} label={isAmharic ? "ሰከንድ" : "SEC"} color={accentColor} />
+            <CountdownGroup value={diffSecs} label={isAmharic ? "ሰከንድ" : isOromo ? "SEKOONDII" : "SEC"} color={accentColor} />
           </div>
         </div>
       </div>

@@ -51,7 +51,7 @@ export default function Packages() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const purchaseMutation = usePurchasePackage();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -67,22 +67,24 @@ export default function Packages() {
             qc.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             qc.invalidateQueries({ queryKey: getListPackagesQueryKey() });
             toast({
-              title: isAmharic ? `${name} ነቅቷል!` : `${name} activated!`,
+              title: isAmharic ? `${name} ነቅቷል!` : isOromo ? `Paakeejiin ${name} hojjechuu eegaleera!` : `${name} activated!`,
               description: isAmharic
                 ? `ዕለታዊ የ +${fmt(data.package?.dailyReturn ?? 0)} ብር ትርፍ አሁን ጀምሯል።`
-                : `Daily returns of +${fmt(data.package?.dailyReturn ?? 0)} ETB start now.`
+                : isOromo
+                ? `Galiin guyyaa +${fmt(data.package?.dailyReturn ?? 0)} ${currency} amma eegaleera.`
+                : `Daily returns of +${fmt(data.package?.dailyReturn ?? 0)} ${currency} start now.`
             });
           } else {
             toast({
-              title: isAmharic ? "በቂ ያልሆነ ቀሪ ሂሳብ" : "Insufficient balance",
-              description: isAmharic ? "እባክዎ መጀመሪያ ገንዘብ ያስገቡ።" : data.message,
+              title: isAmharic ? "በቂ ያልሆነ ቀሪ ሂሳብ" : isOromo ? "Hafteen qarshii gahaa miti" : "Insufficient balance",
+              description: isAmharic ? "እባክዎ መጀመሪያ ገንዘብ ያስገቡ።" : isOromo ? "Duraan dursaa qarshii galchaa." : data.message,
               variant: "destructive"
             });
             if (data.shortfallAmount) setLocation("/deposit");
           }
         },
         onError: () => toast({
-          title: isAmharic ? "ግዢው አልተሳካም" : "Purchase failed",
+          title: isAmharic ? "ግዢው አልተሳካም" : isOromo ? "Bitiin hin milkoofne" : "Purchase failed",
           variant: "destructive"
         }),
       }
@@ -104,7 +106,7 @@ export default function Packages() {
             {t("packages.title")}
           </h1>
           <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "ቀሪ ሂሳብ፦ " : "Balance: "}{fmt(summary?.mainBalance ?? 0)} {isAmharic ? "ብር" : "ETB"}
+            {isAmharic ? "ቀሪ ሂሳብ፦ " : isOromo ? "Haftee Qarshii፦ " : "Balance: "}{fmt(summary?.mainBalance ?? 0)} {currency}
           </p>
         </div>
       </div>
@@ -138,14 +140,14 @@ export default function Packages() {
                     <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-sm bg-white/25 rounded-full px-2.5 py-1 border border-white/30">
                       <Lock className={`w-3 h-3 ${colors.text}`} />
                       <span className={`text-xs font-medium ${colors.text}`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                        {isAmharic ? "የተቆለፈ — በቪአይፒ ግቦች ይክፈቱ" : "Locked — unlock via VIP Upgrades"}
+                        {isAmharic ? "የተቆለፈ — በቪአይፒ ግቦች ይክፈቱ" : isOromo ? "Cufameera — Sadarkaa VIPtiin banaa" : "Locked — unlock via VIP Upgrades"}
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="text-right">
                   <p className={`text-2xl font-bold ${colors.text}`}>{fmt(pkg.cost)}</p>
-                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>{isAmharic ? "ብር" : "ETB"}</p>
+                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>{currency}</p>
                 </div>
               </div>
               <div className={`flex gap-3 mb-4 relative z-10 ${colors.text} backdrop-blur-sm bg-white/20 rounded-2xl px-3 py-2.5 border border-white/30`}>
@@ -153,21 +155,21 @@ export default function Packages() {
                   <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {t("packages.daily_return")}
                   </p>
-                  <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} {isAmharic ? "ብር" : "ETB"}</p>
+                  <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} {currency}</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">
                   <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {isAmharic ? "የ 7 ቀን ትርፍ" : "7-Day Total"}
+                    {isAmharic ? "የ 7 ቀን ትርፍ" : isOromo ? "Waliigala Guyyaa 7" : "7-Day Total"}
                   </p>
-                  <p className="font-bold text-sm">{fmt(pkg.totalYield)} {isAmharic ? "ብር" : "ETB"}</p>
+                  <p className="font-bold text-sm">{fmt(pkg.totalYield)} {currency}</p>
                 </div>
                 <div className="w-px bg-white/20 self-stretch" />
                 <div className="flex-1">
                   <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                     {t("packages.duration")}
                   </p>
-                  <p className="font-bold text-sm">{pkg.durationDays} {isAmharic ? "ቀናት" : "days"}</p>
+                  <p className="font-bold text-sm">{pkg.durationDays} {isAmharic ? "ቀናት" : isOromo ? "guyyoota" : "days"}</p>
                 </div>
               </div>
               {!pkg.isLocked && (
@@ -182,13 +184,13 @@ export default function Packages() {
                   style={displayFont}
                 >
                   {!canAfford
-                    ? (isAmharic ? `ተጨማሪ ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} ብር ያስፈልጋል` : `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`)
-                    : purchaseMutation.isPending ? (isAmharic ? "በማንቃት ላይ..." : "Activating...") : (isAmharic ? `${pkg.name} ፓኬጅን ይግዙ` : `Activate ${pkg.name}`)}
+                    ? (isAmharic ? `ተጨማሪ ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} ብር ያስፈልጋል` : isOromo ? `Dabalataan ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} Qarshii barbaachisa` : `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`)
+                    : purchaseMutation.isPending ? (isAmharic ? "በማንቃት ላይ..." : isOromo ? "Hojjechiisaa jira..." : "Activating...") : (isAmharic ? `${pkg.name} ፓኬጅን ይግዙ` : isOromo ? `Paakeejii ${pkg.name} Biti` : `Activate ${pkg.name}`)}
                 </button>
               )}
               {pkg.isLocked && (
                 <Link href="/vip-upgrades" className={`block w-full py-3 rounded-2xl font-bold text-sm text-center bg-white/10 relative z-10 ${colors.text}`} style={displayFont}>
-                  {isAmharic ? "የመክፈቻ መስፈርቶችን ይመልከቱ" : "View Unlock Requirements"}
+                  {isAmharic ? "የመክፈቻ መስፈርቶችን ይመልከቱ" : isOromo ? "Ulaagaalee Banuuf Barbaachisan Ilaalaa" : "View Unlock Requirements"}
                 </Link>
               )}
             </div>
@@ -202,13 +204,15 @@ export default function Packages() {
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="w-5 h-5 text-accent-foreground" />
             <span className="font-bold text-foreground" style={displayFont}>
-              {isAmharic ? "ንቁ ፓኬጅ፦ " : "Active: "}{summary.activePackageName}
+              {isAmharic ? "ንቁ ፓኬጅ፦ " : isOromo ? "Paakeejii Hojjechaa Jiru፦ " : "Active: "}{summary.activePackageName}
             </span>
           </div>
           <p className="text-sm text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
             {isAmharic
               ? `ዕለታዊ ገቢ +${fmt(summary.activePackageDailyReturn ?? 0)} ብር/ቀን · ${summary.daysUntilExpiry} ቀናት ቀርተዋል`
-              : `Earning +${fmt(summary.activePackageDailyReturn ?? 0)} ETB/day · ${summary.daysUntilExpiry} days remaining`}
+              : isOromo
+              ? `Galiin guyyaa +${fmt(summary.activePackageDailyReturn ?? 0)} Qarshii/guyyaa · guyyoota ${summary.daysUntilExpiry} hafan`
+              : `Earning +${fmt(summary.activePackageDailyReturn ?? 0)} ${currency}/day · ${summary.daysUntilExpiry} days remaining`}
           </p>
         </div>
       )}

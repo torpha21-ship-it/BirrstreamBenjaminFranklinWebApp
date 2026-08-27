@@ -15,7 +15,7 @@ export default function DeleteAccount() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const deleteMutation = useDeleteAccount();
-  const { isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -26,7 +26,7 @@ export default function DeleteAccount() {
     e.preventDefault();
     if (input !== CONFIRMATION_TEXT) {
       toast({
-        title: isAmharic ? "የማረጋገጫ ጽሑፉ ትክክል አይደለም" : "Incorrect confirmation text",
+        title: isAmharic ? "የማረጋገጫ ጽሑፉ ትክክል አይደለም" : isOromo ? "Barreeffamni mirkaneessaa dogoggora" : "Incorrect confirmation text",
         variant: "destructive"
       });
       return;
@@ -37,10 +37,10 @@ export default function DeleteAccount() {
         onSuccess: () => {
           logout();
           setLocation("/login");
-          toast({ title: isAmharic ? "መለያዎ ተሰርዟል" : "Account deleted" });
+          toast({ title: isAmharic ? "መለያዎ ተሰርዟል" : isOromo ? "Herregni keessan haqameera" : "Account deleted" });
         },
         onError: () => toast({
-          title: isAmharic ? "የማረጋገጫ ጽሑፉ አይዛመድም" : "Confirmation text doesn't match",
+          title: isAmharic ? "የማረጋገጫ ጽሑፉ አይዛመድም" : isOromo ? "Barreeffamni mirkaneessaa wal hin simne" : "Confirmation text doesn't match",
           variant: "destructive"
         }),
       }
@@ -56,7 +56,7 @@ export default function DeleteAccount() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <h1 className="text-xl font-bold text-foreground" style={displayFont}>
-          {isAmharic ? "መለያ ሰርዝ" : "Delete Account"}
+          {t("profile.delete_account")}
         </h1>
       </div>
 
@@ -65,11 +65,13 @@ export default function DeleteAccount() {
           <AlertTriangle className="w-6 h-6 text-[#C0402E] flex-shrink-0 mt-0.5" />
           <div>
             <p className="font-bold text-[#C0402E] mb-1" style={displayFont}>
-              {isAmharic ? "ይህ እርምጃ ወደ ኋላ ሊመለስ አይችልም" : "This action cannot be undone"}
+              {isAmharic ? "ይህ እርምጃ ወደ ኋላ ሊመለስ አይችልም" : isOromo ? "Tarkaanfiin kun duubatti hin deebi'u" : "This action cannot be undone"}
             </p>
             <p className="text-[#C0402E]/80 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               {isAmharic
                 ? "መለያዎን መሰረዝ ቀሪ ሂሳብዎን፣ የግብይት ታሪክዎን እና የግብዣ አውታረ መረብዎን ጨምሮ ሁሉንም ውሂብዎን በቋሚነት ያጠፋዋል።"
+                : isOromo
+                ? "Herrega keessan haquun haftee, seenaa daldalaa fi netwoorkii afeerraa dabalatee daataa keessan hunda dhaabbataan balleessa."
                 : "Deleting your account will permanently remove all your data, including your balance, transaction history, and referral network."}
             </p>
           </div>
@@ -78,7 +80,7 @@ export default function DeleteAccount() {
 
       <div className="bg-card rounded-3xl p-5 border border-border">
         <p className="text-sm text-muted-foreground mb-4" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-          {isAmharic ? "ለማረጋገጥ የሚከተለውን ጽሑፍ ከታች ባለው ሳጥን ውስጥ ይተይቡ፦" : "To confirm, type "}
+          {isAmharic ? "ለማረጋገጥ የሚከተለውን ጽሑፍ ከታች ባለው ሳጥን ውስጥ ይተይቡ፦ " : isOromo ? "Mirkaneessuuf barreeffama armaan gadii galchaa፦ " : "To confirm, type "}
           <span className="font-mono font-bold text-foreground">{CONFIRMATION_TEXT}</span>
         </p>
         <form onSubmit={handleDelete} className="space-y-4">
@@ -98,8 +100,8 @@ export default function DeleteAccount() {
             style={displayFont}
           >
             {deleteMutation.isPending
-              ? (isAmharic ? "በመሰረዝ ላይ..." : "Deleting...")
-              : (isAmharic ? "መለያዬን በቋሚነት ሰርዝ" : "Permanently Delete My Account")}
+              ? (isAmharic ? "በመሰረዝ ላይ..." : isOromo ? "Haqaa jira..." : "Deleting...")
+              : (isAmharic ? "መለያዬን በቋሚነት ሰርዝ" : isOromo ? "Herrega Koo Dhaabbataan Haqi" : "Permanently Delete My Account")}
           </button>
         </form>
       </div>

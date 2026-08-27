@@ -1,6 +1,5 @@
-﻿import React from "react";
+import React from "react";
 import { useLanguage } from "@/context/language-context";
-import { Globe } from "lucide-react";
 
 interface LanguageToggleProps {
   className?: string;
@@ -17,7 +16,7 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
     >
       <button
         onClick={() => setLang("en")}
-        className={`px-2.5 py-1 text-xs rounded-full font-bold transition-all ${
+        className={`px-2 py-1 text-xs rounded-full font-bold transition-all ${
           lang === "en"
             ? "bg-primary text-black shadow-sm scale-105"
             : "text-foreground/70 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
@@ -28,7 +27,7 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
       </button>
       <button
         onClick={() => setLang("am")}
-        className={`px-2.5 py-1 text-xs rounded-full font-bold transition-all ${
+        className={`px-2 py-1 text-xs rounded-full font-bold transition-all ${
           lang === "am"
             ? "bg-primary text-black shadow-sm scale-105"
             : "text-foreground/70 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
@@ -36,6 +35,17 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
         style={{ fontFamily: "'LogaComic', sans-serif" }}
       >
         አማ
+      </button>
+      <button
+        onClick={() => setLang("or")}
+        className={`px-2 py-1 text-xs rounded-full font-bold transition-all ${
+          lang === "or"
+            ? "bg-primary text-black shadow-sm scale-105"
+            : "text-foreground/70 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
+        }`}
+        style={{ fontFamily: "'Highstories', sans-serif", letterSpacing: "0.05em" }}
+      >
+        OR
       </button>
     </div>
   );

@@ -19,7 +19,7 @@ const BAR_COLORS = ["bg-[#D4B61B]", "bg-[#5B44BE]", "bg-[#C0402E]", "bg-primary"
 
 export default function VipUpgrades() {
   const { data: goals, isLoading } = useGetVipUpgradeGoals({ query: { queryKey: getGetVipUpgradeGoalsQueryKey() } });
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -41,14 +41,16 @@ export default function VipUpgrades() {
         <p className="text-gray-400 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
           {isAmharic
             ? "አውታረ መረብዎን በማሳደግ ነፃ የቪአይፒ ፓኬጆችን ያግኙ። ምንም የገንዘብ ግዢ አያስፈልግም።"
+            : isOromo
+            ? "Netwoorkii keessan babal'isuun paakeejota VIP gatii malee argadhaa. Kaffaltiin qarshii hin barbaachisu."
             : "Earn premium VIP packages by growing your network. No cash purchase required."}
         </p>
         <div className="mt-3 flex gap-3">
           <div className="flex items-center gap-1.5 text-gray-300 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            <Users className="w-3.5 h-3.5" /> {isAmharic ? "ቀጥተኛ ተጋባዦች" : "Direct referrals"}
+            <Users className="w-3.5 h-3.5" /> {isAmharic ? "ቀጥተኛ ተጋባዦች" : isOromo ? "Afeeramaa Kallattii" : "Direct referrals"}
           </div>
           <div className="flex items-center gap-1.5 text-gray-300 text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            <TrendingUp className="w-3.5 h-3.5" /> {isAmharic ? "የአውታረ መረብ ገቢ" : "Network volume"}
+            <TrendingUp className="w-3.5 h-3.5" /> {isAmharic ? "የአውታረ መረብ ገቢ" : isOromo ? "Hamma Galcha Netwoorkii" : "Network volume"}
           </div>
         </div>
       </div>
@@ -80,7 +82,7 @@ export default function VipUpgrades() {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                          {isAmharic ? "የደረጃ ግብ" : "Milestone"}
+                          {isAmharic ? "የደረጃ ግብ" : isOromo ? "Galma Sadarkaa" : "Milestone"}
                         </span>
                         <h3 className="text-xl font-bold text-foreground mt-0.5" style={displayFont}>{goal.packageName}</h3>
                       </div>
@@ -95,7 +97,7 @@ export default function VipUpgrades() {
                       {/* Direct Referrals */}
                       <div>
                         <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "ቀጥተኛ ተጋባዦች" : "Direct Referrals"}</span>
+                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "ቀጥተኛ ተጋባዦች" : isOromo ? "Afeeramaa Kallattii" : "Direct Referrals"}</span>
                           <span className="text-xs font-bold text-foreground">
                             {goal.currentDirectReferrals}/{goal.requiredDirectReferrals}
                           </span>
@@ -110,9 +112,9 @@ export default function VipUpgrades() {
                       {/* Network Volume */}
                       <div>
                         <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "የአውታረ መረብ ተቀማጭ መጠን" : "Network Volume"}</span>
+                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "የአውታረ መረብ ተቀማጭ መጠን" : isOromo ? "Hamma Galcha Netwoorkii" : "Network Volume"}</span>
                           <span className="text-xs font-bold text-foreground">
-                            {fmt(goal.currentDownlineVolume)}/{fmt(goal.requiredDownlineVolume)} ETB
+                            {fmt(goal.currentDownlineVolume)}/{fmt(goal.requiredDownlineVolume)} {currency}
                           </span>
                         </div>
                         <div className="h-2 bg-border rounded-full overflow-hidden">
@@ -127,11 +129,11 @@ export default function VipUpgrades() {
                     {/* Footer */}
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm font-bold text-foreground" style={displayFont}>
-                        {isAmharic ? "ጠቅላላ ሂደት፦ " : "Overall: "}{goal.progressPercent}%
+                        {isAmharic ? "ጠቅላላ ሂደት፦ " : isOromo ? "Waliigala፦ " : "Overall: "}{goal.progressPercent}%
                       </span>
                       {goal.isUnlocked
-                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/15 text-primary" style={displayFont}>{isAmharic ? "ተከፍቷል! 🎉" : "Unlocked! 🎉"}</span>
-                        : <span className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{100 - goal.progressPercent}% {isAmharic ? "ቀርቷል" : "remaining"}</span>
+                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/15 text-primary" style={displayFont}>{isAmharic ? "ተከፍቷል! 🎉" : isOromo ? "Banameera! 🎉" : "Unlocked! 🎉"}</span>
+                        : <span className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{100 - goal.progressPercent}% {isAmharic ? "ቀርቷል" : isOromo ? "hafeera" : "remaining"}</span>
                       }
                     </div>
                   </div>

@@ -10,7 +10,7 @@ import { useLanguage } from "@/context/language-context";
 export default function Deposit() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
   const [amount, setAmount] = useState("");
   const [senderName, setSenderName] = useState("");
   const [receipt, setReceipt] = useState<string | null>(null);
@@ -23,9 +23,9 @@ export default function Deposit() {
   };
 
   const STATUS_CONFIG = {
-    pending: { icon: Clock, color: "text-[#D4B61B]", bg: "bg-[#F5E6A3]", label: isAmharic ? "በመጠባበቅ ላይ" : "Pending" },
-    approved: { icon: CheckCircle2, color: "text-[#2B7A4B]", bg: "bg-[#A8D5B5]", label: isAmharic ? "ተቀባይነት አግኝቷል" : "Approved" },
-    rejected: { icon: XCircle, color: "text-[#C0402E]", bg: "bg-[#F2A89A]", label: isAmharic ? "ውድቅ ተደርጓል" : "Rejected" },
+    pending: { icon: Clock, color: "text-[#D4B61B]", bg: "bg-[#F5E6A3]", label: isAmharic ? "በመጠባበቅ ላይ" : isOromo ? "Eeggamaa jira" : "Pending" },
+    approved: { icon: CheckCircle2, color: "text-[#2B7A4B]", bg: "bg-[#A8D5B5]", label: isAmharic ? "ተቀባይነት አግኝቷል" : isOromo ? "Fudhatama argateera" : "Approved" },
+    rejected: { icon: XCircle, color: "text-[#C0402E]", bg: "bg-[#F2A89A]", label: isAmharic ? "ውድቅ ተደርጓል" : isOromo ? "Kukufameera" : "Rejected" },
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,8 +42,12 @@ export default function Deposit() {
     const amountNum = parseFloat(amount);
     if (isNaN(amountNum) || amountNum < 500 || amountNum > 50000) {
       toast({
-        title: isAmharic ? "ትክክለኛ ያልሆነ የብር መጠን" : "Invalid amount",
-        description: isAmharic ? "የብር መጠን ከ 500 እስከ 50,000 ብር መሆን አለበት" : "Amount must be between 500 and 50,000 ETB",
+        title: isAmharic ? "ትክክለኛ ያልሆነ የብር መጠን" : isOromo ? "Hamma Qarshii dogoggoraa" : "Invalid amount",
+        description: isAmharic
+          ? "የብር መጠን ከ 500 እስከ 50,000 ብር መሆን አለበት"
+          : isOromo
+          ? `Hammi qarshii 500 hanga 50,000 ${currency} ta'uu qaba`
+          : "Amount must be between 500 and 50,000 ETB",
         variant: "destructive"
       });
       return;
@@ -54,13 +58,17 @@ export default function Deposit() {
         onSuccess: () => {
           qc.invalidateQueries({ queryKey: getListDepositsQueryKey() });
           toast({
-            title: isAmharic ? "ተቀማጩ በተሳካ ሁኔታ ገብቷል!" : "Deposit submitted!",
-            description: isAmharic ? "አስተዳዳሪው በ 24 ሰዓታት ውስጥ አይቶ ያረጋግጣል።" : "Admin will review and approve within 24 hours."
+            title: isAmharic ? "ተቀማጩ በተሳካ ሁኔታ ገብቷል!" : isOromo ? "Galchi milkaa'inaan dhiyaateera!" : "Deposit submitted!",
+            description: isAmharic
+              ? "አስተዳዳሪው በ 24 ሰዓታት ውስጥ አይቶ ያረጋግጣል።"
+              : isOromo
+              ? "Bulchaan sa'aatii 24 keessatti ilaalee mirkaneessa."
+              : "Admin will review and approve within 24 hours."
           });
           setAmount(""); setSenderName(""); setReceipt(null);
         },
         onError: () => toast({
-          title: isAmharic ? "ማስገባት አልተሳካም" : "Submission failed",
+          title: isAmharic ? "ማስገባት አልተሳካም" : isOromo ? "Galchuun hin milkoofne" : "Submission failed",
           variant: "destructive"
         }),
       }
@@ -85,30 +93,32 @@ export default function Deposit() {
       {/* Telebirr Instructions */}
       <div className="bg-[#1A1A1A] rounded-3xl p-5 mb-5 text-white">
         <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3" style={displayFont}>
-          {isAmharic ? "የቴሌብር አከፋፈል መመሪያ" : "Telebirr Payment Instructions"}
+          {isAmharic ? "የቴሌብር አከፋፈል መመሪያ" : isOromo ? "Qajeelfama Kaffaltii Telebirr" : "Telebirr Payment Instructions"}
         </p>
         <div className="space-y-2 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
           <div className="flex items-center justify-between">
-            <span className="text-gray-400">{isAmharic ? "የመክፈያ ዘዴ" : "Payment Method"}</span>
+            <span className="text-gray-400">{isAmharic ? "የመክፈያ ዘዴ" : isOromo ? "Mala Kaffaltii" : "Payment Method"}</span>
             <span className="font-bold text-primary">Telebirr</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-400">{isAmharic ? "የተቀባይ ስም" : "Recipient Name"}</span>
+            <span className="text-gray-400">{isAmharic ? "የተቀባይ ስም" : isOromo ? "Maqaa Fudhataa" : "Recipient Name"}</span>
             <span className="font-bold">MUHIDDIN</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-400">{isAmharic ? "ዝቅተኛ መጠን" : "Min Amount"}</span>
-            <span className="font-bold">500 {isAmharic ? "ብር" : "ETB"}</span>
+            <span className="text-gray-400">{isAmharic ? "ዝቅተኛ መጠን" : isOromo ? "Hamma Xiqqaa" : "Min Amount"}</span>
+            <span className="font-bold">500 {currency}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-400">{isAmharic ? "ከፍተኛ መጠን" : "Max Amount"}</span>
-            <span className="font-bold">50,000 {isAmharic ? "ብር" : "ETB"}</span>
+            <span className="text-gray-400">{isAmharic ? "ከፍተኛ መጠን" : isOromo ? "Hamma Guddaa" : "Max Amount"}</span>
+            <span className="font-bold">50,000 {currency}</span>
           </div>
         </div>
         <div className="mt-4 p-3 bg-primary/20 rounded-2xl">
           <p className="text-primary text-xs" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
             {isAmharic
               ? "የብር መጠኑን ከላይ ወዳለው የቴሌብር ሂሳብ ያስተላልፉ እና ደረሰኙን ከታች ይላኩ።"
+              : isOromo
+              ? "Hamma Qarshii herrega Telebirr armaan oliitti ergaatii nagahee armaan gaditti galchaa."
               : "Transfer the ETB amount to the Telebirr account above, then submit your receipt below for verification."}
           </p>
         </div>
@@ -119,7 +129,7 @@ export default function Deposit() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የተቀማጭ ብር መጠን (ብር)" : "Deposit Amount (ETB)"}
+              {isAmharic ? "የተቀማጭ ብር መጠን (ብር)" : isOromo ? "Hamma Qarshii Galfamu (Qarshii)" : "Deposit Amount (ETB)"}
             </label>
             <input
               type="number"
@@ -134,13 +144,13 @@ export default function Deposit() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የላኪው ሙሉ ስም" : "Sender's Full Name"}
+              {isAmharic ? "የላኪው ሙሉ ስም" : isOromo ? "Maqaa Guutuu Ergaa" : "Sender's Full Name"}
             </label>
             <input
               type="text"
               value={senderName}
               onChange={e => setSenderName(e.target.value)}
-              placeholder={isAmharic ? "በቴሌብር ያስተላለፉበት ስም" : "Name used for Telebirr transfer"}
+              placeholder={isAmharic ? "በቴሌብር ያስተላለፉበት ስም" : isOromo ? "Maqaa Telebirriin ittiin dabarsitan" : "Name used for Telebirr transfer"}
               required
               className="w-full px-4 py-3 rounded-2xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -148,7 +158,7 @@ export default function Deposit() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
-              {isAmharic ? "የደረሰኝ ፎቶ ጫን" : "Upload Receipt"}
+              {isAmharic ? "የደረሰኝ ፎቶ ጫን" : isOromo ? "Nagahee Kaffaltii Fe'aa" : "Upload Receipt"}
             </label>
             {receipt ? (
               <div className="relative rounded-2xl overflow-hidden border border-primary/40 bg-black/5">
@@ -162,7 +172,7 @@ export default function Deposit() {
                 </button>
                 <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
                   <span className="text-xs text-white font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {isAmharic ? "✓ ደረሰኝ ተዘጋጅቷል — ለመቀየር × ይጫኑ" : "✓ Receipt ready — tap × to replace"}
+                    {isAmharic ? "✓ ደረሰኝ ተዘጋጅቷል — ለመቀየር × ይጫኑ" : isOromo ? "✓ Nagaheen qophaa'eera — jijjiiruuf × tuqaa" : "✓ Receipt ready — tap × to replace"}
                   </span>
                 </div>
               </div>
@@ -171,7 +181,7 @@ export default function Deposit() {
                 <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 <Upload className="w-6 h-6 text-muted-foreground" />
                 <span className="text-sm font-medium text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                  {isAmharic ? "የደረሰኝ ስክሪንሾት ለመጫን ይጫኑ" : "Tap to upload receipt screenshot"}
+                  {isAmharic ? "የደረሰኝ ስክሪንሾት ለመጫን ይጫኑ" : isOromo ? "Iskiriinshootii nagahee fe'uuf tuqaa" : "Tap to upload receipt screenshot"}
                 </span>
               </label>
             )}
@@ -183,8 +193,8 @@ export default function Deposit() {
             style={displayFont}
           >
             {submitMutation.isPending
-              ? (isAmharic ? "በማስገባት ላይ..." : "Submitting...")
-              : (isAmharic ? "የተቀማጭ ጥያቄውን አስገባ" : "Submit Deposit Request")}
+              ? (isAmharic ? "በማስገባት ላይ..." : isOromo ? "Galchaa jira..." : "Submitting...")
+              : (isAmharic ? "የተቀማጭ ጥያቄውን አስገባ" : isOromo ? "Gaaffii Galchaa Ergaa" : "Submit Deposit Request")}
           </button>
         </form>
       </div>
@@ -193,7 +203,7 @@ export default function Deposit() {
       {deposits && deposits.length > 0 && (
         <div>
           <h2 className="font-bold text-foreground mb-3" style={displayFont}>
-            {isAmharic ? "የቅርብ ጊዜ ተቀማጮች" : "Recent Deposits"}
+            {isAmharic ? "የቅርብ ጊዜ ተቀማጮች" : isOromo ? "Galfamtoota Dhihoo" : "Recent Deposits"}
           </h2>
           <div className="space-y-3">
             {deposits.slice(0, 5).map(dep => {
@@ -206,9 +216,9 @@ export default function Deposit() {
                       <Icon className={`w-4 h-4 ${cfg?.color}`} />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-foreground">{dep.amount.toLocaleString()} {isAmharic ? "ብር" : "ETB"}</p>
+                      <p className="font-semibold text-sm text-foreground">{dep.amount.toLocaleString()} {currency}</p>
                       <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                        {new Date(dep.createdAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
+                        {new Date(dep.createdAt).toLocaleDateString(isAmharic ? "am-ET" : isOromo ? "om-ET" : "en-ET")}
                       </p>
                     </div>
                   </div>

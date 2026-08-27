@@ -32,34 +32,58 @@ const TASK_COLORS: Record<string, string> = {
   other: "bg-[#F2A89A] text-[#C0402E]",
 };
 
-const TASK_TRANSLATIONS: Record<string, { titleAm: string; descAm: string }> = {
+const TASK_TRANSLATIONS: Record<string, { titleAm: string; descAm: string; titleOr: string; descOr: string }> = {
   "Watch a BirrStream video": {
     titleAm: "የብርስትሪም ቪዲዮ ይመልከቱ",
-    descAm: "በፕላትፎርማችን ላይ ማንኛውንም ቪዲዮ ለ 5 ደቂቃዎች ይመልከቱ"
+    descAm: "በፕላትፎርማችን ላይ ማንኛውንም ቪዲዮ ለ 5 ደቂቃዎች ይመልከቱ",
+    titleOr: "Viidiyoo BirrStream daawwadhaa",
+    descOr: "Viidiyoo kamiyyuu daawwannaadhaaf daqiiqaa 5f daawwadhaa"
   },
   "Visit the BirrStream homepage": {
     titleAm: "የብርስትሪም መነሻ ገጽን ይጎብኙ",
-    descAm: "የብርስትሪም ዋናውን ገጽ ከፍተው ለ 2 ደቂቃዎች ያስሱ"
+    descAm: "የብርስትሪም ዋናውን ገጽ ከፍተው ለ 2 ደቂቃዎች ያስሱ",
+    titleOr: "Fuula duraa BirrStream daawwadhaa",
+    descOr: "Fuula duraa BirrStream banaatii daqiiqaa 2f daawwadhaa"
   },
   "Join BirrStream Telegram": {
     titleAm: "የብርስትሪም ቴሌግራምን ይቀላቀሉ",
-    descAm: "ለአዳዲስ መረጃዎች እና ጉርሻዎች ይፋዊ የቴሌግራም ቻናላችንን ይቀላቀሉ"
+    descAm: "ለአዳዲስ መረጃዎች እና ጉርሻዎች ይፋዊ የቴሌግራም ቻናላችንን ይቀላቀሉ",
+    titleOr: "Telegiraamii BirrStream itti dabalamaa",
+    descOr: "Odeeffannoo fi badhaasaaf chaanaalii telegiraamii keenya itti dabalamaa"
   },
   "Share your referral link": {
     titleAm: "የግብዣ ሊንክዎን ያጋሩ",
-    descAm: "የእርስዎን ልዩ የግብዣ ሊንክ ዛሬ ቢያንስ ለአንድ ሰው ያጋሩ"
+    descAm: "የእርስዎን ልዩ የግብዣ ሊንክ ዛሬ ቢያንስ ለአንድ ሰው ያጋሩ",
+    titleOr: "Liinkii afeerraa keessan qoodaa",
+    descOr: "Liinkii keessan addaa har'a yoo xiqqaate nama tokkoof qoodaa"
   },
   "Complete your profile": {
     titleAm: "የመገለጫ መረጃዎን ያሟሉ",
-    descAm: "ሙሉ ስምዎ እና ኢሜይልዎ በመገለጫዎ ውስጥ ትክክል መሆናቸውን ያረጋግጡ"
+    descAm: "ሙሉ ስምዎ እና ኢሜይልዎ በመገለጫዎ ውስጥ ትክክል መሆናቸውን ያረጋግጡ",
+    titleOr: "Piroofaayilii keessan guutaa",
+    descOr: "Maqaa fi imeelii keessan guutuu ta'uu mirkaneessaa"
   },
   "Watch 2 more videos": {
     titleAm: "ተጨማሪ 2 ቪዲዮዎችን ይመልከቱ",
-    descAm: "በብርስትሪም ላይ 2 ተጨማሪ ቪዲዮዎችን ይመልከቱ"
+    descAm: "በብርስትሪም ላይ 2 ተጨማሪ ቪዲዮዎችን ይመልከቱ",
+    titleOr: "Viidiyoowwan 2 dabalataan daawwadhaa",
+    descOr: "Viidiyoowwan dabalataa 2 BirrStream irratti daawwadhaa"
   },
 };
 
-function getLocalizedTask(title: string, desc: string, isAmharic: boolean) {
+function getLocalizedTask(title: string, desc: string, isAmharic: boolean, isOromo?: boolean) {
+  if (isOromo) {
+    const match = TASK_TRANSLATIONS[title];
+    if (match) return { title: match.titleOr, description: match.descOr };
+    let tOr = title;
+    let dOr = desc;
+    if (title.toLowerCase().includes("video")) tOr = "Viidiyoo daawwadhaa";
+    if (title.toLowerCase().includes("telegram")) tOr = "Chaanaalii Telegiraamii itti dabalamaa";
+    if (title.toLowerCase().includes("referral")) tOr = "Liinkii afeerraa qoodaa";
+    if (title.toLowerCase().includes("profile")) tOr = "Piroofaayilii keessan guutaa";
+    if (title.toLowerCase().includes("home") || title.toLowerCase().includes("visit")) tOr = "Fuula duraa daawwadhaa";
+    return { title: tOr, description: dOr };
+  }
   if (!isAmharic) return { title, description: desc };
   const match = TASK_TRANSLATIONS[title];
   if (match) return { title: match.titleAm, description: match.descAm };
@@ -79,7 +103,7 @@ function getLocalizedTask(title: string, desc: string, isAmharic: boolean) {
 export default function Tasks() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const { t, isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
   const { data: tasks, isLoading } = useListDailyTasks({ query: { queryKey: getListDailyTasksQueryKey() } });
   const completeMutation = useCompleteTask();
 
@@ -89,18 +113,18 @@ export default function Tasks() {
   };
 
   const handleComplete = (id: number, title: string) => {
-    const localized = getLocalizedTask(title, "", isAmharic);
+    const localized = getLocalizedTask(title, "", isAmharic, isOromo);
     completeMutation.mutate(
       { id },
       {
         onSuccess: (data) => {
           qc.invalidateQueries({ queryKey: getListDailyTasksQueryKey() });
           toast({
-            title: isAmharic ? `+${data.rewardEarned} ብር ${t("tasks.earned")}` : `+${data.rewardEarned} ETB earned!`,
+            title: `+${data.rewardEarned} ${currency} ${t("tasks.earned")}`,
             description: localized.title
           });
         },
-        onError: () => toast({ title: isAmharic ? "ተግባሩ ዛሬ አስቀድሞ ተጠናቋል" : "Task already completed today", variant: "destructive" }),
+        onError: () => toast({ title: t("tasks.already_completed"), variant: "destructive" }),
       }
     );
   };
@@ -144,7 +168,7 @@ export default function Tasks() {
         </div>
         {totalEarnable > 0 && (
           <p className="text-primary text-sm mt-2 font-semibold relative z-10" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            +{totalEarnable.toFixed(2)} {isAmharic ? "ብር" : "ETB"} {isAmharic ? "ለማግኘት ይገኛል" : "available to earn"}
+            +{totalEarnable.toFixed(2)} {currency} {t("tasks.available_to_earn")}
           </p>
         )}
       </div>
@@ -171,7 +195,7 @@ export default function Tasks() {
       </div>
 
       <h2 className="font-bold text-foreground mb-3 text-sm relative z-10" style={displayFont}>
-        {isAmharic ? "አዳዲስ ልምዶች ለእርስዎ" : "New habits for you"}
+        {t("tasks.new_habits")}
       </h2>
 
       <div className="space-y-3 relative z-10 -mx-4">
@@ -180,7 +204,7 @@ export default function Tasks() {
         )) : tasks?.map(task => {
           const iconSrc = getTaskIcon(task.title, task.taskType);
           const colors = TASK_COLORS[task.taskType] ?? TASK_COLORS.other;
-          const loc = getLocalizedTask(task.title, task.description, isAmharic);
+          const loc = getLocalizedTask(task.title, task.description, isAmharic, isOromo);
           return (
             <div
               key={task.id}
@@ -194,7 +218,7 @@ export default function Tasks() {
                   <p className={`font-semibold text-[18px] leading-tight ${task.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`} style={displayFont}>
                     {loc.title}
                   </p>
-                  <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} {isAmharic ? "ብር" : "ETB"}</span>
+                  <span className="text-primary font-bold text-sm flex-shrink-0">+{task.reward} {currency}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{loc.description}</p>
               </div>
@@ -213,8 +237,8 @@ export default function Tasks() {
         })}
         {tasks?.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            <p className="font-semibold" style={displayFont}>{isAmharic ? "ዛሬ ምንም ተግባራት የሉም" : "No tasks today"}</p>
-            <p className="text-sm mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{isAmharic ? "በኋላ እንደገና ይመልከቱ" : "Check back later"}</p>
+            <p className="font-semibold" style={displayFont}>{t("tasks.no_tasks")}</p>
+            <p className="text-sm mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{t("tasks.check_back")}</p>
           </div>
         )}
       </div>

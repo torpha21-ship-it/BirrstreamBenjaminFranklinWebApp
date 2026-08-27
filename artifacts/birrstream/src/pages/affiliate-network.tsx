@@ -11,7 +11,7 @@ function fmt(n: number) {
 export default function AffiliateNetwork() {
   const [activeTab, setActiveTab] = useState(0);
   const { data: network, isLoading } = useGetAffiliateNetwork({ query: { queryKey: getGetAffiliateNetworkQueryKey() } });
-  const { isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -19,9 +19,9 @@ export default function AffiliateNetwork() {
   };
 
   const LEVEL_COLORS = [
-    { tab: isAmharic ? "ደረጃ 1" : "Level 1", badge: "bg-primary/10 text-primary", dot: "bg-primary" },
-    { tab: isAmharic ? "ደረጃ 2" : "Level 2", badge: "bg-[#C9BDF5] text-[#5B44BE]", dot: "bg-[#5B44BE]" },
-    { tab: isAmharic ? "ደረጃ 3" : "Level 3", badge: "bg-[#A8D5B5] text-[#2B7A4B]", dot: "bg-[#2B7A4B]" },
+    { tab: isAmharic ? "ደረጃ 1" : isOromo ? "Sadarkaa 1" : "Level 1", badge: "bg-primary/10 text-primary", dot: "bg-primary" },
+    { tab: isAmharic ? "ደረጃ 2" : isOromo ? "Sadarkaa 2" : "Level 2", badge: "bg-[#C9BDF5] text-[#5B44BE]", dot: "bg-[#5B44BE]" },
+    { tab: isAmharic ? "ደረጃ 3" : isOromo ? "Sadarkaa 3" : "Level 3", badge: "bg-[#A8D5B5] text-[#2B7A4B]", dot: "bg-[#2B7A4B]" },
   ];
 
   const levels = [network?.level1 ?? [], network?.level2 ?? [], network?.level3 ?? []];
@@ -35,7 +35,7 @@ export default function AffiliateNetwork() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <h1 className="text-xl font-bold text-foreground" style={displayFont}>
-          {isAmharic ? "የግብዣ አውታረ መረብ" : "Affiliate Network"}
+          {t("profile.affiliate_network")}
         </h1>
       </div>
 
@@ -68,13 +68,21 @@ export default function AffiliateNetwork() {
             <Package className="w-8 h-8 text-muted-foreground" />
           </div>
           <p className="font-semibold text-foreground" style={displayFont}>
-            {isAmharic ? `እስካሁን ምንም የደረጃ ${activeTab + 1} አባላት የሉም` : `No Level ${activeTab + 1} members yet`}
+            {isAmharic
+              ? `እስካሁን ምንም የደረጃ ${activeTab + 1} አባላት የሉም`
+              : isOromo
+              ? `Hamma ammaatti miseensonni Sadarkaa ${activeTab + 1} hin jiran`
+              : `No Level ${activeTab + 1} members yet`}
           </p>
           <p className="text-sm text-muted-foreground mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "አውታረ መረብዎን ለማሳደግ የግብዣ ኮድዎን ያጋሩ" : "Share your referral code to grow your network"}
+            {isAmharic
+              ? "አውታረ መረብዎን ለማሳደግ የግብዣ ኮድዎን ያጋሩ"
+              : isOromo
+              ? "Netwoorkii keessan guddisuuf koodii afeerraa keessan qoodaa"
+              : "Share your referral code to grow your network"}
           </p>
           <Link href="/referral" className="inline-flex mt-4 px-4 py-2 bg-primary text-white rounded-2xl text-sm font-semibold hover:opacity-90" style={displayFont}>
-            {isAmharic ? "የግብዣ ኮድን ይመልከቱ" : "View Referral Code"}
+            {isAmharic ? "የግብዣ ኮድን ይመልከቱ" : isOromo ? "Koodii Afeerraa Ilaalaa" : "View Referral Code"}
           </Link>
         </div>
       ) : (
@@ -89,26 +97,26 @@ export default function AffiliateNetwork() {
                   <div>
                     <p className="font-semibold text-sm text-foreground">@{member.username}</p>
                     <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                      {isAmharic ? "የተቀላቀሉት፦ " : "Joined "}{new Date(member.joinedAt).toLocaleDateString(isAmharic ? "am-ET" : "en-ET")}
+                      {isAmharic ? "የተቀላቀሉት፦ " : isOromo ? "Kan dabalame፦ " : "Joined "}{new Date(member.joinedAt).toLocaleDateString(isAmharic ? "am-ET" : isOromo ? "om-ET" : "en-ET")}
                     </p>
                   </div>
                 </div>
                 <div className={`text-xs font-bold px-2 py-1 rounded-full ${member.hasActivePackage ? colors.badge : "bg-muted text-muted-foreground"}`} style={displayFont}>
-                  {member.hasActivePackage ? (isAmharic ? "ንቁ" : "Active") : (isAmharic ? "ፓኬጅ የለም" : "No package")}
+                  {member.hasActivePackage ? (isAmharic ? "ንቁ" : isOromo ? "Kan Hojjetu" : "Active") : (isAmharic ? "ፓኬጅ የለም" : isOromo ? "Paakeejiin hin jiru" : "No package")}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-border">
                 <div>
                   <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {isAmharic ? "የተቀማጭ መጠን" : "Deposit Volume"}
+                    {isAmharic ? "የተቀማጭ መጠን" : isOromo ? "Hamma Galfame" : "Deposit Volume"}
                   </p>
-                  <p className="font-semibold text-sm text-foreground">{fmt(member.activeDepositAmount)} {isAmharic ? "ብር" : "ETB"}</p>
+                  <p className="font-semibold text-sm text-foreground">{fmt(member.activeDepositAmount)} {currency}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {isAmharic ? "የእርስዎ ኮሚሽን" : "Your Commission"}
+                    {isAmharic ? "የእርስዎ ኮሚሽን" : isOromo ? "Komishinii Keessan" : "Your Commission"}
                   </p>
-                  <p className="font-semibold text-sm text-primary">{fmt(member.commissionPaid)} {isAmharic ? "ብር" : "ETB"}</p>
+                  <p className="font-semibold text-sm text-primary">{fmt(member.commissionPaid)} {currency}</p>
                 </div>
               </div>
             </div>

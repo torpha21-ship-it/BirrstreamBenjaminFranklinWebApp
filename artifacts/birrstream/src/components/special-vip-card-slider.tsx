@@ -20,6 +20,7 @@ interface CardData {
   qr: string;
   description: string;
   descriptionAm: string;
+  descriptionOr: string;
 }
 
 const CARDS_DATA: CardData[] = [
@@ -37,6 +38,7 @@ const CARDS_DATA: CardData[] = [
     qr: "#qr-1",
     description: "Activated when a user purchases VIP2",
     descriptionAm: "ተጠቃሚው ቪአይፒ 2 ሲገዛ የሚነቃ ልዩ ካርድ",
+    descriptionOr: "Yeroo fayyadamaan VIP2 bitatu kan banamu",
   },
   {
     id: "vip3-card",
@@ -52,6 +54,7 @@ const CARDS_DATA: CardData[] = [
     qr: "#qr-1",
     description: "Activated when a user purchases VIP3",
     descriptionAm: "ተጠቃሚው ቪአይፒ 3 ሲገዛ የሚነቃ ልዩ ካርድ",
+    descriptionOr: "Yeroo fayyadamaan VIP3 bitatu kan banamu",
   },
   {
     id: "vip4-card",
@@ -67,6 +70,7 @@ const CARDS_DATA: CardData[] = [
     qr: "#qr-1",
     description: "Activated when a user purchases VIP4",
     descriptionAm: "ተጠቃሚው ቪአይፒ 4 ሲገዛ የሚነቃ ልዩ ካርድ",
+    descriptionOr: "Yeroo fayyadamaan VIP4 bitatu kan banamu",
   },
   {
     id: "vip5-card",
@@ -82,6 +86,7 @@ const CARDS_DATA: CardData[] = [
     qr: "#qr-1",
     description: "Activated when a user purchases VIP5",
     descriptionAm: "ተጠቃሚው ቪአይፒ 5 ሲገዛ የሚነቃ ልዩ ካርድ",
+    descriptionOr: "Yeroo fayyadamaan VIP5 bitatu kan banamu",
   },
 ];
 
@@ -120,7 +125,7 @@ function hasReachedVipTier(userPackageName: string | null | undefined, requiredT
 export function SpecialVipCardSlider() {
   const { data: summary } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
   const { toast } = useToast();
-  const { isAmharic } = useLanguage();
+  const { t, isAmharic, isOromo } = useLanguage();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Highstories', sans-serif",
@@ -155,7 +160,7 @@ export function SpecialVipCardSlider() {
     if (logoUse) logoUse.setAttribute("href", data.logo);
     if (numberUse) numberUse.setAttribute("href", data.number);
     if (qrUse) qrUse.setAttribute("href", data.qr);
-    if (descEl) descEl.innerHTML = isAmharic ? data.descriptionAm : data.description;
+    if (descEl) descEl.innerHTML = isAmharic ? data.descriptionAm : isOromo ? data.descriptionOr : data.description;
 
     gsap.set(cardEl, {
       background: data.cardBg,
@@ -177,7 +182,7 @@ export function SpecialVipCardSlider() {
       applyCardAttrs(activeCard, CARDS_DATA[currentCardDataIdxRef.current]);
       gsap.set(activeCard, { autoAlpha: 1, rotateY: 0, x: 0, xPercent: 0, rotateX: 0 });
     }
-  }, [isAmharic]);
+  }, [isAmharic, isOromo]);
 
   // Setup GSAP 3D mouse & touch tilt parallax effect
   useEffect(() => {
@@ -490,7 +495,7 @@ export function SpecialVipCardSlider() {
               className="text-2xl font-bold text-foreground leading-none"
               style={displayFont}
             >
-              {isAmharic ? "የጊዜ ካርዶች" : "Time Cards"}
+              {t("dash.time_cards")}
             </h2>
           </div>
           <span
@@ -503,6 +508,8 @@ export function SpecialVipCardSlider() {
         <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
           {isAmharic
             ? "የቪአይፒ ፓኬጅዎን ዕለታዊ ገቢ ያፋጥናል፣ ይህም በ 6 ወራት ጊዜ ውስጥ ወይም ትልቁ የገንዘብ ማውጫ ቀን እስኪደርስ ገቢዎን በፍጥነት ከፍ እንዲያደርጉ ያስችልዎታል።"
+            : isOromo
+            ? "Galii guyyaa paakeejii VIP keessanii saffisiisa, kanaanis ji'oota 6 keessatti ykn hanga guyyaa baasii guddichaatti galii keessan guddisuu dandeessu."
             : "Speeds up your VIP package daily income so you can top up quick and maximize earnings within the 6-month time frame or until the grand withdrawal day."}
         </p>
       </div>
@@ -587,7 +594,7 @@ export function SpecialVipCardSlider() {
                   className="description"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
                 >
-                  {isAmharic ? CARDS_DATA[0].descriptionAm : CARDS_DATA[0].description}
+                  {isAmharic ? CARDS_DATA[0].descriptionAm : isOromo ? CARDS_DATA[0].descriptionOr : CARDS_DATA[0].description}
                 </p>
                 <div className="qr-wrapper">
                   <svg viewBox="0 0 60 60">
@@ -609,11 +616,11 @@ export function SpecialVipCardSlider() {
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : "Activate"}
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : isOromo ? "Bani" : "Activate"}
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : "Activate"}
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : isOromo ? "Cufameera" : "Locked"}
                   </>
                 )}
               </button>
@@ -672,7 +679,7 @@ export function SpecialVipCardSlider() {
                   className="description"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.03em" }}
                 >
-                  {isAmharic ? CARDS_DATA[1].descriptionAm : CARDS_DATA[1].description}
+                  {isAmharic ? CARDS_DATA[1].descriptionAm : isOromo ? CARDS_DATA[1].descriptionOr : CARDS_DATA[1].description}
                 </p>
                 <div className="qr-wrapper">
                   <svg viewBox="0 0 60 60">
@@ -694,11 +701,11 @@ export function SpecialVipCardSlider() {
               >
                 {isActivated ? (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : "Activate"}
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 inline-block" /> {isAmharic ? "አግብር" : isOromo ? "Bani" : "Activate"}
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : "Activate"}
+                    <Lock className="w-3 h-3 opacity-70 inline-block" /> {isAmharic ? "ተቆልፏል" : isOromo ? "Cufameera" : "Locked"}
                   </>
                 )}
               </button>
