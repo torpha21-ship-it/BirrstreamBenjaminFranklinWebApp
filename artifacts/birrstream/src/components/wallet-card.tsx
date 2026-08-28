@@ -412,7 +412,7 @@ export function WalletCard({
                     <img
                       src={getBatteryIcon(summary.daysUntilExpiry)}
                       alt=""
-                      className="w-8 h-8 object-contain flex-shrink-0 [filter:invert(1)]"
+                      className="w-8 h-8 object-contain flex-shrink-0"
                     />
                     {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
                   </span>
@@ -428,7 +428,7 @@ export function WalletCard({
                   <img
                     src={batteryEmpty}
                     alt=""
-                    className="w-8 h-8 object-contain flex-shrink-0 group-hover:scale-110 transition-transform [filter:invert(1)]"
+                    className="w-8 h-8 object-contain flex-shrink-0 group-hover:scale-110 transition-transform"
                   />
                   <span>{isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}</span>
                   <ChevronRight className="w-3.5 h-3.5" />

@@ -202,6 +202,17 @@
   }
 }
 
+/* ── Amharic & Ethiopic Typography Readability ── */
+html[lang="am"],
+.lang-am,
+[lang="am"],
+.font-amharic,
+[style*="LogaComic"],
+[style*="Noto Sans Ethiopic"] {
+  letter-spacing: 0.045em;
+  word-spacing: 0.08em;
+}
+
 /* ── Night-Day Toggle CSS Rules ── */
 .toggle {
   --width: var(--toggle-width, 76px);

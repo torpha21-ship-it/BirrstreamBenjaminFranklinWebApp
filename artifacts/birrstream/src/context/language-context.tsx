@@ -660,6 +660,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return DICTIONARY[lang]?.[key] || fallback || DICTIONARY["en"]?.[key] || key;
   };
 
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    if (lang === "am") {
+      document.documentElement.classList.add("lang-am");
+    } else {
+      document.documentElement.classList.remove("lang-am");
+    }
+  }, [lang]);
+
   const isAmharic = lang === "am";
   const isOromo = lang === "or";
   const currency = lang === "am" ? "ብር" : lang === "or" ? "Qarshii" : "ETB";
