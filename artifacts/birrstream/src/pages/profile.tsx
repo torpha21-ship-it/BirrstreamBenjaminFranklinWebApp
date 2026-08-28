@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { BSLogo } from "@/components/bs-logo";
 import { useProfilePhoto } from "@/hooks/use-profile-photo";
 import { useLanguage } from "@/context/language-context";
+import { useKyc } from "@/hooks/use-kyc";
 import mainBalanceIcon from "@/assets/decor/profile-main-balance-card.svg";
 import depositedIcon from "@/assets/decor/profile-deposited-card.svg";
 import totalYieldIcon from "@/assets/decor/profile-total-yield-card.svg";
@@ -34,23 +35,22 @@ export default function Profile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const kycFileInputRef = useRef<HTMLInputElement>(null);
   const { t, isAmharic, isOromo, currency } = useLanguage();
+  const { kycData, kycStatus, isPending, isApproved, isRejected, canSubmit, submitKyc } = useKyc();
 
-  // KYC Verification state
+  // Dual KYC state for fresh uploads
   const [kycIdType, setKycIdType] = useState<"national" | "university">("national");
-  const [kycImage, setKycImage] = useState<string | null>(() => {
-    return localStorage.getItem("birr_kyc_preview") || null;
-  });
-  const [kycFileName, setKycFileName] = useState<string>(() => {
-    return localStorage.getItem("birr_kyc_filename") || "";
-  });
-  const [isKycSubmitted, setIsKycSubmitted] = useState<boolean>(() => {
-    return localStorage.getItem("birr_kyc_submitted") === "true";
-  });
+  const [kycFrontImage, setKycFrontImage] = useState<string | null>(null);
+  const [kycFrontFileName, setKycFrontFileName] = useState<string>("");
+  const [kycBackImage, setKycBackImage] = useState<string | null>(null);
+  const [kycBackFileName, setKycBackFileName] = useState<string>("");
   const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
+
+  const kycFileFrontRef = useRef<HTMLInputElement>(null);
+  const kycFileBackRef = useRef<HTMLInputElement>(null);
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
-    letterSpacing: isAmharic ? "0" : "-0.01em",
+    letterSpacing: isAmharic ? "0.045em" : "-0.01em",
   };
 
   const user = profile ?? authUser;
@@ -79,39 +79,62 @@ export default function Profile() {
     e.target.value = "";
   };
 
-  const handleKycFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleKycFrontChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setKycFileName(file.name);
+    setKycFrontFileName(file.name);
     const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setKycImage(result);
-      localStorage.setItem("birr_kyc_preview", result);
-      localStorage.setItem("birr_kyc_filename", file.name);
-    };
+    reader.onload = () => setKycFrontImage(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleKycBackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setKycBackFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => setKycBackImage(reader.result as string);
     reader.readAsDataURL(file);
   };
 
   const handleKycSubmit = () => {
-    if (!kycImage) {
+    if (!canSubmit) {
       toast({
-        title: isAmharic ? "እባክዎ መታወቂያዎን ይስቀሉ" : isOromo ? "Waraqaa eenyummaa galchaa" : "Please attach your ID",
-        description: isAmharic ? "የብሔራዊ ወይም የዩኒቨርሲቲ መታወቂያ ፎቶ ማስገባት አለብዎት።" : "Select National or University ID and capture photo.",
+        title: isAmharic ? "ማረጋገጫ በመጠባበቅ ላይ ነው" : isOromo ? "Mirkaneessi Eeggamaa Jira" : "Verification In Review",
+        description: isAmharic
+          ? "የቀረበው ማረጋገጫዎ እስኪፈቀድ ድረስ ሌላ ማረጋገጫ ማስገባት አይቻልም።"
+          : isOromo
+          ? "Hanga mirkanaa'utti waraqaa eenyummaa lammaffaa galchuun hin danda'amu."
+          : "You cannot submit another verification while your current submission is under review.",
         variant: "destructive",
       });
       return;
     }
+
+    if (!kycFrontImage || !kycBackImage) {
+      toast({
+        title: isAmharic ? "ሁለቱም የመታወቂያ ገጾች (ፊት እና ጀርባ) ግዴታ ናቸው" : isOromo ? "Fuula lamaan (Fuuldura fi Duuba) Dirqama" : "Both Front & Back of ID Required",
+        description: isAmharic ? "እባክዎ የመታወቂያዎን የፊት ገጽ እንዲሁም የጀርባ ገጽ ፎቶዎችን አያይዘው ያስገቡ።" : "Please attach BOTH the Front and Back sides of your ID card.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmittingKyc(true);
     setTimeout(() => {
+      submitKyc({
+        idType: kycIdType,
+        frontImage: kycFrontImage,
+        backImage: kycBackImage,
+        frontFileName: kycFrontFileName,
+        backFileName: kycBackFileName,
+      });
       setIsSubmittingKyc(false);
-      setIsKycSubmitted(true);
-      localStorage.setItem("birr_kyc_submitted", "true");
       toast({
         title: isAmharic ? "የ KYC ማረጋገጫ ተልኳል!" : isOromo ? "Mirkaneessi KYC Ergamaera!" : "KYC Submitted Successfully!",
-        description: isAmharic ? "ሰነድዎ በአስተዳዳሪው እየተገመገመ ነው።" : isOromo ? "Sanadni keessan gamaaggamaa jira." : "Your document is under review by our security team.",
+        description: isAmharic ? "ሰነድዎ በአስተዳዳሪው እየተገመገመ ነው።" : isOromo ? "Sanadni keessan gamaaggamaa jira." : "Both front and back ID photos are under review by our security team.",
       });
-    }, 900);
+    }, 800);
   };
 
   const initials = user?.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() ?? "U";
@@ -217,144 +240,247 @@ export default function Profile() {
 
           <span
             className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${
-              isKycSubmitted
+              isApproved
                 ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30"
+                : isPending
+                ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30"
+                : "bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30"
             }`}
           >
-            {isKycSubmitted ? (
+            {isApproved ? (
               <>
-                <CheckCircle2 className="w-3 h-3" />
+                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                <span>{isAmharic ? "የተረጋገጠ" : isOromo ? "Mirkanaa'eera" : "Verified"}</span>
+              </>
+            ) : isPending ? (
+              <>
+                <CheckCircle2 className="w-3 h-3 text-yellow-500" />
                 <span>{isAmharic ? "በግምገማ ላይ" : isOromo ? "Gamaaggama Irra" : "Under Review"}</span>
               </>
             ) : (
               <>
-                <ShieldAlert className="w-3 h-3" />
+                <ShieldAlert className="w-3 h-3 text-red-500" />
                 <span>{isAmharic ? "ያልተረጋገጠ" : isOromo ? "Hin Mirkanoofne" : "Unverified"}</span>
               </>
             )}
           </span>
         </div>
 
-        {isKycSubmitted && (
-          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-700 dark:text-emerald-300">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <p style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {isAmharic
-                ? "የመታወቂያ ሰነድዎ ደርሶናል፤ የናኦሚ ላብስ ደህንነት ቡድን በማረጋገጥ ላይ ነው።"
-                : isOromo
-                ? "Sanadni eenyummaa keessan nu ga'eera; gareen nageenyaa gamaaggamaa jira."
-                : "Your ID document is submitted and being verified by the security team."}
-            </p>
+        {/* Status Messages */}
+        {isApproved && (
+          <div className="mb-4 p-3.5 bg-emerald-500/10 border border-emerald-500/25 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-700 dark:text-emerald-300">
+            <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-500" />
+            <div>
+              <p className="font-bold">{isAmharic ? "ማንነትዎ በተሳካ ሁኔታ ተረጋግጧል!" : isOromo ? "Eenyummaan keessan mirkanaa'eera!" : "Your Identity is Verified!"}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {isAmharic ? "ገንዘብ ማውጣት እና ሙሉ የቪአይፒ አገልግሎቶች ክፍት ናቸው።" : "Withdrawals and full VIP access are enabled."}
+              </p>
+            </div>
           </div>
         )}
 
-        {/* ID Type Selector */}
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <button
-            type="button"
-            onClick={() => setKycIdType("national")}
-            className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-              kycIdType === "national"
-                ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
-                : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
-            }`}
-            style={displayFont}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>{isAmharic ? "ብሔራዊ መታወቂያ" : isOromo ? "Eenyummaa Biyyooleessaa" : "National ID"}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setKycIdType("university")}
-            className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-              kycIdType === "university"
-                ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
-                : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
-            }`}
-            style={displayFont}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>{isAmharic ? "የዩኒቨርሲቲ መታወቂያ" : isOromo ? "Eenyummaa Yuunivarsitii" : "University ID"}</span>
-          </button>
-        </div>
-
-        {/* Hidden File Picker */}
-        <input
-          ref={kycFileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleKycFileChange}
-          className="hidden"
-        />
-
-        {/* Upload / Capture Dropzone */}
-        {!kycImage ? (
-          <button
-            type="button"
-            onClick={() => kycFileInputRef.current?.click()}
-            className="w-full py-4 px-4 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 flex flex-col items-center justify-center gap-1.5 transition-all text-center group cursor-pointer"
-          >
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-              <Camera className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-bold text-foreground" style={displayFont}>
-              {isAmharic ? "መታወቂያ ፎቶ አንሳ ወይም ስቀል" : isOromo ? "Suuraa Waraqaa Eenyummaa Kaasi ykn Galchi" : "Capture or Upload ID Photo"}
-            </span>
-            <span className="text-[11px] text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {kycIdType === "national"
-                ? (isAmharic ? "የብሔራዊ መታወቂያ ፊት ገጽ" : isOromo ? "Fuula dura Waraqaa Eenyummaa Biyyooleessaa" : "Front of National ID")
-                : (isAmharic ? "የዩኒቨርሲቲ መታወቂያ ካርድ" : isOromo ? "Kaardii Eenyummaa Yuunivarsitii" : "Student / University ID Card")}
-            </span>
-          </button>
-        ) : (
-          <div className="relative rounded-2xl border border-primary/40 bg-muted/20 p-3 flex items-center gap-3 mb-3">
-            <img
-              src={kycImage}
-              alt="ID Preview"
-              className="w-14 h-14 rounded-xl object-cover border border-border flex-shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1 text-emerald-500 font-bold text-xs">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>{isAmharic ? "መታወቂያ ተያይዟል" : isOromo ? "Waraqaan Eenyummaa Qophaa'eera" : "ID Attached"}</span>
+        {isPending && (
+          <div className="mb-4 space-y-3">
+            <div className="p-3.5 bg-yellow-500/10 border border-yellow-500/25 rounded-2xl flex items-start gap-2.5 text-xs text-yellow-800 dark:text-yellow-200">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-yellow-600 mt-0.5" />
+              <div>
+                <p className="font-bold leading-tight" style={displayFont}>
+                  {isAmharic ? "የማረጋገጫ ሰነድዎ በግምገማ ላይ ነው" : isOromo ? "Sanadni eenyummaa keessan gamaaggama irra jira" : "ID Verification Is Under Review"}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                  {isAmharic
+                    ? "የመታወቂያዎ የፊት እና የጀርባ ፎቶዎች ደርሰውናል። የቀረበው ሰነድ እስኪፈቀድ ድረስ ሁለተኛ ማረጋገጫ ማቅረብ አይቻልም።"
+                    : isOromo
+                    ? "Waraqaan fuulduraa fi duubaa nu ga'eera. Hanga mirkanaa'utti galmee lammaffaa hin danda'amu."
+                    : "Both the Front and Back sides of your ID have been submitted. You cannot submit another verification until the current one is approved."}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground truncate">{kycFileName || "id-document.jpg"}</p>
+            </div>
+
+            {/* Submitted Previews (Front & Back) */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border">
+                <span className="text-[10px] font-bold text-muted-foreground block mb-1">
+                  1. {isAmharic ? "የፊት ገጽ" : "Front Side"}
+                </span>
+                {kycData?.frontImage ? (
+                  <img src={kycData.frontImage} alt="Front ID" className="w-full h-24 object-cover rounded-xl border border-border" />
+                ) : (
+                  <div className="w-full h-24 bg-muted/60 rounded-xl flex items-center justify-center text-[10px] text-muted-foreground">Attached</div>
+                )}
+              </div>
+              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border">
+                <span className="text-[10px] font-bold text-muted-foreground block mb-1">
+                  2. {isAmharic ? "የጀርባ ገጽ" : "Back Side"}
+                </span>
+                {kycData?.backImage ? (
+                  <img src={kycData.backImage} alt="Back ID" className="w-full h-24 object-cover rounded-xl border border-border" />
+                ) : (
+                  <div className="w-full h-24 bg-muted/60 rounded-xl flex items-center justify-center text-[10px] text-muted-foreground">Attached</div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Upload Form for Unverified / Rejected Users */}
+        {canSubmit && (
+          <>
+            {/* ID Type Selector */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
               <button
                 type="button"
-                onClick={() => kycFileInputRef.current?.click()}
-                className="text-[11px] text-primary font-bold hover:underline mt-0.5 cursor-pointer"
+                onClick={() => setKycIdType("national")}
+                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  kycIdType === "national"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
+                    : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
+                }`}
+                style={displayFont}
               >
-                {isAmharic ? "ፎቶ ቀይር" : isOromo ? "Jijjiiri" : "Change photo"}
+                <FileText className="w-3.5 h-3.5" />
+                <span>{isAmharic ? "ብሔራዊ መታወቂያ" : isOromo ? "Eenyummaa Biyyooleessaa" : "National ID"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setKycIdType("university")}
+                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  kycIdType === "university"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
+                    : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
+                }`}
+                style={displayFont}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>{isAmharic ? "የዩኒቨርሲቲ መታወቂያ" : isOromo ? "Eenyummaa Yuunivarsitii" : "University ID"}</span>
               </button>
             </div>
+
+            {/* Hidden File Pickers */}
+            <input
+              ref={kycFileFrontRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleKycFrontChange}
+              className="hidden"
+            />
+            <input
+              ref={kycFileBackRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleKycBackChange}
+              className="hidden"
+            />
+
+            {/* Dual Upload Dropzones */}
+            <div className="space-y-2.5">
+              {/* 1. FRONT */}
+              <div>
+                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1" style={displayFont}>
+                  1. {isAmharic ? "የመታወቂያ ፊት ገጽ" : "Front Side of ID"}
+                </label>
+                {!kycFrontImage ? (
+                  <button
+                    type="button"
+                    onClick={() => kycFileFrontRef.current?.click()}
+                    className="w-full py-3 px-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 flex items-center justify-center gap-2.5 transition-all text-center group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Camera className="w-4 h-4" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-bold text-foreground block" style={displayFont}>
+                        {isAmharic ? "የፊት ገጽ ፎቶ አንሳ/ስቀል" : "Upload Front Side Photo"}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground block">
+                        {kycIdType === "national" ? (isAmharic ? "የብሔራዊ መታወቂያ ፊት ገጽ" : "Front of National ID") : (isAmharic ? "የተማሪ መታወቂያ ፊት ገጽ" : "Front of Student ID")}
+                      </span>
+                    </div>
+                  </button>
+                ) : (
+                  <div className="relative rounded-2xl border border-primary/40 bg-muted/20 p-2.5 flex items-center gap-2.5">
+                    <img src={kycFrontImage} alt="Front Preview" className="w-12 h-12 rounded-xl object-cover border border-border flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1 text-emerald-500 font-bold text-[11px]">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{isAmharic ? "የፊት ገጽ ተያይዟል" : "Front Side Attached"}</span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground truncate">{kycFrontFileName || "front-id.jpg"}</p>
+                      <button type="button" onClick={() => kycFileFrontRef.current?.click()} className="text-[10px] text-primary font-bold hover:underline cursor-pointer">
+                        {isAmharic ? "ቀይር" : "Change"}
+                      </button>
+                    </div>
+                    <button type="button" onClick={() => { setKycFrontImage(null); setKycFrontFileName(""); }} className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* 2. BACK */}
+              <div>
+                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1" style={displayFont}>
+                  2. {isAmharic ? "የመታወቂያ ጀርባ ገጽ" : "Back Side of ID"}
+                </label>
+                {!kycBackImage ? (
+                  <button
+                    type="button"
+                    onClick={() => kycFileBackRef.current?.click()}
+                    className="w-full py-3 px-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 flex items-center justify-center gap-2.5 transition-all text-center group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Camera className="w-4 h-4" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-bold text-foreground block" style={displayFont}>
+                        {isAmharic ? "የጀርባ ገጽ ፎቶ አንሳ/ስቀል" : "Upload Back Side Photo"}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground block">
+                        {isAmharic ? "የመታወቂያው የጀርባ ገጽ" : "Back side of document"}
+                      </span>
+                    </div>
+                  </button>
+                ) : (
+                  <div className="relative rounded-2xl border border-primary/40 bg-muted/20 p-2.5 flex items-center gap-2.5">
+                    <img src={kycBackImage} alt="Back Preview" className="w-12 h-12 rounded-xl object-cover border border-border flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1 text-emerald-500 font-bold text-[11px]">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{isAmharic ? "የጀርባ ገጽ ተያይዟል" : "Back Side Attached"}</span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground truncate">{kycBackFileName || "back-id.jpg"}</p>
+                      <button type="button" onClick={() => kycFileBackRef.current?.click()} className="text-[10px] text-primary font-bold hover:underline cursor-pointer">
+                        {isAmharic ? "ቀይር" : "Change"}
+                      </button>
+                    </div>
+                    <button type="button" onClick={() => { setKycBackImage(null); setKycBackFileName(""); }} className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <button
               type="button"
-              onClick={() => { setKycImage(null); setKycFileName(""); localStorage.removeItem("birr_kyc_preview"); localStorage.removeItem("birr_kyc_filename"); }}
-              className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer"
+              onClick={handleKycSubmit}
+              disabled={isSubmittingKyc}
+              className="w-full mt-4 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-md shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+              style={displayFont}
             >
-              <X className="w-4 h-4" />
+              {isSubmittingKyc ? (
+                <span>{isAmharic ? "በመላክ ላይ..." : isOromo ? "Ergaa jira..." : "Submitting..."}</span>
+              ) : (
+                <>
+                  <UploadCloud className="w-4 h-4" />
+                  <span>{isAmharic ? "ሁለቱንም ገጾች አስገባ" : isOromo ? "Fuula Lamaan Galchi" : "Submit Both ID Sides"}</span>
+                </>
+              )}
             </button>
-          </div>
+          </>
         )}
-
-        <button
-          type="button"
-          onClick={handleKycSubmit}
-          disabled={isSubmittingKyc}
-          className="w-full mt-3 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-md shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
-          style={displayFont}
-        >
-          {isSubmittingKyc ? (
-            <span>{isAmharic ? "በመላክ ላይ..." : isOromo ? "Ergaa jira..." : "Submitting..."}</span>
-          ) : (
-            <>
-              <UploadCloud className="w-4 h-4" />
-              <span>{isKycSubmitted ? (isAmharic ? "የተሻሻለ መታወቂያ ላክ" : isOromo ? "Haaromsi Ergi" : "Update Submitted ID") : (isAmharic ? "ለማረጋገጫ አስገባ" : isOromo ? "Mirkaneessaaf Galchi" : "Submit ID for Verification")}</span>
-            </>
-          )}
-        </button>
       </div>
 
       {/* ── 6-MONTH PLATFORM CALENDAR & COUNTDOWN ── */}

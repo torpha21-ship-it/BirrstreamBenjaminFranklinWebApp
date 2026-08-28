@@ -18,26 +18,38 @@ export default function Register() {
     fullName: "", username: "", email: "", password: "", confirmPassword: "", referralCode: ""
   });
 
-  // Mandatory KYC ID Type & Document State (Only "national" or "university")
+  // Mandatory KYC ID Type & Dual Document State (Front & Back)
   const [idType, setIdType] = useState<"national" | "university">("national");
-  const [idImage, setIdImage] = useState<string | null>(null);
-  const [idFileName, setIdFileName] = useState<string>("");
+  const [idImageFront, setIdImageFront] = useState<string | null>(null);
+  const [idFileNameFront, setIdFileNameFront] = useState<string>("");
+  const [idImageBack, setIdImageBack] = useState<string | null>(null);
+  const [idFileNameBack, setIdFileNameBack] = useState<string>("");
+
+  const fileInputFrontRef = useRef<HTMLInputElement>(null);
+  const fileInputBackRef = useRef<HTMLInputElement>(null);
 
   const registerMutation = useRegister();
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
-    letterSpacing: isAmharic ? "0" : "-0.01em",
+    letterSpacing: isAmharic ? "0.045em" : "-0.01em",
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFrontUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setIdFileName(file.name);
+    setIdFileNameFront(file.name);
     const reader = new FileReader();
-    reader.onload = () => {
-      setIdImage(reader.result as string);
-    };
+    reader.onload = () => setIdImageFront(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleBackUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIdFileNameBack(file.name);
+    const reader = new FileReader();
+    reader.onload = () => setIdImageBack(reader.result as string);
     reader.readAsDataURL(file);
   };
 
@@ -52,15 +64,37 @@ export default function Register() {
       return;
     }
 
-    // Enforce mandatory KYC ID submission
-    if (!idImage) {
+    // Check if there is already a pending unapproved registration on this device
+    const existingPending = localStorage.getItem("birrstream_kyc_latest_pending");
+    if (existingPending) {
+      try {
+        const parsed = JSON.parse(existingPending);
+        if (parsed.status === "pending" && parsed.username === form.username) {
+          toast({
+            title: isAmharic ? "ማረጋገጫ በመጠባበቅ ላይ ነው" : isOromo ? "Mirkaneessi Eeggamaa Jira" : "Verification Pending Approval",
+            description: isAmharic
+              ? "የቀደመው የማንነት ማረጋገጫዎ ገና እየተገመገመ ነው። እስኪፈቀድ ድረስ ሁለተኛ ምዝገባ ማድረግ አይቻልም።"
+              : isOromo
+              ? "Waraqaan eenyummaa keessan duraan galchitan gamaaggama irra jira. Hanga mirkanaa'utti galmee lammaffaa hin hayyamamu."
+              : "Your previous ID verification submission is still pending approval. You cannot submit another registration until the first is reviewed and approved.",
+            variant: "destructive"
+          });
+          return;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    // Enforce mandatory KYC ID submission — BOTH Front and Back required
+    if (!idImageFront || !idImageBack) {
       toast({
-        title: isAmharic ? "የማንነት ማረጋገጫ (KYC) ግዴታ ነው" : isOromo ? "Mirkaneessi Eenyummaa (KYC) Dirqama" : "KYC Verification Required",
+        title: isAmharic ? "ሁለቱም የመታወቂያ ገጾች (ፊት እና ጀርባ) ግዴታ ናቸው" : isOromo ? "Fuula lamaan (Fuuldura fi Duuba) Dirqama" : "Both Front & Back of ID Required",
         description: isAmharic
-          ? "እባክዎ የመታወቂያ ዓይነት (ብሔራዊ ወይም የዩኒቨርሲቲ) ይምረጡ እና የመታወቂያ ፎቶዎን ያያይዙ።"
+          ? "እባክዎ የመታወቂያዎን የፊት ገጽ እንዲሁም የጀርባ ገጽ ፎቶዎችን አያይዘው ያስገቡ።"
           : isOromo
-          ? "Maaloo gosa eenyummaa filadhaa suuraa waraqaa eenyummaa keessanii galchaa."
-          : "Please select your ID type (National or University ID) and capture/upload your ID document before creating an account.",
+          ? "Maaloo fuula fuulduraa fi duubaa waraqaa eenyummaa keessanii lamaanuu galchaa."
+          : "Please capture or upload BOTH the Front Side and Back Side of your ID document before continuing.",
         variant: "destructive"
       });
       return;
@@ -70,6 +104,23 @@ export default function Register() {
       { data: { ...form, referralCode: form.referralCode || null } },
       {
         onSuccess: (data) => {
+          // Save dual KYC record linked to user
+          const kycRecord = {
+            status: "pending",
+            idType,
+            frontImage: idImageFront,
+            backImage: idImageBack,
+            frontFileName: idFileNameFront,
+            backFileName: idFileNameBack,
+            submittedAt: new Date().toISOString(),
+            userId: data.user?.id,
+            username: data.user?.username,
+          };
+          localStorage.setItem(`birrstream_kyc_${data.user?.id}`, JSON.stringify(kycRecord));
+          localStorage.setItem(`birrstream_kyc_${data.user?.username}`, JSON.stringify(kycRecord));
+          localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(kycRecord));
+          window.dispatchEvent(new CustomEvent("birr:kyc-updated", { detail: kycRecord }));
+
           login(data.token, data.user);
           setLocation("/dashboard");
         },
@@ -228,64 +279,135 @@ export default function Register() {
                 </button>
               </div>
 
-              {/* Document Photo Capture / Upload Area */}
+              {/* Dual Document Photo Capture / Upload Area: Front & Back */}
               <input
-                ref={fileInputRef}
+                ref={fileInputFrontRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
-                onChange={handleFileUpload}
+                onChange={handleFrontUpload}
+                className="hidden"
+              />
+              <input
+                ref={fileInputBackRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleBackUpload}
                 className="hidden"
               />
 
-              {!idImage ? (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-4 px-4 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-card/50 flex flex-col items-center justify-center gap-1.5 transition-all text-center group cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-foreground" style={displayFont}>
-                    {isAmharic ? "መታወቂያ ፎቶ አንሳ ወይም ስቀል" : isOromo ? "Suuraa Waraqaa Eenyummaa Kaasi ykn Galchi" : "Capture or Upload ID Photo"}
-                  </span>
-                  <span className="text-[11px] text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {idType === "national"
-                      ? (isAmharic ? "የብሔራዊ መታወቂያ ፊት ገጽ" : "Front of National ID")
-                      : (isAmharic ? "የዩኒቨርሲቲ መታወቂያ ካርድ" : "Student / University ID Card")}
-                  </span>
-                </button>
-              ) : (
-                <div className="relative rounded-2xl border border-primary/40 bg-card p-3 flex items-center gap-3">
-                  <img
-                    src={idImage}
-                    alt="ID Preview"
-                    className="w-14 h-14 rounded-xl object-cover border border-border flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1 text-emerald-500 font-bold text-xs">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>{isAmharic ? "መታወቂያ ተያይዟል" : isOromo ? "Waraqaan Eenyummaa Galmeeffameera" : "ID Attached"}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground truncate">{idFileName || "id-document.jpg"}</p>
+              <div className="space-y-2.5">
+                {/* 1. FRONT OF ID */}
+                <div>
+                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1" style={displayFont}>
+                    1. {isAmharic ? "የመታወቂያ ፊት ገጽ" : isOromo ? "Fuula Fuulduraa Waraqaa Eenyummaa" : "Front Side of ID"}
+                  </label>
+                  {!idImageFront ? (
                     <button
                       type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="text-[11px] text-primary font-bold hover:underline mt-0.5"
+                      onClick={() => fileInputFrontRef.current?.click()}
+                      className="w-full py-3 px-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-card/50 flex items-center justify-center gap-2.5 transition-all text-center group cursor-pointer"
                     >
-                      {isAmharic ? "ፎቶ ቀይር" : isOromo ? "Jijjiiri" : "Change photo"}
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform flex-shrink-0">
+                        <Camera className="w-4 h-4" />
+                      </div>
+                      <div className="text-left">
+                        <span className="text-xs font-bold text-foreground block" style={displayFont}>
+                          {isAmharic ? "የፊት ገጽ ፎቶ አንሳ/ስቀል" : isOromo ? "Suuraa Fuulduraa Kaasi" : "Upload Front Side Photo"}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block">
+                          {idType === "national" ? (isAmharic ? "የብሔራዊ መታወቂያ ፊት" : "National ID front with photo") : (isAmharic ? "የተማሪ መታወቂያ ፊት" : "Student ID front side")}
+                        </span>
+                      </div>
                     </button>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setIdImage(null); setIdFileName(""); }}
-                    className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  ) : (
+                    <div className="relative rounded-2xl border border-primary/40 bg-card p-2.5 flex items-center gap-2.5">
+                      <img
+                        src={idImageFront}
+                        alt="Front ID Preview"
+                        className="w-12 h-12 rounded-xl object-cover border border-border flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1 text-emerald-500 font-bold text-[11px]">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{isAmharic ? "የፊት ገጽ ተያይዟል" : isOromo ? "Fuuldurri Galmeeffameera" : "Front Side Attached"}</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground truncate">{idFileNameFront || "id-front.jpg"}</p>
+                        <button
+                          type="button"
+                          onClick={() => fileInputFrontRef.current?.click()}
+                          className="text-[10px] text-primary font-bold hover:underline"
+                        >
+                          {isAmharic ? "ቀይር" : isOromo ? "Jijjiiri" : "Change"}
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setIdImageFront(null); setIdFileNameFront(""); }}
+                        className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* 2. BACK OF ID */}
+                <div>
+                  <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1" style={displayFont}>
+                    2. {isAmharic ? "የመታወቂያ ጀርባ ገጽ" : isOromo ? "Fuula Duubaa Waraqaa Eenyummaa" : "Back Side of ID"}
+                  </label>
+                  {!idImageBack ? (
+                    <button
+                      type="button"
+                      onClick={() => fileInputBackRef.current?.click()}
+                      className="w-full py-3 px-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-card/50 flex items-center justify-center gap-2.5 transition-all text-center group cursor-pointer"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform flex-shrink-0">
+                        <Camera className="w-4 h-4" />
+                      </div>
+                      <div className="text-left">
+                        <span className="text-xs font-bold text-foreground block" style={displayFont}>
+                          {isAmharic ? "የጀርባ ገጽ ፎቶ አንሳ/ስቀል" : isOromo ? "Suuraa Duubaa Kaasi" : "Upload Back Side Photo"}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block">
+                          {isAmharic ? "የመታወቂያው የጀርባ ገጽ ማህተም/ኮድ" : "Back side of document with barcode/signature"}
+                        </span>
+                      </div>
+                    </button>
+                  ) : (
+                    <div className="relative rounded-2xl border border-primary/40 bg-card p-2.5 flex items-center gap-2.5">
+                      <img
+                        src={idImageBack}
+                        alt="Back ID Preview"
+                        className="w-12 h-12 rounded-xl object-cover border border-border flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1 text-emerald-500 font-bold text-[11px]">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{isAmharic ? "የጀርባ ገጽ ተያይዟል" : isOromo ? "Duubni Galmeeffameera" : "Back Side Attached"}</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground truncate">{idFileNameBack || "id-back.jpg"}</p>
+                        <button
+                          type="button"
+                          onClick={() => fileInputBackRef.current?.click()}
+                          className="text-[10px] text-primary font-bold hover:underline"
+                        >
+                          {isAmharic ? "ቀይር" : isOromo ? "Jijjiiri" : "Change"}
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setIdImageBack(null); setIdFileNameBack(""); }}
+                        className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <button

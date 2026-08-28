@@ -4,7 +4,8 @@ import { useAuth } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ShieldCheck } from "lucide-react";
+import { useKyc } from "@/hooks/use-kyc";
 import { BSLogo } from "@/components/bs-logo";
 import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
@@ -55,6 +56,7 @@ async function creditDailyYield(token: string | null) {
 export default function Dashboard() {
   const { user, token } = useAuth();
   const { t, isAmharic, isOromo, currency } = useLanguage();
+  const { kycStatus, isApproved, isPending } = useKyc();
   const qc = useQueryClient();
   const { toast } = useToast();
   const { data: summary, isLoading } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
@@ -207,18 +209,41 @@ export default function Dashboard() {
           <img src={hiDarkIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none hidden dark:inline-block flex-shrink-0" />
         </div>
 
-        {/* KYC Warning Triangle in middle with chat bubble */}
-        <Link href="/profile#kyc" className="relative flex flex-col items-center group cursor-pointer mx-auto">
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#F5E6A3] text-[#8B7200] font-extrabold text-[9px] px-2 py-0.5 rounded shadow-sm whitespace-nowrap animate-bounce flex items-center gap-1 z-20">
-            <span>{isAmharic ? "KYC ያረጋግጡ" : isOromo ? "KYC Mirkaneessi" : "Verify KYC"}</span>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#F5E6A3]" />
-          </div>
-          <img
-            src={warningTriangleIcon}
-            alt="KYC Warning"
-            className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110 dark:[filter:invert(1)_hue-rotate(180deg)]"
-          />
-        </Link>
+        {/* KYC Status Indicator in middle */}
+        {isApproved ? (
+          <Link
+            href="/profile#kyc"
+            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold shadow-sm mx-auto group hover:bg-emerald-500/25 transition-all"
+            title="KYC Verified"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+            <span style={displayFont}>{isAmharic ? "ማንነት ተረጋግጧል" : isOromo ? "Mirkanaa'eera" : "Verified"}</span>
+          </Link>
+        ) : isPending ? (
+          <Link href="/profile#kyc" className="relative flex flex-col items-center group cursor-pointer mx-auto">
+            <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#F5E6A3] text-[#8B7200] font-extrabold text-[9px] px-2 py-0.5 rounded shadow-sm whitespace-nowrap flex items-center gap-1 z-20">
+              <span>{isAmharic ? "KYC በግምገማ ላይ" : isOromo ? "KYC Gamaaggama Irra" : "KYC In Review"}</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#F5E6A3]" />
+            </div>
+            <img
+              src={warningTriangleIcon}
+              alt="KYC In Review"
+              className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110 dark:[filter:invert(1)_hue-rotate(180deg)]"
+            />
+          </Link>
+        ) : (
+          <Link href="/profile#kyc" className="relative flex flex-col items-center group cursor-pointer mx-auto">
+            <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#F5E6A3] text-[#8B7200] font-extrabold text-[9px] px-2 py-0.5 rounded shadow-sm whitespace-nowrap animate-bounce flex items-center gap-1 z-20">
+              <span>{isAmharic ? "KYC ያረጋግጡ" : isOromo ? "KYC Mirkaneessi" : "Verify KYC"}</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#F5E6A3]" />
+            </div>
+            <img
+              src={warningTriangleIcon}
+              alt="KYC Warning"
+              className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110 dark:[filter:invert(1)_hue-rotate(180deg)]"
+            />
+          </Link>
+        )}
 
         {/* Night-Day Animated Toggle placed on right */}
         <div className="flex items-center justify-end flex-shrink-0">

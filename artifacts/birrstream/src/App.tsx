@@ -29,6 +29,9 @@ import DeleteAccount from "@/pages/delete-account";
 import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
 import Games from "@/pages/games";
+import Feed from "@/pages/feed";
+
+import { WindowsLoader } from "@/components/windows-loader";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,11 +46,7 @@ const queryClient = new QueryClient({
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
-  if (isLoading) return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-background">
-      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (isLoading) return <WindowsLoader fullScreen />;
   if (!user) return <Redirect to="/login" />;
   return <Component />;
 }
@@ -76,6 +75,7 @@ function Router() {
         <Route path="/forgot-password" component={() => <PublicRoute component={ForgotPassword} />} />
         <Route path="/reset-password" component={() => <PublicRoute component={ResetPassword} />} />
         <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+        <Route path="/feed" component={() => <ProtectedRoute component={Feed} />} />
         <Route path="/games" component={() => <ProtectedRoute component={Games} />} />
         <Route path="/packages" component={() => <ProtectedRoute component={Packages} />} />
         <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />

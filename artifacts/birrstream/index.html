@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-      /* Initial pre-React branded loader */
+      /* Initial pre-React Windows 4-card-color splash loader */
       #initial-loader {
         position: fixed;
         inset: 0;
@@ -31,25 +31,53 @@
         justify-content: center;
         background-color: #0f1410;
         z-index: 99999;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }
-      .loader-spinner {
-        width: 36px;
-        height: 36px;
-        border: 3.5px solid rgba(180, 216, 168, 0.2);
-        border-top-color: #B4D8A8;
-        border-radius: 50%;
-        animation: spin-initial 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      .win-preloader {
+        position: relative;
+        width: 54px;
+        height: 54px;
+        animation: winPreRotate 2000ms ease-in-out infinite;
       }
-      @keyframes spin-initial {
-        to { transform: rotate(360deg); }
+      .win-pre-sq {
+        position: absolute;
+        width: 44%;
+        height: 44%;
+        border-radius: 4px;
+        transform-origin: center;
+        animation: winPreAnim 4000ms cubic-bezier(1, 0, 0, 1) infinite,
+                   winPreBlink 1000ms ease-in-out infinite;
+      }
+      .win-pre-sq1 { background-color: #F5E6A3; box-shadow: 0 0 10px rgba(245, 230, 163, 0.8), 0 0 24px rgba(245, 230, 163, 0.4); }
+      .win-pre-sq2 { background-color: #C9BDF5; box-shadow: 0 0 10px rgba(201, 189, 245, 0.8), 0 0 24px rgba(201, 189, 245, 0.4); animation-delay: -1000ms, -75ms; }
+      .win-pre-sq3 { background-color: #F2A89A; box-shadow: 0 0 10px rgba(242, 168, 154, 0.8), 0 0 24px rgba(242, 168, 154, 0.4); animation-delay: -2000ms, -150ms; }
+      .win-pre-sq4 { background-color: #A8D5B5; box-shadow: 0 0 10px rgba(168, 213, 181, 0.8), 0 0 24px rgba(168, 213, 181, 0.4); animation-delay: -3000ms, -225ms; }
+
+      @keyframes winPreAnim {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(125%, 0); }
+        50% { transform: translate(125%, 125%); }
+        75% { transform: translate(0, 125%); }
+        100% { transform: translate(0, 0); }
+      }
+      @keyframes winPreBlink {
+        0%, 20%, 80%, 100% { filter: brightness(115%); }
+        50% { filter: brightness(75%); }
+      }
+      @keyframes winPreRotate {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(0.72); }
       }
     </style>
   </head>
   <body>
     <div id="root">
       <div id="initial-loader">
-        <div class="loader-spinner"></div>
+        <div class="win-preloader">
+          <div class="win-pre-sq win-pre-sq1"></div>
+          <div class="win-pre-sq win-pre-sq2"></div>
+          <div class="win-pre-sq win-pre-sq3"></div>
+          <div class="win-pre-sq win-pre-sq4"></div>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>

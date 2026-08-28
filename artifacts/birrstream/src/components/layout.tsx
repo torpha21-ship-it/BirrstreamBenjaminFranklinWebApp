@@ -5,12 +5,13 @@ import {
   X, ArrowUpRight, ArrowDownRight, Package, Users, Receipt, ChevronRight,
   Trophy, ShieldAlert
 } from "lucide-react";
-import { NavHomeIcon, NavTasksIcon, NavGamesIcon, NavSupportIcon, NavProfileIcon } from "@/components/nav-icons";
+import { NavHomeIcon, NavTasksIcon, NavGamesIcon, NavSupportIcon, NavProfileIcon, NavFeedIcon } from "@/components/nav-icons";
 import { Button } from "@/components/ui/button";
 import { EarningAlertContainer } from "@/components/earning-alert";
 import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
 import { useLanguage } from "@/context/language-context";
+import { WindowsLoader } from "@/components/windows-loader";
 
 const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, labelKey: "nav.admin" };
 
@@ -27,6 +28,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const NAV_ITEMS = [
     { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
+    { href: "/feed", icon: NavFeedIcon, label: isAmharic ? "ማህበራዊ ፊድ" : isOromo ? "Hawaasa" : "Feed" },
     { href: "/games", icon: NavGamesIcon, label: t("nav.games") },
     { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
     { href: "/packages", icon: Package, label: t("nav.packages") },
@@ -39,7 +41,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const MOBILE_NAV = [
     { href: "/dashboard", icon: NavHomeIcon, label: isAmharic ? "ዋና" : isOromo ? "Fuula Dura" : "Home" },
-    { href: "/tasks", icon: NavTasksIcon, label: isAmharic ? "ተግባራት" : isOromo ? "Hojii" : "Tasks" },
+    { href: "/feed", icon: NavFeedIcon, label: isAmharic ? "ፊድ" : isOromo ? "Hawaasa" : "Feed" },
     { href: "/games", icon: NavGamesIcon, label: isAmharic ? "ጨዋታ" : isOromo ? "Taphawwan" : "Games" },
     { href: "/support", icon: NavSupportIcon, label: isAmharic ? "ድጋፍ" : isOromo ? "Deeggarsa" : "Support" },
     { href: "/profile", icon: NavProfileIcon, label: isAmharic ? "መገለጫ" : isOromo ? "Piroofaayilii" : "Profile" },
@@ -64,11 +66,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <WindowsLoader fullScreen />;
   }
 
   if (!user) {

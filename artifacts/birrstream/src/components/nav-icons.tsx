@@ -69,3 +69,22 @@ export function NavProfileIcon({ className = "", blackStroke = "#121331", greenS
     </svg>
   );
 }
+
+export function NavFeedIcon({ className = "", blackStroke = "#121331", greenStroke = "#185219" }: NavIconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 430" fill="none" className={className}>
+      <g strokeLinecap="round" strokeLinejoin="round" strokeWidth="24">
+        {/* Post frame card */}
+        <rect x="75" y="65" width="280" height="290" rx="38" stroke={blackStroke} />
+        {/* Top header avatar & text lines */}
+        <circle cx="130" cy="120" r="20" stroke={greenStroke} />
+        <path stroke={blackStroke} d="M175 110h120M175 130h65" />
+        {/* Post media window */}
+        <path stroke={blackStroke} d="M105 175h220v105c0 14-11 25-25 25H130c-14 0-25-11-25-25V175z" />
+        {/* Play/media & love reaction icon */}
+        <path stroke={greenStroke} d="m195 205 38 20-38 20z" fill={greenStroke} fillOpacity="0.3" />
+        <path stroke={greenStroke} d="M295 290c0-9 8-16 17-16s17 7 17 16c0 14-17 24-17 24s-17-10-17-24z" fill={greenStroke} />
+      </g>
+    </svg>
+  );
+}
