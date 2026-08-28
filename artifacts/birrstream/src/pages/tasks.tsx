@@ -134,7 +134,7 @@ export default function Tasks() {
   const totalEarnable = tasks?.reduce((s, t) => s + (t.isCompleted ? 0 : t.reward), 0) ?? 0;
 
   return (
-    <div className="px-4 py-6 max-w-md mx-auto relative">
+    <div className="px-4 pt-6 pb-2 max-w-md mx-auto relative">
       <div className="flex items-center gap-3 mb-2 relative z-10">
         <Link href="/dashboard" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-200 shadow-sm flex-shrink-0">
           <ArrowLeft className="w-4 h-4 text-black" />

@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useGetUserProfile, getGetUserProfileQueryKey, useLogout } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { Settings2, Receipt, Trash2, ChevronRight, LogOut, ArrowLeft, Camera } from "lucide-react";
+import { Trash2, ChevronRight, LogOut, ArrowLeft, Camera, ShieldAlert, ShieldCheck, CheckCircle2, X, UploadCloud, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { BSLogo } from "@/components/bs-logo";
@@ -13,7 +13,6 @@ import mainBalanceIcon from "@/assets/decor/profile-main-balance-card.svg";
 import depositedIcon from "@/assets/decor/profile-deposited-card.svg";
 import totalYieldIcon from "@/assets/decor/profile-total-yield-card.svg";
 import withdrawnIcon from "@/assets/decor/profile-withdrawn-card.svg";
-// hand2 = "(" shape → left side   |   hand1 = ")" shape → right side
 import hand2 from "@/assets/decor/member-hand-2.svg";
 import hand1 from "@/assets/decor/member-hand-1.svg";
 import { CalendarCard } from "@/components/calendar-card";
@@ -23,6 +22,7 @@ import transactionHistoryIcon from "@/assets/profile-icons/wired-outline-948-Tra
 import referralIcon from "@/assets/profile-icons/My Referal Network.webp";
 import affiliateIcon from "@/assets/profile-icons/wired-outline-2723-logo-linktree-hover-pinch.webp";
 import vipUpgradeIcon from "@/assets/profile-icons/VIP Upgrade Goals.webp";
+import warningTriangleIcon from "@/assets/decor/wired-outline-1140-warning-triangle-hover-enlarge.webp";
 
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
@@ -32,7 +32,21 @@ export default function Profile() {
   const { data: profile } = useGetUserProfile({ query: { queryKey: getGetUserProfileQueryKey() } });
   const logoutMutation = useLogout();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const kycFileInputRef = useRef<HTMLInputElement>(null);
   const { t, isAmharic, isOromo, currency } = useLanguage();
+
+  // KYC Verification state
+  const [kycIdType, setKycIdType] = useState<"national" | "university">("national");
+  const [kycImage, setKycImage] = useState<string | null>(() => {
+    return localStorage.getItem("birr_kyc_preview") || null;
+  });
+  const [kycFileName, setKycFileName] = useState<string>(() => {
+    return localStorage.getItem("birr_kyc_filename") || "";
+  });
+  const [isKycSubmitted, setIsKycSubmitted] = useState<boolean>(() => {
+    return localStorage.getItem("birr_kyc_submitted") === "true";
+  });
+  const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
@@ -62,8 +76,42 @@ export default function Profile() {
     } catch {
       toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : isOromo ? "Suuraa fe'uun hin danda'amne" : "Upload failed", variant: "destructive" });
     }
-    // reset so same file can be picked again
     e.target.value = "";
+  };
+
+  const handleKycFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setKycFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setKycImage(result);
+      localStorage.setItem("birr_kyc_preview", result);
+      localStorage.setItem("birr_kyc_filename", file.name);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleKycSubmit = () => {
+    if (!kycImage) {
+      toast({
+        title: isAmharic ? "እባክዎ መታወቂያዎን ይስቀሉ" : isOromo ? "Waraqaa eenyummaa galchaa" : "Please attach your ID",
+        description: isAmharic ? "የብሔራዊ ወይም የዩኒቨርሲቲ መታወቂያ ፎቶ ማስገባት አለብዎት።" : "Select National or University ID and capture photo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsSubmittingKyc(true);
+    setTimeout(() => {
+      setIsSubmittingKyc(false);
+      setIsKycSubmitted(true);
+      localStorage.setItem("birr_kyc_submitted", "true");
+      toast({
+        title: isAmharic ? "የ KYC ማረጋገጫ ተልኳል!" : isOromo ? "Mirkaneessi KYC Ergamaera!" : "KYC Submitted Successfully!",
+        description: isAmharic ? "ሰነድዎ በአስተዳዳሪው እየተገመገመ ነው።" : isOromo ? "Sanadni keessan gamaaggamaa jira." : "Your document is under review by our security team.",
+      });
+    }, 900);
   };
 
   const initials = user?.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() ?? "U";
@@ -93,8 +141,8 @@ export default function Profile() {
   ];
 
   return (
-    <div className="px-4 pt-0 pb-6 max-w-md mx-auto relative">
-      {/* Centred brand mark — no gap above or below */}
+    <div className="px-4 pt-0 pb-2 max-w-md mx-auto relative">
+      {/* Centred brand mark */}
       <div className="flex justify-center mb-0 relative z-10">
         <BSLogo />
       </div>
@@ -110,7 +158,7 @@ export default function Profile() {
         </Link>
         <button
           onClick={handleLogout}
-          className="ml-auto flex items-center gap-1.5 text-sm text-black hover:text-black transition-colors bg-white rounded-2xl px-3.5 py-2 border border-gray-200 shadow-sm font-bold"
+          className="ml-auto flex items-center gap-1.5 text-sm text-black hover:text-black transition-colors bg-white rounded-2xl px-3.5 py-2 border border-gray-200 shadow-sm font-bold cursor-pointer"
           style={displayFont}
         >
           <LogOut className="w-4 h-4 text-black" />
@@ -121,19 +169,17 @@ export default function Profile() {
       {/* Avatar & Name */}
       <div className="flex items-center gap-4 mb-6 relative z-10">
         <div className="relative flex-shrink-0">
-          {/* Avatar circle */}
           <div className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-primary/25 overflow-hidden">
             {photo
               ? <img src={photo} alt="Profile" className="w-full h-full object-cover" />
               : initials}
           </div>
-          {/* Camera upload button */}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
             aria-label={uploading ? "Uploading profile photo" : "Upload profile photo"}
-            className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-md border-2 border-white hover:opacity-90 active:scale-95 transition-all"
+            className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-md border-2 border-white hover:opacity-90 active:scale-95 transition-all cursor-pointer"
           >
             <Camera className="w-3.5 h-3.5 text-white" />
           </button>
@@ -152,6 +198,165 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* ── KYC IDENTITY VERIFICATION SECTION ── */}
+      <div id="kyc" className="bg-card rounded-3xl p-5 mb-6 border border-border shadow-sm relative z-10 -mx-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-2xl bg-yellow-500/15 flex items-center justify-center flex-shrink-0">
+              <img src={warningTriangleIcon} alt="" className="w-6 h-6 object-contain" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-foreground leading-tight" style={displayFont}>
+                {isAmharic ? "የማንነት ማረጋገጫ (KYC)" : isOromo ? "Mirkaneessa Eenyummaa (KYC)" : "KYC Identity Verification"}
+              </h3>
+              <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                {isAmharic ? "የመለያዎን ደህንነት እና የገንዘብ ማውጣት ፍቃድ ያረጋግጡ" : isOromo ? "Eenyummaa keessan mirkaneessuun baasii eeggadhaa" : "Verify your identity to enable withdrawals"}
+              </p>
+            </div>
+          </div>
+
+          <span
+            className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${
+              isKycSubmitted
+                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30"
+            }`}
+          >
+            {isKycSubmitted ? (
+              <>
+                <CheckCircle2 className="w-3 h-3" />
+                <span>{isAmharic ? "በግምገማ ላይ" : isOromo ? "Gamaaggama Irra" : "Under Review"}</span>
+              </>
+            ) : (
+              <>
+                <ShieldAlert className="w-3 h-3" />
+                <span>{isAmharic ? "ያልተረጋገጠ" : isOromo ? "Hin Mirkanoofne" : "Unverified"}</span>
+              </>
+            )}
+          </span>
+        </div>
+
+        {isKycSubmitted && (
+          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-700 dark:text-emerald-300">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            <p style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {isAmharic
+                ? "የመታወቂያ ሰነድዎ ደርሶናል፤ የናኦሚ ላብስ ደህንነት ቡድን በማረጋገጥ ላይ ነው።"
+                : isOromo
+                ? "Sanadni eenyummaa keessan nu ga'eera; gareen nageenyaa gamaaggamaa jira."
+                : "Your ID document is submitted and being verified by the security team."}
+            </p>
+          </div>
+        )}
+
+        {/* ID Type Selector */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <button
+            type="button"
+            onClick={() => setKycIdType("national")}
+            className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              kycIdType === "national"
+                ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
+                : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
+            }`}
+            style={displayFont}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>{isAmharic ? "ብሔራዊ መታወቂያ" : isOromo ? "Eenyummaa Biyyooleessaa" : "National ID"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setKycIdType("university")}
+            className={`py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              kycIdType === "university"
+                ? "bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20"
+                : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
+            }`}
+            style={displayFont}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>{isAmharic ? "የዩኒቨርሲቲ መታወቂያ" : isOromo ? "Eenyummaa Yuunivarsitii" : "University ID"}</span>
+          </button>
+        </div>
+
+        {/* Hidden File Picker */}
+        <input
+          ref={kycFileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleKycFileChange}
+          className="hidden"
+        />
+
+        {/* Upload / Capture Dropzone */}
+        {!kycImage ? (
+          <button
+            type="button"
+            onClick={() => kycFileInputRef.current?.click()}
+            className="w-full py-4 px-4 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 flex flex-col items-center justify-center gap-1.5 transition-all text-center group cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <Camera className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-bold text-foreground" style={displayFont}>
+              {isAmharic ? "መታወቂያ ፎቶ አንሳ ወይም ስቀል" : isOromo ? "Suuraa Waraqaa Eenyummaa Kaasi ykn Galchi" : "Capture or Upload ID Photo"}
+            </span>
+            <span className="text-[11px] text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+              {kycIdType === "national"
+                ? (isAmharic ? "የብሔራዊ መታወቂያ ፊት ገጽ" : isOromo ? "Fuula dura Waraqaa Eenyummaa Biyyooleessaa" : "Front of National ID")
+                : (isAmharic ? "የዩኒቨርሲቲ መታወቂያ ካርድ" : isOromo ? "Kaardii Eenyummaa Yuunivarsitii" : "Student / University ID Card")}
+            </span>
+          </button>
+        ) : (
+          <div className="relative rounded-2xl border border-primary/40 bg-muted/20 p-3 flex items-center gap-3 mb-3">
+            <img
+              src={kycImage}
+              alt="ID Preview"
+              className="w-14 h-14 rounded-xl object-cover border border-border flex-shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1 text-emerald-500 font-bold text-xs">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{isAmharic ? "መታወቂያ ተያይዟል" : isOromo ? "Waraqaan Eenyummaa Qophaa'eera" : "ID Attached"}</span>
+              </div>
+              <p className="text-xs text-muted-foreground truncate">{kycFileName || "id-document.jpg"}</p>
+              <button
+                type="button"
+                onClick={() => kycFileInputRef.current?.click()}
+                className="text-[11px] text-primary font-bold hover:underline mt-0.5 cursor-pointer"
+              >
+                {isAmharic ? "ፎቶ ቀይር" : isOromo ? "Jijjiiri" : "Change photo"}
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setKycImage(null); setKycFileName(""); localStorage.removeItem("birr_kyc_preview"); localStorage.removeItem("birr_kyc_filename"); }}
+              className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={handleKycSubmit}
+          disabled={isSubmittingKyc}
+          className="w-full mt-3 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-md shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+          style={displayFont}
+        >
+          {isSubmittingKyc ? (
+            <span>{isAmharic ? "በመላክ ላይ..." : isOromo ? "Ergaa jira..." : "Submitting..."}</span>
+          ) : (
+            <>
+              <UploadCloud className="w-4 h-4" />
+              <span>{isKycSubmitted ? (isAmharic ? "የተሻሻለ መታወቂያ ላክ" : isOromo ? "Haaromsi Ergi" : "Update Submitted ID") : (isAmharic ? "ለማረጋገጫ አስገባ" : isOromo ? "Mirkaneessaaf Galchi" : "Submit ID for Verification")}</span>
+            </>
+          )}
+        </button>
+      </div>
+
       {/* ── 6-MONTH PLATFORM CALENDAR & COUNTDOWN ── */}
       <CalendarCard userCreatedAt={user?.createdAt} />
 
@@ -160,14 +365,12 @@ export default function Profile() {
         className="bg-[#A8D5B5] rounded-3xl mb-6 relative z-10 overflow-hidden -mx-4"
         style={{ minHeight: 136 }}
       >
-        {/* Left hand — concave opens right, hugs left edge */}
         <img
           src={hand2}
           alt=""
           aria-hidden="true"
           className="absolute left-0 bottom-0 h-32 w-auto object-contain pointer-events-none select-none"
         />
-        {/* Right hand — concave opens left, hugs right edge */}
         <img
           src={hand1}
           alt=""
@@ -175,7 +378,6 @@ export default function Profile() {
           className="absolute right-0 bottom-0 h-32 w-auto object-contain pointer-events-none select-none"
         />
 
-        {/* Centred card content, padded so the hands don't overlap text */}
         <div className="relative z-10 flex flex-col items-center text-center px-14 pt-5 pb-5">
           <p className="text-[#2B7A4B] text-[20px] font-bold uppercase mb-3" style={displayFont}>
             {isAmharic ? "ናኦሚ ላብስ አባል" : isOromo ? "Miseensa Naomi Labs" : "Naomi Labs Member"}

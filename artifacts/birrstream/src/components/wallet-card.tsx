@@ -407,13 +407,13 @@ export function WalletCard({
                 </span>
                 {summary.daysUntilExpiry !== null && (
                   <span
-                    className="inline-flex items-center gap-1 text-xs text-[#7ea873]"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#7ea873]"
                     style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                   >
                     <img
                       src={getBatteryIcon(summary.daysUntilExpiry)}
                       alt=""
-                      className="w-4 h-4 object-contain flex-shrink-0"
+                      className="w-8 h-8 object-contain flex-shrink-0"
                     />
                     {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
                   </span>
@@ -423,16 +423,16 @@ export function WalletCard({
               <div className="pt-0.5">
                 <Link
                   href="/packages"
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all group"
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all group"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                 >
                   <img
                     src={batteryEmpty}
                     alt=""
-                    className="w-4 h-4 object-contain flex-shrink-0 group-hover:scale-110 transition-transform"
+                    className="w-8 h-8 object-contain flex-shrink-0 group-hover:scale-110 transition-transform"
                   />
                   <span>{isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}</span>
-                  <ChevronRight className="w-3 h-3" />
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             )}

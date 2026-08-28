@@ -50,7 +50,7 @@ export default function VipUpgrades() {
   };
 
   return (
-    <div className="px-4 py-6 max-w-md mx-auto">
+    <div className="px-4 pt-6 pb-2 max-w-md mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
           <ArrowLeft className="w-4 h-4" />
@@ -60,8 +60,8 @@ export default function VipUpgrades() {
         </h1>
       </div>
 
-      <div className="bg-[#1A1A1A] rounded-3xl p-5 mb-5 text-white">
-        <p className="text-gray-400 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+      <div className="bg-[#1A1A1A] rounded-3xl p-5 mb-5 text-white border border-white/10">
+        <p className="text-gray-300 text-sm" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
           {isAmharic
             ? "አውታረ መረብዎን በማሳደግ ነፃ የቪአይፒ ፓኬጆችን ያግኙ። ምንም የገንዘብ ግዢ አያስፈልግም።"
             : isOromo
@@ -88,30 +88,30 @@ export default function VipUpgrades() {
               const barColor = BAR_COLORS[i % BAR_COLORS.length];
 
               return (
-                <div key={goal.id} className="rounded-3xl overflow-hidden relative min-h-[220px]">
-                  {/* Full-bleed background photo */}
-                  <img
-                    src={bgImg}
-                    alt=""
-                    aria-hidden="true"
-                    className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none"
-                  />
-                  {/* Very light vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/15 via-transparent to-black/15" />
+                <div key={goal.id} className="bg-[#1A1A1A] rounded-3xl p-5 relative overflow-hidden text-white border border-white/10 shadow-md">
+                  {/* Smaller SVG background identical to Packages page */}
+                  {bgImg && (
+                    <img
+                      src={bgImg}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute right-1/4 top-0 w-1/2 h-1/2 object-contain object-center pointer-events-none select-none opacity-85"
+                    />
+                  )}
 
-                  {/* Content: semi-opaque card backdrop so text is fully legible over any photo */}
-                  <div className="relative z-10 m-4 p-4 bg-card/85 backdrop-blur-sm rounded-2xl">
+                  {/* Card Content directly on the dark background */}
+                  <div className="relative z-10">
                     {/* Header row */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                           {isAmharic ? "የደረጃ ግብ" : isOromo ? "Galma Sadarkaa" : "Milestone"}
                         </span>
-                        <h3 className="text-xl font-bold text-foreground mt-0.5" style={displayFont}>{goal.packageName}</h3>
+                        <h3 className="text-xl font-bold text-white mt-0.5" style={displayFont}>{goal.packageName}</h3>
                       </div>
                       {goal.isUnlocked
                         ? <CheckCircle2 className="w-7 h-7 text-primary" />
-                        : <Lock className="w-6 h-6 text-muted-foreground" />
+                        : <Lock className="w-6 h-6 text-gray-400" />
                       }
                     </div>
 
@@ -120,12 +120,12 @@ export default function VipUpgrades() {
                       {/* Direct Referrals */}
                       <div>
                         <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "ቀጥተኛ ተጋባዦች" : isOromo ? "Afeeramaa Kallattii" : "Direct Referrals"}</span>
-                          <span className="text-xs font-bold text-foreground">
+                          <span className="text-xs font-semibold text-gray-300">{isAmharic ? "ቀጥተኛ ተጋባዦች" : isOromo ? "Afeeramaa Kallattii" : "Direct Referrals"}</span>
+                          <span className="text-xs font-bold text-white">
                             {goal.currentDirectReferrals}/{goal.requiredDirectReferrals}
                           </span>
                         </div>
-                        <div className="h-2 bg-border rounded-full overflow-hidden">
+                        <div className="h-2 bg-white/15 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${barColor} rounded-full transition-all duration-500`}
                             style={{ width: `${Math.min(100, (goal.currentDirectReferrals / goal.requiredDirectReferrals) * 100)}%` }}
@@ -135,12 +135,12 @@ export default function VipUpgrades() {
                       {/* Network Volume */}
                       <div>
                         <div className="flex justify-between mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                          <span className="text-xs font-semibold text-foreground/70">{isAmharic ? "የአውታረ መረብ ተቀማጭ መጠን" : isOromo ? "Hamma Galcha Netwoorkii" : "Network Volume"}</span>
-                          <span className="text-xs font-bold text-foreground">
+                          <span className="text-xs font-semibold text-gray-300">{isAmharic ? "የአውታረ መረብ ተቀማጭ መጠን" : isOromo ? "Hamma Galcha Netwoorkii" : "Network Volume"}</span>
+                          <span className="text-xs font-bold text-white">
                             {fmt(goal.currentDownlineVolume)}/{fmt(goal.requiredDownlineVolume)} {currency}
                           </span>
                         </div>
-                        <div className="h-2 bg-border rounded-full overflow-hidden">
+                        <div className="h-2 bg-white/15 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${barColor} rounded-full transition-all duration-500`}
                             style={{ width: `${Math.min(100, (goal.currentDownlineVolume / goal.requiredDownlineVolume) * 100)}%` }}
@@ -151,12 +151,12 @@ export default function VipUpgrades() {
 
                     {/* Footer */}
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm font-bold text-foreground" style={displayFont}>
+                      <span className="text-sm font-bold text-white" style={displayFont}>
                         {isAmharic ? "ጠቅላላ ሂደት፦ " : isOromo ? "Waliigala፦ " : "Overall: "}{goal.progressPercent}%
                       </span>
                       {goal.isUnlocked
-                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary/15 text-primary" style={displayFont}>{isAmharic ? "ተከፍቷል! 🎉" : isOromo ? "Banameera! 🎉" : "Unlocked! 🎉"}</span>
-                        : <span className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{100 - goal.progressPercent}% {isAmharic ? "ቀርቷል" : isOromo ? "hafeera" : "remaining"}</span>
+                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-primary text-primary-foreground" style={displayFont}>{isAmharic ? "ተከፍቷል! 🎉" : isOromo ? "Banameera! 🎉" : "Unlocked! 🎉"}</span>
+                        : <span className="text-xs text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{100 - goal.progressPercent}% {isAmharic ? "ቀርቷል" : isOromo ? "hafeera" : "remaining"}</span>
                       }
                     </div>
                   </div>
