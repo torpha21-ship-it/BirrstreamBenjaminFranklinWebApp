@@ -20,6 +20,7 @@ import streakImg from "@/assets/decor/173.png";
 import { SpecialVipCardSlider } from "@/components/special-vip-card-slider";
 import { NightDayToggle } from "@/components/night-day-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
+import { WalletCard } from "@/components/wallet-card";
 import { useLanguage } from "@/context/language-context";
 
 import hiIcon from "@/assets/dashboard-icons/Hi.webp";
@@ -226,77 +227,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Balance Card */}
-      <div className="bg-[#1A1A1A] rounded-3xl px-6 pt-3 pb-6 text-white relative z-10 overflow-hidden -mx-4">
-        <img
-          src={pointingHand}
-          alt=""
-          aria-hidden="true"
-          className="absolute -right-[80px] -top-2 h-[105px] w-auto object-contain object-right-top pointer-events-none select-none opacity-90 z-0"
-        />
-        <div className="relative z-10">
-        <div className="flex items-center gap-2 mb-1">
-          <img src={mainBalanceDarkThemeIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
-          <p className="text-[26px] text-gray-400" style={displayFont}>
-            {t("dash.main_balance")}
-          </p>
-        </div>
-        {isLoading ? (
-          <div className="h-12 bg-white/10 rounded-xl animate-pulse w-48 mb-2" />
-        ) : (
-          <>
-            <p className="text-4xl font-bold mb-1">
-              {fmt(summary?.mainBalance ?? 0)}{" "}
-              <span className="text-xl font-semibold text-gray-300" style={displayFont}>{currency}</span>
-            </p>
-            {pendingWithdrawalTotal > 0 && (
-              <div className="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2 mt-1 mb-1">
-                <span className="text-xs text-yellow-400 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                  ⏳ {isAmharic ? "በመጠባበቅ ላይ ያለ ገንዘብ" : isOromo ? "Qarshii eeggamaa jiru" : "Pending Withdrawal"}
-                </span>
-                <span className="text-xs font-bold text-yellow-300">-{fmt(pendingWithdrawalTotal)} {currency}</span>
-              </div>
-            )}
-          </>
-        )}
-        {summary?.activePackageName ? (
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
-            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              {summary.activePackageName}
-            </span>
-            <span className="flex items-center gap-1 text-xs text-gray-400" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              <TrendingUp className="w-3 h-3" />
-              +{fmt(summary.activePackageDailyReturn ?? 0)} {currency}/{isAmharic ? "ቀን" : isOromo ? "guyyaa" : "day"}
-            </span>
-            {summary.daysUntilExpiry !== null && (
-              <span className="text-xs text-gray-500" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
-              </span>
-            )}
-          </div>
-        ) : (
-          <Link href="/packages" className="inline-flex items-center gap-1 mt-3 px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-            {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"} <ChevronRight className="w-3 h-3" />
-          </Link>
-        )}
-
-        {/* Progress bar to next tier — Tiny text uses clean Noto Sans Ethiopic */}
-        {summary?.nextTierName && (
-          <div className="mt-4">
-            <div className="flex justify-between text-xs text-gray-400 mb-1" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-              <span>{t("dash.progress_to_vip")} {summary.nextTierName}</span>
-              <span>{Math.round(summary.progressToNextTier)}%</span>
-            </div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-700"
-                style={{ width: `${summary.progressToNextTier}%` }}
-              />
-            </div>
-          </div>
-        )}
-        </div>
-      </div>
+      {/* Realistic Wallet Balance Card */}
+      <WalletCard
+        summary={summary}
+        isLoading={isLoading}
+        user={user}
+        pendingWithdrawalTotal={pendingWithdrawalTotal}
+        displayFont={displayFont}
+      />
 
       {/* Top Logo Slider: between Main Balance and Ad Slider */}
       <LogoSlider className="-mx-4" />
