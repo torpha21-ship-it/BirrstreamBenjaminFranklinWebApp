@@ -4,6 +4,7 @@ import { TrendingUp, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import mainBalanceDarkThemeIcon from "@/assets/dashboard-icons/dark-theme/Main Balance.png";
 import pointingHand from "@/assets/decor/pointing-hand.webp";
+import lockDollarIcon from "@/assets/decor/wired-outline-946-lock-dollar-in-reveal.webp";
 
 interface WalletCardProps {
   summary: any;
@@ -39,11 +40,22 @@ function GoldChip() {
   );
 }
 
-/** Official Stripe Logo */
-function StripeLogo({ className = "h-4 w-auto" }: { className?: string }) {
+/** Official Stripe Logo — Clean, crisp, and properly ordered LTR */
+function StripeLogo({ className = "h-4 w-auto text-white" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 60 25" fill="currentColor">
-      <path d="M59.64 14.28c0-4.44-2.16-7.8-6.48-7.8-4.36 0-7 3.36-7 7.76 0 5.24 3.08 7.76 7.56 7.76 2.2 0 3.88-.48 5.12-1.2v-3.48c-1.24.68-2.68 1.08-4.44 1.08-1.76 0-3.32-.68-3.52-2.76h8.72c.04-.32.04-.84.04-1.36zm-8.8-1.52c0-1.92 1.16-2.72 2.32-2.72 1.12 0 2.24.8 2.24 2.72h-4.56zm-7.64-6.28h-4.44v15.28h4.44V6.48zm0-2.48h-4.44V0h4.44v4zm-7.88 5.36c-.88-.4-2.08-.68-3.44-.68-3.08 0-4.96 1.6-4.96 4.32 0 3.8 5.24 3.2 5.24 4.84 0 .6-.52.88-1.4.88-1.24 0-2.8-.52-4.04-1.2v3.76c1.4.6 2.88.84 4.28.84 3.28 0 5.24-1.6 5.24-4.44 0-4.12-5.28-3.4-5.28-4.92 0-.52.44-.8 1.28-.8 1.08 0 2.36.44 3.36.96l-.28-3.56zm-17.76.92v-3.8h-4.24v3.8h-2.4v3.6h2.4v7.76c0 2.92 1.96 4.64 4.88 4.64 1.16 0 2.08-.2 2.68-.48v-3.52c-.44.16-1 .28-1.6.28-1.12 0-1.56-.56-1.56-1.72v-6.96h3.16v-3.6h-3.32zm-10.28-.92c-.96 0-1.6.44-2.04.96V6.48H.8V21.76h4.44v-9.2c0-2.08 1.6-2.52 2.04-2.52.4 0 .76.08.96.16V6.2c-.32-.08-.64-.12-.96-.12z" />
+    <svg className={className} viewBox="0 0 76 34" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      {/* s */}
+      <path d="M11.8 8.1c-1.2-.5-2.6-.8-4.3-.8-3.9 0-6.2 2-6.2 5.3 0 4.8 6.7 4 6.7 6 0 .7-.6 1.1-1.7 1.1-1.6 0-3.6-.6-5.1-1.5l-.3 4.4c1.7.7 3.6 1 5.5 1 4.1 0 6.6-2 6.6-5.6 0-5.1-6.6-4.3-6.6-6.1 0-.6.5-1 1.5-1 1.3 0 3 .5 4.2 1.2l.3-4.3z" />
+      {/* t */}
+      <path d="M20 4.5v3.8h-3.4v4.5H20v9.6c0 3.7 2.5 5.8 6.1 5.8 1.4 0 2.6-.3 3.3-.6v-4.4c-.6.2-1.3.3-2.1.3-1.4 0-1.9-.7-1.9-2.2v-8.5h4V8.3h-4V4.5L20 4.5z" />
+      {/* r */}
+      <path d="M37.5 8.3c-1.2 0-2.1.5-2.6 1.2V8.3h-5.5v19.6h5.5v-11.4c0-2.6 2-3.2 2.6-3.2.5 0 .9.1 1.2.2V8.3c-.4-.1-.8-.1-1.2-.1z" />
+      {/* i */}
+      <path d="M44.5 0h-5.5v5.1h5.5V0zm0 8.3h-5.5v19.6h5.5V8.3z" />
+      {/* p */}
+      <path d="M55.5 8.3c-1.4 0-2.3.6-2.9 1.4V8.3h-5.5V34h5.5v-7.2c.6.7 1.6 1.2 2.9 1.2 3.9 0 6.8-3.2 6.8-8.9 0-5.9-2.9-8.8-6.8-8.8zm-1 13.7c-1.4 0-2.4-1.1-2.4-3.9 0-2.7.9-3.8 2.4-3.8 1.5 0 2.4 1.1 2.4 3.8 0 2.8-.9 3.9-2.4 3.9z" />
+      {/* e */}
+      <path d="M73.5 18.2c0-4.1-2-7.2-6-7.2-4.1 0-6.6 3.2-6.6 7.2 0 4.9 2.9 7.2 7.2 7.2 2.1 0 3.6-.5 4.8-1.1V21c-.9.5-2.5.9-4 .9-1.7 0-3.1-.6-3.3-2.6h7.8c.1-.4.1-.8.1-1.1zm-6-1.5c0-1.8.8-2.6 1.7-2.6.8 0 1.6.8 1.6 2.6h-3.3z" />
     </svg>
   );
 }
@@ -100,7 +112,8 @@ export function WalletCard({
   const businessName = (user?.fullName || user?.username || "BirrStream Business").toUpperCase();
   const userEmail = user?.email || "user@birrstream.com";
 
-  const comingSoonText = isAmharic ? "🔒 በቅርቡ" : isOromo ? "🔒 DHIYOOTTI" : "🔒 COMING SOON";
+  const comingSoonText = isAmharic ? "በቅርቡ" : isOromo ? "DHIYOOTTI" : "COMING SOON";
+  const comingSoonFont = isAmharic ? { fontFamily: "'LogaComic', sans-serif" } : { fontFamily: "'Highstories', sans-serif", letterSpacing: "0.06em" };
 
   return (
     <div className="relative z-10 -mx-4 select-none">
@@ -134,7 +147,7 @@ export function WalletCard({
           }}
         />
 
-        {/* 3. Three Emerging Payment Cards (Click-activated only, with authentic logos and gold EMV chips) */}
+        {/* 3. Three Emerging Payment Cards (Click-activated only, with authentic logos, animated lock, and gold EMV chips) */}
         <div className="relative mx-5 h-16">
           {/* Card 1: Stripe (Official Blurple Gradient) */}
           <div
@@ -157,12 +170,16 @@ export function WalletCard({
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.12] to-transparent pointer-events-none" />
 
             <div className="flex items-center justify-between relative z-10">
-              <StripeLogo className="h-3.5 w-auto text-white" />
+              <StripeLogo className="h-4 w-auto text-white" />
               <GoldChip />
             </div>
             <div className="flex justify-center relative z-10">
-              <span className="px-2 py-0.5 rounded-full bg-black/45 text-[9px] font-bold tracking-wider text-white/95 border border-white/15 shadow-sm">
-                {comingSoonText}
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/45 text-[11px] font-bold tracking-wider text-white border border-white/15 shadow-sm"
+                style={comingSoonFont}
+              >
+                <img src={lockDollarIcon} alt="" className="w-3.5 h-3.5 object-contain flex-shrink-0" />
+                <span>{comingSoonText}</span>
               </span>
             </div>
             <div className="flex items-end justify-between relative z-10">
@@ -201,8 +218,12 @@ export function WalletCard({
               <GoldChip />
             </div>
             <div className="flex justify-center relative z-10">
-              <span className="px-2 py-0.5 rounded-full bg-black/60 text-[9px] font-bold tracking-wider text-white border border-white/20 shadow-sm">
-                {comingSoonText}
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/60 text-[11px] font-bold tracking-wider text-white border border-white/20 shadow-sm"
+                style={comingSoonFont}
+              >
+                <img src={lockDollarIcon} alt="" className="w-3.5 h-3.5 object-contain flex-shrink-0" />
+                <span>{comingSoonText}</span>
               </span>
             </div>
             <div className="flex items-end justify-between relative z-10">
@@ -241,8 +262,12 @@ export function WalletCard({
               <GoldChip />
             </div>
             <div className="flex justify-center relative z-10">
-              <span className="px-2 py-0.5 rounded-full bg-[#003087] text-[9px] font-bold tracking-wider text-white shadow-sm">
-                {comingSoonText}
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#003087] text-[11px] font-bold tracking-wider text-white shadow-sm"
+                style={comingSoonFont}
+              >
+                <img src={lockDollarIcon} alt="" className="w-3.5 h-3.5 object-contain flex-shrink-0" />
+                <span>{comingSoonText}</span>
               </span>
             </div>
             <div className="flex items-end justify-between relative z-10">

@@ -154,8 +154,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {/* Mobile Bottom Nav — With clean icons & localized text labels */}
-      <nav className="md:hidden fixed bottom-3 left-3 right-3 h-[68px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10 flex items-center justify-around px-1 z-40">
+      {/* Mobile Bottom Nav — With larger icons & localized text labels in #b4d8a8 Main Balance green */}
+      <nav className="md:hidden fixed bottom-3 left-3 right-3 h-[72px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10 flex items-center justify-around px-1 z-40">
         {MOBILE_NAV.map(({ href, icon: Icon, label }) => {
           const active = location === href || (href !== "/dashboard" && location.startsWith(href));
           const showBadge = href === "/dashboard" && unreadCount > 0;
@@ -169,16 +169,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className="relative flex flex-col items-center justify-center flex-1 py-1 group transition-all"
             >
               <div
-                className={`relative flex items-center justify-center w-9 h-9 rounded-xl transition-all ${
+                className={`relative flex items-center justify-center w-11 h-11 rounded-xl transition-all ${
                   active 
-                    ? "bg-white border-2 border-primary shadow-md shadow-primary/30 scale-105" 
+                    ? "bg-white border-2 border-[#b4d8a8] shadow-md shadow-[#b4d8a8]/30 scale-105" 
                     : "bg-white/90 group-hover:bg-white"
                 }`}
               >
                 <Icon
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   blackStroke="#121331"
-                  greenStroke={active ? "#15803D" : "#185219"}
+                  greenStroke={active ? "#2e7d32" : "#185219"}
                 />
                 {showBadge && (
                   <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full border-2 border-[#1A1A1A] flex items-center justify-center px-0.5">
@@ -187,8 +187,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 )}
               </div>
               <span
-                className={`text-[10px] font-semibold mt-1 transition-colors leading-none truncate max-w-[64px] text-center ${
-                  active ? "text-primary font-bold" : "text-gray-400 group-hover:text-gray-200"
+                className={`text-[10px] font-semibold mt-1 transition-colors leading-none truncate max-w-[68px] text-center ${
+                  active ? "text-[#b4d8a8] font-bold" : "text-gray-400 group-hover:text-gray-200"
                 }`}
                 style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
