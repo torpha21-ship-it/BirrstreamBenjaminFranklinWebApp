@@ -4,14 +4,13 @@ import { useAuth } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { ArrowDownRight, ArrowUpRight, Package, ListChecks, Users, ChevronRight, Flame, TrendingUp } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { BSLogo } from "@/components/bs-logo";
 import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
 import { AdSlider } from "@/components/ad-slider";
 import { LogoSlider } from "@/components/logo-slider";
 import { AnimatedLogoSlider } from "@/components/animated-logo-slider";
-import pointingHand from "@/assets/decor/pointing-hand.webp";
 import totalYieldStatic from "@/assets/dashboard-icons/static/Total Yield.png";
 import totalDepositedStatic from "@/assets/dashboard-icons/static/Total Deposited.png";
 import totalWithdrawnStatic from "@/assets/dashboard-icons/static/Total Withdrawn.png";
@@ -25,7 +24,6 @@ import { useLanguage } from "@/context/language-context";
 
 import hiIcon from "@/assets/dashboard-icons/Hi.webp";
 import hiDarkIcon from "@/assets/dashboard-icons/dark-theme/Hi.webp";
-import mainBalanceDarkThemeIcon from "@/assets/dashboard-icons/dark-theme/Main Balance.png";
 import depositIcon from "@/assets/dashboard-icons/Deposit.gif";
 import withdrawIcon from "@/assets/dashboard-icons/Withdraw.gif";
 import packagesIcon from "@/assets/dashboard-icons/Packages.webp";
@@ -34,6 +32,7 @@ import loginStreakIcon from "@/assets/dashboard-icons/Login Streak.webp";
 import checkInIcon from "@/assets/dashboard-icons/Check In Button.webp";
 import referralNetworkIcon from "@/assets/dashboard-icons/My Referal Network.webp";
 import vipUpgradeGoalsIcon from "@/assets/dashboard-icons/VIP Upgrade Goals.webp";
+import warningTriangleIcon from "@/assets/decor/wired-outline-1140-warning-triangle-hover-enlarge.webp";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -60,7 +59,6 @@ export default function Dashboard() {
   const { toast } = useToast();
   const { data: summary, isLoading } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
   const { data: streak } = useGetLoginStreak({ query: { queryKey: getGetLoginStreakQueryKey() } });
-  const { data: profileData } = useGetUserProfile({ query: { queryKey: getGetUserProfileQueryKey() } });
   const checkinMutation = useCheckinStreak();
   const { data: withdrawals } = useListWithdrawals();
 
@@ -71,8 +69,6 @@ export default function Dashboard() {
       .filter((w: any) => w.status === "pending")
       .reduce((sum: number, w: any) => sum + (w.amount ?? 0), 0);
   }, [withdrawals]);
-
-
 
   // Auto-credit daily yield when dashboard loads
   useEffect(() => {
@@ -140,8 +136,6 @@ export default function Dashboard() {
     { label: t("stats.reserve_floor", "Reserve Floor"), value: summary?.reserveFloor ?? 0, color: "bg-[#A8D5B5]", textColor: "text-[#2B7A4B]", image: reserveFloorStatic },
   ];
 
-  const dayNames = isAmharic ? ["እሁ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "አር", "ቅዳ"] : ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
-
   const calendarData = useMemo(() => {
     const now = new Date();
     const year = now.getFullYear();
@@ -184,7 +178,7 @@ export default function Dashboard() {
   }, [streak, isAmharic]);
 
   return (
-    <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative overflow-x-hidden">
+    <div className="px-4 pt-4 pb-8 space-y-4 max-w-md mx-auto relative overflow-x-hidden">
       {/* Top Bar: Brand Logo on left with Language Toggle on right */}
       <div className="flex items-center justify-between z-20 min-h-[44px] px-1">
         <div className="flex items-center">
@@ -195,35 +189,40 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Header: welcome text + Hi.webp + toggle on right + profile avatar */}
-      <div className="flex items-center justify-between bg-card rounded-2xl px-4 py-3 shadow-sm border border-border relative z-10 -mx-4">
-        <div className="flex items-center gap-2.5 min-w-0">
+      {/* Header: greeting text + Hi.webp on left, KYC Warning in middle, Night/Day toggle on right (on page background directly) */}
+      <div className="flex items-center justify-between relative z-10 py-1">
+        <div className="flex items-center gap-2 min-w-0">
           <div>
-            <p className="text-xs text-foreground/70 font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+            <p className="text-xs text-muted-foreground font-medium" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
               {t("dash.welcome")}
             </p>
             <h1
-              className="text-lg font-bold text-foreground"
+              className="text-lg font-bold text-foreground truncate max-w-[130px]"
               style={displayFont}
             >
               {user?.fullName?.split(" ")[0]}
             </h1>
           </div>
-          <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none dark:hidden" />
-          <img src={hiDarkIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none hidden dark:inline-block" />
+          <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none dark:hidden flex-shrink-0" />
+          <img src={hiDarkIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none hidden dark:inline-block flex-shrink-0" />
         </div>
 
-        {/* Night-Day Animated Toggle moved to right next to profile avatar */}
-        <div className="flex items-center gap-2.5">
+        {/* KYC Warning Triangle in middle with chat bubble */}
+        <Link href="/profile" className="relative flex flex-col items-center group cursor-pointer mx-auto">
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-yellow-500 text-black font-extrabold text-[9px] px-2 py-0.5 rounded shadow-md whitespace-nowrap animate-bounce flex items-center gap-1 z-20">
+            <span>{isAmharic ? "KYC ያረጋግጡ" : isOromo ? "KYC Mirkaneessi" : "Verify KYC"}</span>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-yellow-500" />
+          </div>
+          <img
+            src={warningTriangleIcon}
+            alt="KYC Warning"
+            className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110"
+          />
+        </Link>
+
+        {/* Night-Day Animated Toggle placed on right */}
+        <div className="flex items-center justify-end flex-shrink-0">
           <NightDayToggle size={70} />
-          <Link
-            href="/profile"
-            className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shadow-primary/30 overflow-hidden flex-shrink-0"
-          >
-            {(profileData as any)?.profilePhoto
-              ? <img src={(profileData as any).profilePhoto} alt="Profile" className="w-full h-full object-cover" />
-              : (user?.fullName?.[0] ?? "U")}
-          </Link>
         </div>
       </div>
 
@@ -235,15 +234,6 @@ export default function Dashboard() {
         pendingWithdrawalTotal={pendingWithdrawalTotal}
         displayFont={displayFont}
       />
-
-      {/* Top Logo Slider: between Main Balance and Ad Slider */}
-      <LogoSlider className="-mx-4" />
-
-      {/* Video Ad Slider */}
-      <AdSlider />
-
-      {/* Bottom Custom Logo Slider: below Ad Slider */}
-      <AnimatedLogoSlider className="-mx-4" reverse />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3 relative z-10">
@@ -321,17 +311,18 @@ export default function Dashboard() {
             const isToday = day === calendarData.todayNum;
             const isCheckedIn = calendarData.checkedInDays.has(day);
             const isFuture = day > calendarData.todayNum;
+            const isPastMissed = day < calendarData.todayNum && !isCheckedIn;
             return (
               <div
                 key={day}
                 className={`aspect-square rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
                   isCheckedIn
-                    ? "bg-primary text-white shadow-sm shadow-primary/40"
+                    ? "bg-primary text-primary-foreground font-bold shadow-sm shadow-primary/30"
                     : isToday
-                    ? "ring-2 ring-primary text-primary"
-                    : isFuture
-                    ? "text-muted-foreground/25"
-                    : "text-muted-foreground/50"
+                    ? "border-2 border-primary bg-primary/10 text-primary font-bold ring-1 ring-primary/30"
+                    : isPastMissed
+                    ? "bg-muted-foreground/20 text-muted-foreground/70 font-semibold"
+                    : "text-muted-foreground/30"
                 }`}
               >
                 {day}
@@ -343,15 +334,15 @@ export default function Dashboard() {
         {/* Legend + decorative image filling the right space */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
-            <span className="w-3 h-3 rounded-full bg-primary inline-block flex-shrink-0" />
+            <span className="w-3.5 h-3.5 rounded-full bg-primary inline-block flex-shrink-0" />
             {t("dash.checked_in_legend")}
           </span>
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
-            <span className="w-3 h-3 rounded-full border-2 border-primary inline-block flex-shrink-0" />
+            <span className="w-3.5 h-3.5 rounded-full border-2 border-primary bg-primary/10 inline-block flex-shrink-0" />
             {t("dash.today_legend")}
           </span>
           <span className="flex items-center gap-1.5 text-[18px] text-muted-foreground" style={displayFont}>
-            <span className="w-3 h-3 rounded-full bg-muted-foreground/25 inline-block flex-shrink-0" />
+            <span className="w-3.5 h-3.5 rounded-full bg-muted-foreground/20 inline-block flex-shrink-0" />
             {t("dash.missed_legend")}
           </span>
           <img
@@ -366,7 +357,7 @@ export default function Dashboard() {
           <button
             onClick={handleCheckin}
             disabled={checkinMutation.isPending}
-            className="w-full py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
             style={displayFont}
           >
             <img src={checkInIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
@@ -395,7 +386,7 @@ export default function Dashboard() {
                 <img src={iconSrc} alt="" className="w-full h-full object-contain" />
               </div>
               <div>
-                <p className="font-semibold text-[24px] text-foreground leading-tight" style={displayFont}>{label}</p>
+                <p className="font-semibold text-[22px] text-foreground leading-tight" style={displayFont}>{label}</p>
                 <p className="text-xs text-muted-foreground" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>{desc}</p>
               </div>
             </div>
@@ -408,7 +399,15 @@ export default function Dashboard() {
       <div className="relative z-10 -mx-4">
         <SpecialVipCardSlider />
       </div>
+
+      {/* Top Logo Slider: moved to page bottom below Time Cards */}
+      <LogoSlider className="-mx-4" />
+
+      {/* Video Ad Slider: moved to page bottom below Time Cards */}
+      <AdSlider />
+
+      {/* Bottom Custom Logo Slider: moved to page bottom below Ad Slider */}
+      <AnimatedLogoSlider className="-mx-4" reverse />
     </div>
   );
 }
-
