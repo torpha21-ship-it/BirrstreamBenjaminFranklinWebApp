@@ -1,14 +1,12 @@
 import { Switch, Route, Router as WouterRouter, Redirect, useLocation } from "wouter";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { MonitorSmartphone } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider } from "@/lib/theme";
 import { LanguageProvider } from "@/context/language-context";
 import { AppLayout } from "@/components/layout";
-import { useIsMobile } from "@/hooks/use-mobile";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
@@ -96,35 +94,6 @@ function Router() {
   );
 }
 
-function DesktopOnlyNotice() {
-  return (
-    <div className="min-h-[100dvh] bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 text-center shadow-sm">
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-          <MonitorSmartphone className="h-8 w-8" />
-        </div>
-        <h1 className="text-2xl font-bold text-foreground">Open On Mobile</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          This web app is currently available only on mobile screens.
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Please open it on your phone or shrink your browser below 768px.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AppGate() {
-  const isMobile = useIsMobile();
-
-  if (!isMobile) {
-    return <DesktopOnlyNotice />;
-  }
-
-  return <Router />;
-}
-
 function App() {
   return (
     <ThemeProvider>
@@ -133,7 +102,7 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-                <AppGate />
+                <Router />
               </WouterRouter>
               <Toaster />
             </TooltipProvider>
