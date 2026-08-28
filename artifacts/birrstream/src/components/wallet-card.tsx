@@ -75,10 +75,12 @@ export function WalletCard({
           className="absolute -right-5 -top-3 h-[105px] w-auto object-contain pointer-events-none select-none opacity-95 z-[60] drop-shadow-lg"
         />
 
-        {/* 1. Wallet Back Liner */}
+        {/* 1. Wallet Back Liner — flat top, deeply rounded bottom like original */}
         <div
-          className="absolute left-3 right-3 top-10 bottom-2 bg-[#162716] rounded-t-[28px] rounded-b-[36px] shadow-inner pointer-events-none"
+          className="absolute left-3 right-3 top-10 bottom-2 pointer-events-none"
           style={{
+            background: "#162716",
+            borderRadius: "22px 22px 60px 60px",
             boxShadow: "inset 0 20px 35px rgba(0, 0, 0, 0.7), inset 0 2px 10px rgba(0,0,0,0.5)",
             border: "1px solid rgba(61, 86, 53, 0.3)",
           }}
@@ -173,16 +175,33 @@ export function WalletCard({
           </div>
         </div>
 
-        {/* 3. Front Leather Pocket with Stitching & BirrStream Balance Metrics */}
-        <div className="relative z-40 px-3 -mt-6">
-          <div
-            className="relative rounded-3xl p-5 text-white overflow-hidden shadow-2xl"
-            style={{
-              background: "linear-gradient(180deg, #1d331d 0%, #152515 100%)",
-              boxShadow: "0 18px 36px -10px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15)",
-              border: "1.5px dashed #3e5e36",
-            }}
-          >
+        {/* 3. Realistic Front Leather Pocket — SVG shape with inset stitching */}
+        <div className="relative z-40 -mt-4" style={{ filter: "drop-shadow(0 15px 25px rgba(20, 40, 20, 0.5))" }}>
+          {/* SVG Pocket Shape — curved opening at top, very rounded bottom */}
+          <svg className="w-full" viewBox="0 0 340 210" fill="none" preserveAspectRatio="none">
+            {/* Main pocket fill */}
+            <path
+              d="M 0 24 C 0 12, 6 12, 12 12 C 24 12, 30 30, 48 30 L 292 30 C 310 30, 316 12, 328 12 C 334 12, 340 12, 340 24 L 340 160 C 340 195, 315 210, 292 210 L 48 210 C 25 210, 0 195, 0 160 Z"
+              fill="url(#pocketGrad)"
+            />
+            {/* Inset dashed stitching line */}
+            <path
+              d="M 10 27 C 10 19, 15 19, 18 19 C 28 19, 33 35, 48 35 L 292 35 C 307 35, 312 19, 322 19 C 325 19, 330 19, 330 27 L 330 158 C 330 190, 310 200, 292 200 L 48 200 C 30 200, 10 190, 10 158 Z"
+              stroke="#3d5635"
+              strokeWidth="1.8"
+              strokeDasharray="7 5"
+              fill="none"
+            />
+            <defs>
+              <linearGradient id="pocketGrad" x1="170" y1="0" x2="170" y2="210" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#1e341e" />
+                <stop offset="100%" stopColor="#142214" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          {/* Content overlay positioned on top of the SVG pocket */}
+          <div className="absolute inset-0 flex flex-col px-7 pt-12 pb-5 text-white">
             {/* Top header row with Main Balance & Eye Reveal Button */}
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
@@ -201,13 +220,9 @@ export function WalletCard({
                 title={showBalance ? "Hide Balance" : "Reveal Balance"}
               >
                 {showBalance ? (
-                  <>
-                    <EyeOff className="w-4 h-4 text-[#a2cb95]" />
-                  </>
+                  <EyeOff className="w-4 h-4 text-[#a2cb95]" />
                 ) : (
-                  <>
-                    <Eye className="w-4 h-4 text-emerald-400" />
-                  </>
+                  <Eye className="w-4 h-4 text-emerald-400" />
                 )}
               </button>
             </div>
