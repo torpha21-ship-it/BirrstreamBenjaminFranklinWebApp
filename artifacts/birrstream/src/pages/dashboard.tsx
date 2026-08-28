@@ -213,7 +213,7 @@ export default function Dashboard() {
               className="mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/40 hover:border-amber-500/70 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer text-[10px] font-extrabold group"
               style={displayFont}
             >
-              <img src={oneKeyIcon} alt="Rank" className="w-3.5 h-3.5 object-contain group-hover:rotate-12 transition-transform" />
+              <Trophy className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
               <span>{isAmharic ? "ደረጃ ሰንጠረዥ" : isOromo ? "Sadarkaa" : "Top Earners"}</span>
               <span className="flex h-1.5 w-1.5 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
