@@ -103,8 +103,8 @@
   --popover-foreground: 0 0% 10%;
   --popover-border: 0 0% 90%;
   
-  --primary: 339 68% 70%; /* #E87FA0 */
-  --primary-foreground: 0 0% 100%;
+  --primary: 105 38% 75%; /* #B4D8A8 — Main Balance Green */
+  --primary-foreground: 140 45% 10%;
   
   --secondary: 48 83% 62%; /* #F2D84B */
   --secondary-foreground: 0 0% 10%;
@@ -120,20 +120,20 @@
 
   --border: 0 0% 89%;
   --input: 0 0% 89%;
-  --ring: 339 68% 70%;
+  --ring: 105 38% 75%;
 
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 0 0% 10%;
   --sidebar-border: 0 0% 90%;
-  --sidebar-primary: 339 68% 70%;
-  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-primary: 105 38% 75%;
+  --sidebar-primary-foreground: 140 45% 10%;
   --sidebar-accent: 0 0% 95%;
   --sidebar-accent-foreground: 0 0% 10%;
-  --sidebar-ring: 339 68% 70%;
+  --sidebar-ring: 105 38% 75%;
   
   /* Custom Pastel Brand Colors */
   --brand-yellow: 50 82% 80%; /* #F5E6A3 */
-  --brand-pink: 8 76% 80%; /* #F2A89A */
+  --brand-pink: 105 38% 75%; /* #B4D8A8 */
   --brand-purple: 253 68% 85%; /* #C9BDF5 */
   --brand-green: 140 40% 77%; /* #A8D5B5 */
   --brand-dark: 0 0% 10%; /* #1A1A1A */
@@ -154,8 +154,8 @@
   --popover-foreground: 0 0% 95%;
   --popover-border: 224 15% 22%;
   
-  --primary: 339 68% 70%;
-  --primary-foreground: 0 0% 100%;
+  --primary: 105 38% 75%;
+  --primary-foreground: 140 45% 10%;
   
   --secondary: 48 83% 62%;
   --secondary-foreground: 0 0% 10%;
@@ -171,16 +171,16 @@
 
   --border: 224 15% 22%;
   --input: 224 15% 22%;
-  --ring: 339 68% 70%;
+  --ring: 105 38% 75%;
 
   --sidebar: 224 20% 12%;
   --sidebar-foreground: 0 0% 95%;
   --sidebar-border: 224 15% 20%;
-  --sidebar-primary: 339 68% 70%;
-  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-primary: 105 38% 75%;
+  --sidebar-primary-foreground: 140 45% 10%;
   --sidebar-accent: 224 15% 18%;
   --sidebar-accent-foreground: 0 0% 95%;
-  --sidebar-ring: 339 68% 70%;
+  --sidebar-ring: 105 38% 75%;
 }
 
 @layer base {
