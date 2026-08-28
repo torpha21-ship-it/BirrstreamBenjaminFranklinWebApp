@@ -26,7 +26,7 @@ export function WalletCard({
 }: WalletCardProps) {
   const { t, isAmharic, isOromo, currency } = useLanguage();
   const [showBalance, setShowBalance] = useState(true);
-  const [isWalletHovered, setIsWalletHovered] = useState(false);
+  const [activeCard, setActiveCard] = useState<"stripe" | "wise" | "paypal" | null>(null);
 
   const holderName = (user?.fullName || "Valued Member").toUpperCase();
   const businessName = (user?.fullName || user?.username || "BirrStream Business").toUpperCase();
@@ -37,71 +37,57 @@ export function WalletCard({
   return (
     <div className="relative z-10 -mx-4 select-none">
       <style>{`
-        .bs-wallet-container {
-          perspective: 1000px;
-        }
         .bs-wallet-card {
-          transition: transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s ease;
+          transition: transform 0.4s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.3s ease, z-index 0.1s ease;
           transform-origin: bottom center;
-        }
-        .bs-wallet-card:hover {
-          z-index: 50 !important;
-          transform: translateY(-38px) scale(1.03) !important;
-          box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.6);
-        }
-        .bs-wallet-container:hover .bs-card-stripe {
-          transform: translateY(-46px) rotate(-3deg);
-        }
-        .bs-wallet-container:hover .bs-card-wise {
-          transform: translateY(-26px) rotate(2deg);
-        }
-        .bs-wallet-container:hover .bs-card-paypal {
-          transform: translateY(-10px) rotate(0deg);
         }
       `}</style>
 
       {/* Outer Wallet Wrapper */}
-      <div
-        className="bs-wallet-container relative w-full pt-14 pb-2 transition-all duration-300"
-        onMouseEnter={() => setIsWalletHovered(true)}
-        onMouseLeave={() => setIsWalletHovered(false)}
-        onTouchStart={() => setIsWalletHovered(prev => !prev)}
-      >
-        {/* Pointing hand floating and overlapping the wallet and cards */}
+      <div className="relative w-full pt-4 pb-2">
+        {/* Pointing hand floating above wallet and cards on top-right */}
         <img
           src={pointingHand}
           alt=""
           aria-hidden="true"
-          className="absolute -right-5 -top-3 h-[105px] w-auto object-contain pointer-events-none select-none opacity-95 z-[60] drop-shadow-lg"
+          className="absolute -right-5 -top-3 h-[95px] w-auto object-contain pointer-events-none select-none opacity-95 z-[60] drop-shadow-lg"
         />
 
-        {/* 1. Wallet Back Liner — flat top, deeply rounded bottom like original */}
+        {/* 1. Wallet Back Liner — dark leather backing behind all cards */}
         <div
-          className="absolute left-3 right-3 top-10 bottom-2 pointer-events-none"
+          className="absolute left-2.5 right-2.5 top-2 bottom-2 pointer-events-none"
           style={{
-            background: "#162716",
-            borderRadius: "22px 22px 60px 60px",
-            boxShadow: "inset 0 20px 35px rgba(0, 0, 0, 0.7), inset 0 2px 10px rgba(0,0,0,0.5)",
-            border: "1px solid rgba(61, 86, 53, 0.3)",
+            background: "linear-gradient(180deg, #132413 0%, #0d180d 100%)",
+            borderRadius: "20px 20px 42px 42px",
+            boxShadow: "inset 0 16px 28px rgba(0, 0, 0, 0.8), inset 0 2px 6px rgba(0,0,0,0.5)",
+            border: "1px solid rgba(61, 86, 53, 0.35)",
           }}
         />
 
-        {/* 2. Three Emerging Payment Cards */}
-        <div className="relative mx-5 h-20">
+        {/* 2. Three Emerging Payment Cards (Click-activated only) */}
+        <div className="relative mx-5 h-16">
           {/* Card 1: Stripe (Purple) */}
           <div
-            className="bs-wallet-card bs-card-stripe absolute inset-x-2 h-36 -top-12 bg-gradient-to-br from-[#6a62ff] to-[#4e44e6] text-white rounded-2xl p-3.5 shadow-xl flex flex-col justify-between cursor-pointer border border-white/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveCard(prev => prev === "stripe" ? null : "stripe");
+            }}
+            className={`bs-wallet-card absolute inset-x-2 h-32 top-0 bg-gradient-to-br from-[#6a62ff] to-[#4e44e6] text-white rounded-2xl p-3.5 shadow-xl flex flex-col justify-between cursor-pointer border border-white/25 active:scale-[0.98] ${
+              activeCard === "stripe" ? "z-50 shadow-2xl ring-2 ring-indigo-300/40" : "z-10"
+            }`}
             style={{
-              zIndex: 10,
-              transform: isWalletHovered ? "translateY(-46px) rotate(-3deg)" : "translateY(0) rotate(-1.5deg)",
+              transform:
+                activeCard === "stripe"
+                  ? "translateY(-40px) rotate(-2deg) scale(1.03)"
+                  : "translateY(0px) rotate(-1.5deg)",
             }}
           >
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-xs tracking-widest uppercase">Stripe</span>
-              <div className="w-6 h-4.5 bg-white/25 rounded border border-white/20" />
+              <div className="w-6 h-4 bg-white/25 rounded border border-white/20" />
             </div>
             <div className="flex justify-center">
-              <span className="px-2 py-0.5 rounded-full bg-black/40 text-[10px] font-bold tracking-wider text-white/90 border border-white/10 shadow-sm">
+              <span className="px-2 py-0.5 rounded-full bg-black/40 text-[9px] font-bold tracking-wider text-white/90 border border-white/10 shadow-sm">
                 {comingSoonText}
               </span>
             </div>
@@ -118,18 +104,26 @@ export function WalletCard({
 
           {/* Card 2: Wise (Lime Green) */}
           <div
-            className="bs-wallet-card bs-card-wise absolute inset-x-3 h-36 -top-8 bg-gradient-to-br from-[#a6e673] to-[#8ac957] text-[#163316] rounded-2xl p-3.5 shadow-xl flex flex-col justify-between cursor-pointer border border-white/30"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveCard(prev => prev === "wise" ? null : "wise");
+            }}
+            className={`bs-wallet-card absolute inset-x-3 h-32 top-2 bg-gradient-to-br from-[#a6e673] to-[#8ac957] text-[#163316] rounded-2xl p-3.5 shadow-xl flex flex-col justify-between cursor-pointer border border-white/35 active:scale-[0.98] ${
+              activeCard === "wise" ? "z-50 shadow-2xl ring-2 ring-lime-300/40" : "z-20"
+            }`}
             style={{
-              zIndex: 20,
-              transform: isWalletHovered ? "translateY(-26px) rotate(2deg)" : "translateY(0) rotate(1deg)",
+              transform:
+                activeCard === "wise"
+                  ? "translateY(-40px) rotate(1.5deg) scale(1.03)"
+                  : "translateY(0px) rotate(1deg)",
             }}
           >
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-xs tracking-widest uppercase text-[#163316]">Wise</span>
-              <div className="w-6 h-4.5 bg-black/15 rounded border border-black/10" />
+              <div className="w-6 h-4 bg-black/15 rounded border border-black/10" />
             </div>
             <div className="flex justify-center">
-              <span className="px-2 py-0.5 rounded-full bg-black/60 text-[10px] font-bold tracking-wider text-white border border-white/20 shadow-sm">
+              <span className="px-2 py-0.5 rounded-full bg-black/60 text-[9px] font-bold tracking-wider text-white border border-white/20 shadow-sm">
                 {comingSoonText}
               </span>
             </div>
@@ -146,20 +140,28 @@ export function WalletCard({
 
           {/* Card 3: PayPal (Clean White) */}
           <div
-            className="bs-wallet-card bs-card-paypal absolute inset-x-4 h-36 -top-4 bg-white text-[#003087] rounded-2xl p-3.5 shadow-2xl flex flex-col justify-between cursor-pointer border border-gray-200"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveCard(prev => prev === "paypal" ? null : "paypal");
+            }}
+            className={`bs-wallet-card absolute inset-x-4 h-32 top-4 bg-white text-[#003087] rounded-2xl p-3.5 shadow-2xl flex flex-col justify-between cursor-pointer border border-gray-200 active:scale-[0.98] ${
+              activeCard === "paypal" ? "z-50 shadow-2xl ring-2 ring-blue-300/40" : "z-30"
+            }`}
             style={{
-              zIndex: 30,
-              transform: isWalletHovered ? "translateY(-10px) rotate(0deg)" : "translateY(0) rotate(0deg)",
+              transform:
+                activeCard === "paypal"
+                  ? "translateY(-40px) rotate(0deg) scale(1.03)"
+                  : "translateY(0px) rotate(0deg)",
             }}
           >
             <div className="flex items-center justify-between">
               <span className="font-black text-sm tracking-wide">
                 Pay<span className="text-[#0079C1]">Pal</span>
               </span>
-              <div className="w-6 h-4.5 bg-black/10 rounded border border-black/10" />
+              <div className="w-6 h-4 bg-black/10 rounded border border-black/10" />
             </div>
             <div className="flex justify-center">
-              <span className="px-2 py-0.5 rounded-full bg-[#003087] text-[10px] font-bold tracking-wider text-white shadow-sm">
+              <span className="px-2 py-0.5 rounded-full bg-[#003087] text-[9px] font-bold tracking-wider text-white shadow-sm">
                 {comingSoonText}
               </span>
             </div>
@@ -175,35 +177,45 @@ export function WalletCard({
           </div>
         </div>
 
-        {/* 3. Realistic Front Leather Pocket — SVG shape with inset stitching */}
-        <div className="relative z-40 -mt-4" style={{ filter: "drop-shadow(0 15px 25px rgba(20, 40, 20, 0.5))" }}>
-          {/* SVG Pocket Shape — curved opening at top, very rounded bottom */}
-          <svg className="w-full" viewBox="0 0 340 210" fill="none" preserveAspectRatio="none">
-            {/* Main pocket fill */}
+        {/* 3. Realistic Front Leather Pocket — Normal flow wrapper with dynamic background SVG and inset stitching */}
+        <div
+          className="relative z-40 mx-2 -mt-2 rounded-b-[40px] overflow-hidden"
+          style={{ filter: "drop-shadow(0 14px 24px rgba(0, 0, 0, 0.6))" }}
+          onClick={() => setActiveCard(null)}
+        >
+          {/* Background SVG that dynamically stretches to 100% width and 100% height */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 340 240"
+            fill="none"
+            preserveAspectRatio="none"
+          >
+            {/* Main leather pocket fill with curved top lip */}
             <path
-              d="M 0 24 C 0 12, 6 12, 12 12 C 24 12, 30 30, 48 30 L 292 30 C 310 30, 316 12, 328 12 C 334 12, 340 12, 340 24 L 340 160 C 340 195, 315 210, 292 210 L 48 210 C 25 210, 0 195, 0 160 Z"
-              fill="url(#pocketGrad)"
+              d="M 0 20 C 0 10, 8 10, 16 10 C 28 10, 36 24, 52 24 L 288 24 C 304 24, 312 10, 324 10 C 332 10, 340 10, 340 20 L 340 190 C 340 225, 315 240, 290 240 L 50 240 C 25 240, 0 225, 0 190 Z"
+              fill="url(#bsPocketGrad)"
             />
-            {/* Inset dashed stitching line */}
+            {/* Inset dashed stitching */}
             <path
-              d="M 10 27 C 10 19, 15 19, 18 19 C 28 19, 33 35, 48 35 L 292 35 C 307 35, 312 19, 322 19 C 325 19, 330 19, 330 27 L 330 158 C 330 190, 310 200, 292 200 L 48 200 C 30 200, 10 190, 10 158 Z"
-              stroke="#3d5635"
+              d="M 9 23 C 9 16, 14 15, 19 15 C 27 15, 33 28, 48 28 L 292 28 C 307 28, 313 15, 321 15 C 326 15, 331 16, 331 23 L 331 188 C 331 218, 310 231, 288 231 L 52 231 C 30 231, 9 218, 9 188 Z"
+              stroke="#3e5e36"
               strokeWidth="1.8"
-              strokeDasharray="7 5"
+              strokeDasharray="6 4"
               fill="none"
+              vectorEffect="non-scaling-stroke"
             />
             <defs>
-              <linearGradient id="pocketGrad" x1="170" y1="0" x2="170" y2="210" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#1e341e" />
-                <stop offset="100%" stopColor="#142214" />
+              <linearGradient id="bsPocketGrad" x1="170" y1="0" x2="170" y2="240" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#1f361f" />
+                <stop offset="100%" stopColor="#122012" />
               </linearGradient>
             </defs>
           </svg>
 
-          {/* Content overlay positioned on top of the SVG pocket */}
-          <div className="absolute inset-0 flex flex-col px-7 pt-12 pb-5 text-white">
+          {/* Pocket Content (In normal flow — expands pocket naturally so nothing overflows) */}
+          <div className="relative z-10 px-5 pt-8 pb-5 text-white flex flex-col space-y-2.5">
             {/* Top header row with Main Balance & Eye Reveal Button */}
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src={mainBalanceDarkThemeIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                 <p className="text-xl sm:text-2xl font-bold text-[#b4d8a8]" style={displayFont}>
@@ -216,7 +228,7 @@ export function WalletCard({
                   e.stopPropagation();
                   setShowBalance(prev => !prev);
                 }}
-                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#a2cb95] transition-all flex items-center gap-1 text-xs font-semibold"
+                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-[#a2cb95] transition-all flex items-center justify-center cursor-pointer"
                 title={showBalance ? "Hide Balance" : "Reveal Balance"}
               >
                 {showBalance ? (
@@ -229,10 +241,10 @@ export function WalletCard({
 
             {/* Balance Amount */}
             {isLoading ? (
-              <div className="h-10 bg-white/10 rounded-xl animate-pulse w-44 mb-2" />
+              <div className="h-10 bg-white/10 rounded-xl animate-pulse w-44" />
             ) : (
-              <>
-                <div className="flex items-baseline gap-2 mb-1">
+              <div>
+                <div className="flex items-baseline gap-2">
                   <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                     {showBalance ? fmt(summary?.mainBalance ?? 0) : "••••••••"}
                   </span>
@@ -243,7 +255,7 @@ export function WalletCard({
 
                 {/* Pending Withdrawal Alert if present */}
                 {pendingWithdrawalTotal > 0 && (
-                  <div className="flex items-center justify-between bg-yellow-500/15 border border-yellow-500/30 rounded-xl px-3 py-2 mt-2 mb-1.5">
+                  <div className="flex items-center justify-between bg-yellow-500/15 border border-yellow-500/30 rounded-xl px-3 py-2 mt-2">
                     <span
                       className="text-xs text-yellow-300 font-medium"
                       style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -255,12 +267,12 @@ export function WalletCard({
                     </span>
                   </div>
                 )}
-              </>
+              </div>
             )}
 
             {/* Active VIP Package status */}
             {summary?.activePackageName ? (
-              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap pt-0.5">
                 <span
                   className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
@@ -284,21 +296,23 @@ export function WalletCard({
                 )}
               </div>
             ) : (
-              <Link
-                href="/packages"
-                className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all"
-                style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
-              >
-                {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}{" "}
-                <ChevronRight className="w-3 h-3" />
-              </Link>
+              <div className="pt-0.5">
+                <Link
+                  href="/packages"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all"
+                  style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
+                >
+                  {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}{" "}
+                  <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
             )}
 
             {/* Progress bar to next VIP tier */}
             {summary?.nextTierName && (
-              <div className="mt-3">
+              <div className="pt-1">
                 <div
-                  className="flex justify-between text-xs text-[#95c088] mb-1 font-medium"
+                  className="flex justify-between text-xs text-[#95c088] mb-1.5 font-medium"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                 >
                   <span>
@@ -306,7 +320,7 @@ export function WalletCard({
                   </span>
                   <span className="font-bold">{Math.round(summary.progressToNextTier)}%</span>
                 </div>
-                <div className="h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                <div className="h-2 bg-black/50 rounded-full overflow-hidden border border-white/10">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 to-primary rounded-full transition-all duration-700"
                     style={{ width: `${summary.progressToNextTier}%` }}
