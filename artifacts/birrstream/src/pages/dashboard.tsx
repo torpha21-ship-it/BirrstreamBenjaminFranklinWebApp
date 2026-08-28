@@ -1,12 +1,14 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetLoginStreak, getGetLoginStreakQueryKey, useCheckinStreak, useGetUserProfile, getGetUserProfileQueryKey, useListWithdrawals } from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { ChevronRight, ShieldCheck } from "lucide-react";
+import { ChevronRight, ShieldCheck, Trophy } from "lucide-react";
 import { useKyc } from "@/hooks/use-kyc";
 import { BSLogo } from "@/components/bs-logo";
+import { LeaderboardModal } from "@/components/leaderboard-modal";
+import oneKeyIcon from "@/assets/decor/wired-outline-1284-one-key-hover-press.webp";
 import { showEarningAlert } from "@/components/earning-alert";
 import { withApiBaseUrl } from "@/lib/api-base-url";
 import { AdSlider } from "@/components/ad-slider";
@@ -57,6 +59,7 @@ export default function Dashboard() {
   const { user, token } = useAuth();
   const { t, isAmharic, isOromo, currency } = useLanguage();
   const { kycStatus, isApproved, isPending } = useKyc();
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const qc = useQueryClient();
   const { toast } = useToast();
   const { data: summary, isLoading } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
@@ -204,6 +207,19 @@ export default function Dashboard() {
             >
               {user?.fullName?.split(" ")[0]}
             </h1>
+            <button
+              type="button"
+              onClick={() => setIsLeaderboardOpen(true)}
+              className="mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/40 hover:border-amber-500/70 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer text-[10px] font-extrabold group"
+              style={displayFont}
+            >
+              <img src={oneKeyIcon} alt="Rank" className="w-3.5 h-3.5 object-contain group-hover:rotate-12 transition-transform" />
+              <span>{isAmharic ? "ደረጃ ሰንጠረዥ" : isOromo ? "Sadarkaa" : "Top Earners"}</span>
+              <span className="flex h-1.5 w-1.5 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
+              </span>
+            </button>
           </div>
           <img src={hiIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none dark:hidden flex-shrink-0" />
           <img src={hiDarkIcon} alt="Hi" className="w-8 h-8 object-contain select-none pointer-events-none hidden dark:inline-block flex-shrink-0" />
@@ -433,6 +449,9 @@ export default function Dashboard() {
 
       {/* Bottom Custom Logo Slider: moved to page bottom below Ad Slider */}
       <AnimatedLogoSlider className="-mx-4" reverse />
+
+      {/* Top Earners Ranking Leaderboard Modal */}
+      <LeaderboardModal isOpen={isLeaderboardOpen} onClose={() => setIsLeaderboardOpen(false)} />
     </div>
   );
 }

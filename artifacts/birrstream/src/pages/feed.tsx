@@ -3,31 +3,44 @@ import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/context/language-context";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Image as ImageIcon,
-  Video,
-  Mic,
-  Smile,
   Send,
-  Heart,
-  MessageCircle,
-  Share2,
-  MoreHorizontal,
   X,
   Play,
   Pause,
   Volume2,
-  Trash2,
   Sparkles,
-  ShieldCheck,
   CheckCircle2,
   Flame,
   Plus,
-  Compass,
   TrendingUp,
+  Award,
 } from "lucide-react";
 import { BSLogo } from "@/components/bs-logo";
 
-export type ReactionType = "like" | "love" | "haha" | "wow" | "sad" | "angry";
+// Social Media & Reaction Animated WebP Icons from `social icons/`
+import starIcon from "@/assets/social-icons/wired-outline-237-star-hover-wink.webp";
+import shockIcon from "@/assets/social-icons/wired-outline-262-emoji-shock-hover-pinch.webp";
+import applauseIcon from "@/assets/social-icons/wired-outline-1092-hands-applause-hover-pinch.webp";
+import confettiIcon from "@/assets/social-icons/wired-outline-1103-confetti-hover-pinch.webp";
+import thumbDownIcon from "@/assets/social-icons/wired-outline-1122-thumb-down-hover-down.webp";
+import heartIcon from "@/assets/social-icons/wired-outline-20-heart-hover-heartbeat.webp";
+
+import photoIcon from "@/assets/social-icons/wired-outline-54-image-mountain-hover-pinch.webp";
+import videoIcon from "@/assets/social-icons/wired-outline-1037-vlog-camera-hover-pinch.webp";
+import micIcon from "@/assets/social-icons/wired-outline-188-microphone-hover-recording.webp";
+import cameraIcon from "@/assets/social-icons/wired-outline-61-camera-hover-flash.webp";
+import commentsIcon from "@/assets/social-icons/wired-outline-955-avatars-message-plus-hover-click.webp";
+import shareIcon from "@/assets/social-icons/wired-outline-11-link-in-reveal.webp";
+import trashIcon from "@/assets/social-icons/wired-outline-185-trash-bin-hover-empty (1).webp";
+import pencilIcon from "@/assets/social-icons/wired-outline-35-pencil-in-reveal.webp";
+import globeIcon from "@/assets/social-icons/wired-outline-27-globe-hover-rotate.webp";
+
+import avatarWoman1 from "@/assets/social-icons/wired-outline-16-avatar-woman-hover-pinch.webp";
+import avatarMan1 from "@/assets/social-icons/wired-outline-17-avatar-man-hover-pinch.webp";
+import avatarMan2 from "@/assets/social-icons/wired-outline-268-avatar-man-hover-nodding.webp";
+import avatarWoman2 from "@/assets/social-icons/wired-outline-269-avatar-woman-hover-wave.webp";
+
+export type ReactionType = "star" | "shock" | "applause" | "confetti" | "thumb_down" | "heart";
 
 export interface Comment {
   id: string;
@@ -59,13 +72,58 @@ export interface Post {
   isUserPost?: boolean;
 }
 
-const REACTION_CONFIG: Record<ReactionType, { label: string; emoji: string; color: string }> = {
-  like: { label: "Like", emoji: "👍", color: "text-blue-500" },
-  love: { label: "Love", emoji: "❤️", color: "text-red-500" },
-  haha: { label: "Haha", emoji: "😂", color: "text-amber-500" },
-  wow: { label: "Wow", emoji: "😮", color: "text-yellow-500" },
-  sad: { label: "Sad", emoji: "😢", color: "text-amber-600" },
-  angry: { label: "Angry", emoji: "😡", color: "text-orange-600" },
+export const REACTION_CONFIG: Record<
+  ReactionType,
+  { label: string; labelAm: string; labelOr: string; icon: string; color: string; badgeBg: string }
+> = {
+  star: {
+    label: "Star",
+    labelAm: "ኮከብ",
+    labelOr: "Urjii",
+    icon: starIcon,
+    color: "text-amber-500",
+    badgeBg: "bg-amber-500/15 text-amber-600 dark:text-amber-300 border-amber-500/30",
+  },
+  shock: {
+    label: "Shock",
+    labelAm: "ድንጋጤ",
+    labelOr: "Naasuu",
+    icon: shockIcon,
+    color: "text-yellow-500",
+    badgeBg: "bg-yellow-500/15 text-yellow-600 dark:text-yellow-300 border-yellow-500/30",
+  },
+  applause: {
+    label: "Applause",
+    labelAm: "ጭብጨባ",
+    labelOr: "Harka Rukuttaa",
+    icon: applauseIcon,
+    color: "text-emerald-500",
+    badgeBg: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/30",
+  },
+  confetti: {
+    label: "Confetti",
+    labelAm: "ደስታ",
+    labelOr: "Gammachuu",
+    icon: confettiIcon,
+    color: "text-purple-500",
+    badgeBg: "bg-purple-500/15 text-purple-600 dark:text-purple-300 border-purple-500/30",
+  },
+  thumb_down: {
+    label: "Dislike",
+    labelAm: "አልወደድኩትም",
+    labelOr: "Hin Jaallanne",
+    icon: thumbDownIcon,
+    color: "text-red-500",
+    badgeBg: "bg-red-500/15 text-red-600 dark:text-red-300 border-red-500/30",
+  },
+  heart: {
+    label: "Love",
+    labelAm: "ፍቅር",
+    labelOr: "Jaalala",
+    icon: heartIcon,
+    color: "text-rose-500",
+    badgeBg: "bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-500/30",
+  },
 };
 
 const INITIAL_POSTS: Post[] = [
@@ -73,17 +131,20 @@ const INITIAL_POSTS: Post[] = [
     id: "post-1",
     authorName: "Naomi Official",
     authorUsername: "naomilabs",
+    authorAvatar: avatarMan1,
     isVerified: true,
     vipTier: "VIP 5 Apex",
     content: "🚀 Welcome to Naomi Community! Share your daily yield milestones, VIP upgrades, video reactions, and withdrawal proofs with everyone! 🎉 #BirrStream #NaomiLabs #EarnDaily",
     photos: ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60"],
     feeling: "Celebrating 🎉",
-    reactions: { like: 142, love: 98, haha: 4, wow: 31, sad: 0, angry: 0 },
+    reactions: { star: 184, applause: 142, confetti: 95, heart: 120, shock: 12, thumb_down: 2 },
+    userReaction: "star",
     comments: [
       {
         id: "c1",
         authorName: "Abebe Kebede",
         authorUsername: "abebe_k",
+        authorAvatar: avatarMan2,
         text: "Just received my daily yield for VIP3! Love this platform 🔥",
         createdAt: "10m ago",
       },
@@ -91,34 +152,38 @@ const INITIAL_POSTS: Post[] = [
         id: "c2",
         authorName: "Selamawit T.",
         authorUsername: "selam_t",
+        authorAvatar: avatarWoman1,
         text: "Best earning experience in Ethiopia 🇪🇹",
         createdAt: "5m ago",
       }
     ],
-    sharesCount: 28,
+    sharesCount: 36,
     createdAt: "25m ago",
   },
   {
     id: "post-2",
     authorName: "Dawit Haile",
     authorUsername: "dawit_eth",
+    authorAvatar: avatarMan2,
     vipTier: "VIP 4 Titan",
     isVerified: true,
     content: "Listen to my quick audio review on how fast Telebirr withdrawals are approved today! Over 5,000 ETB received in under 10 minutes 💰🎧",
     audioUrl: "https://actions.google.com/sounds/v1/water/waves_crashing_on_rocks.ogg",
     audioDuration: "0:24",
     feeling: "Blessed 🌟",
-    reactions: { like: 89, love: 64, haha: 2, wow: 18, sad: 0, angry: 0 },
+    reactions: { star: 78, applause: 64, confetti: 45, heart: 89, shock: 8, thumb_down: 0 },
+    userReaction: "applause",
     comments: [
       {
         id: "c3",
         authorName: "Kassahun B.",
         authorUsername: "kassa22",
+        authorAvatar: avatarMan1,
         text: "Telebirr is super fast indeed brother!",
         createdAt: "15m ago",
       }
     ],
-    sharesCount: 12,
+    sharesCount: 19,
     createdAt: "1h ago",
   }
 ];
@@ -130,7 +195,7 @@ export default function Feed() {
 
   const [posts, setPosts] = useState<Post[]>(() => {
     try {
-      const saved = localStorage.getItem("birrstream_social_posts");
+      const saved = localStorage.getItem("birrstream_social_posts_v2");
       return saved ? JSON.parse(saved) : INITIAL_POSTS;
     } catch {
       return INITIAL_POSTS;
@@ -177,7 +242,7 @@ export default function Feed() {
   // Save posts to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem("birrstream_social_posts", JSON.stringify(posts));
+      localStorage.setItem("birrstream_social_posts_v2", JSON.stringify(posts));
     } catch {
       // ignore
     }
@@ -260,17 +325,6 @@ export default function Feed() {
     reader.readAsDataURL(file);
   };
 
-  const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPostAudio(reader.result as string);
-      setPostAudioDuration("0:30");
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleCreatePost = () => {
     if (!postText.trim() && postPhotos.length === 0 && !postVideo && !postAudio) {
       toast({
@@ -285,6 +339,7 @@ export default function Feed() {
       id: `post-${Date.now()}`,
       authorName: user?.fullName || "Naomi Member",
       authorUsername: user?.username || "member",
+      authorAvatar: avatarWoman2,
       vipTier: "VIP Member",
       isVerified: true,
       content: postText.trim(),
@@ -293,8 +348,8 @@ export default function Feed() {
       audioUrl: postAudio || undefined,
       audioDuration: postAudioDuration || undefined,
       feeling: postFeeling || undefined,
-      reactions: { like: 1, love: 0, haha: 0, wow: 0, sad: 0, angry: 0 },
-      userReaction: "like",
+      reactions: { star: 1, shock: 0, applause: 0, confetti: 0, thumb_down: 0, heart: 0 },
+      userReaction: "star",
       comments: [],
       sharesCount: 0,
       createdAt: "Just now",
@@ -346,6 +401,7 @@ export default function Feed() {
       id: `comment-${Date.now()}`,
       authorName: user?.fullName || "Naomi Member",
       authorUsername: user?.username || "member",
+      authorAvatar: avatarWoman2,
       text,
       createdAt: "Just now",
     };
@@ -417,7 +473,7 @@ export default function Feed() {
       <div className="flex items-center justify-between mb-3 px-1">
         <BSLogo />
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 bg-primary/15 text-primary border border-primary/30 rounded-full text-xs font-bold flex items-center gap-1">
+          <span className="px-2.5 py-1 bg-primary/15 text-primary border border-primary/30 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
             <span style={displayFont}>{isAmharic ? "ማህበራዊ ፊድ" : isOromo ? "Hawaasa" : "Community"}</span>
           </span>
@@ -443,7 +499,7 @@ export default function Feed() {
         {[
           { name: "Daily Yields", icon: TrendingUp, color: "from-amber-500/30 to-yellow-600/40", border: "border-yellow-500/40" },
           { name: "VIP Upgrades", icon: Flame, color: "from-purple-500/30 to-indigo-600/40", border: "border-purple-500/40" },
-          { name: "Withdrawals", icon: ShieldCheck, color: "from-emerald-500/30 to-green-600/40", border: "border-emerald-500/40" },
+          { name: "Withdrawals", icon: Award, color: "from-emerald-500/30 to-green-600/40", border: "border-emerald-500/40" },
         ].map((story, i) => {
           const Icon = story.icon;
           return (
@@ -462,51 +518,54 @@ export default function Feed() {
         })}
       </div>
 
-      {/* "What's on your mind?" Facebook-Style Trigger Card */}
+      {/* "What's on your mind?" Composer Box with WebP Action Icons */}
       <div className="bg-card rounded-3xl p-3.5 mb-4 border border-border shadow-sm">
         <div className="flex items-center gap-3 pb-3 border-b border-border/60">
-          <div className="w-10 h-10 rounded-full bg-primary/20 border-2 border-primary/30 flex items-center justify-center text-primary font-black text-sm flex-shrink-0">
-            {user?.fullName?.charAt(0).toUpperCase() || "N"}
+          <div className="w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center overflow-hidden flex-shrink-0">
+            <img src={avatarWoman2} alt="User Avatar" className="w-full h-full object-cover" />
           </div>
           <button
             type="button"
             onClick={() => setIsComposerOpen(true)}
-            className="flex-1 bg-muted/40 hover:bg-muted/70 text-left px-4 py-2.5 rounded-full text-xs text-muted-foreground transition-all cursor-pointer truncate"
+            className="flex-1 bg-muted/40 hover:bg-muted/70 text-left px-4 py-2.5 rounded-full text-xs text-muted-foreground transition-all cursor-pointer truncate flex items-center gap-2"
           >
-            {isAmharic
-              ? `${user?.fullName?.split(" ")[0] || "አባል"}፣ ምን እያሰቡ ነው?`
-              : isOromo
-              ? `Maal yaadaa jirtu, ${user?.fullName?.split(" ")[0] || "Miseensa"}?`
-              : `What's on your mind, ${user?.fullName?.split(" ")[0] || "member"}?`}
+            <img src={pencilIcon} alt="" className="w-3.5 h-3.5 object-contain opacity-70" />
+            <span>
+              {isAmharic
+                ? `${user?.fullName?.split(" ")[0] || "አባል"}፣ ምን እያሰቡ ነው?`
+                : isOromo
+                ? `Maal yaadaa jirtu, ${user?.fullName?.split(" ")[0] || "Miseensa"}?`
+                : `What's on your mind, ${user?.fullName?.split(" ")[0] || "member"}?`}
+            </span>
           </button>
         </div>
 
-        {/* Quick Media Action Row */}
+        {/* Quick Media Action Row with WebP icons */}
         <div className="grid grid-cols-3 gap-1 pt-2">
           <button
             type="button"
             onClick={() => { setIsComposerOpen(true); setTimeout(() => filePhotoRef.current?.click(), 100); }}
-            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs text-emerald-500 font-semibold cursor-pointer transition-colors"
+            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer transition-colors"
           >
-            <ImageIcon className="w-4 h-4" />
+            <img src={photoIcon} alt="Photo" className="w-5 h-5 object-contain" />
             <span className="text-[11px] text-foreground font-bold" style={displayFont}>{isAmharic ? "ፎቶ" : "Photo"}</span>
           </button>
 
           <button
             type="button"
             onClick={() => { setIsComposerOpen(true); setTimeout(() => fileVideoRef.current?.click(), 100); }}
-            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs text-blue-500 font-semibold cursor-pointer transition-colors"
+            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer transition-colors"
           >
-            <Video className="w-4 h-4" />
+            <img src={videoIcon} alt="Video" className="w-5 h-5 object-contain" />
             <span className="text-[11px] text-foreground font-bold" style={displayFont}>{isAmharic ? "ቪዲዮ" : "Video"}</span>
           </button>
 
           <button
             type="button"
             onClick={() => { setIsComposerOpen(true); }}
-            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs text-amber-500 font-semibold cursor-pointer transition-colors"
+            className="py-1.5 px-2 rounded-xl hover:bg-muted/50 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer transition-colors"
           >
-            <Mic className="w-4 h-4" />
+            <img src={micIcon} alt="Audio" className="w-5 h-5 object-contain" />
             <span className="text-[11px] text-foreground font-bold" style={displayFont}>{isAmharic ? "ድምፅ" : "Audio"}</span>
           </button>
         </div>
@@ -552,8 +611,12 @@ export default function Feed() {
               {/* Post Header */}
               <div className="p-4 pb-2.5 flex items-start justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-black text-sm shadow-sm flex-shrink-0">
-                    {post.authorName.charAt(0).toUpperCase()}
+                  <div className="w-10 h-10 rounded-full border border-border overflow-hidden bg-muted flex-shrink-0">
+                    <img
+                      src={post.authorAvatar || avatarMan1}
+                      alt={post.authorName}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -590,7 +653,7 @@ export default function Feed() {
                     className="w-8 h-8 rounded-full hover:bg-red-500/10 text-muted-foreground hover:text-red-500 flex items-center justify-center transition-colors cursor-pointer"
                     title="Delete post"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <img src={trashIcon} alt="Delete" className="w-4 h-4 object-contain" />
                   </button>
                 )}
               </div>
@@ -679,28 +742,33 @@ export default function Feed() {
                 </div>
               )}
 
-              {/* Reactions & Stats Counts */}
+              {/* Reactions & Stats Counts with Star, Applause & Confetti badges */}
               <div className="px-4 py-2 flex items-center justify-between text-xs text-muted-foreground border-b border-border/40 mt-2">
                 <div className="flex items-center gap-1.5">
-                  <div className="flex -space-x-1">
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-[10px] text-white">👍</span>
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-[10px] text-white">❤️</span>
+                  <div className="flex -space-x-1.5">
+                    <img src={starIcon} alt="Star" className="w-5 h-5 object-contain" />
+                    <img src={heartIcon} alt="Heart" className="w-5 h-5 object-contain" />
+                    <img src={applauseIcon} alt="Applause" className="w-5 h-5 object-contain" />
                   </div>
-                  <span>{totalReactions}</span>
+                  <span className="font-bold text-foreground pl-1">{totalReactions}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
                     onClick={() => setActiveCommentsPostId(activeCommentsPostId === post.id ? null : post.id)}
-                    className="hover:underline cursor-pointer"
+                    className="hover:underline cursor-pointer flex items-center gap-1"
                   >
-                    {post.comments.length} {isAmharic ? "አስተያየቶች" : "comments"}
+                    <img src={commentsIcon} alt="" className="w-3.5 h-3.5 object-contain" />
+                    <span>{post.comments.length} {isAmharic ? "አስተያየቶች" : "comments"}</span>
                   </button>
-                  <span>{post.sharesCount} {isAmharic ? "ማጋራቶች" : "shares"}</span>
+                  <span className="flex items-center gap-1">
+                    <img src={shareIcon} alt="" className="w-3.5 h-3.5 object-contain" />
+                    <span>{post.sharesCount} {isAmharic ? "ማጋራቶች" : "shares"}</span>
+                  </span>
                 </div>
               </div>
 
-              {/* Action Buttons with Interactive Emoji Drawer */}
+              {/* Action Buttons with 6 Interactive WebP Reactions (Star, Shock, Applause, Confetti, Thumb Down, Heart) */}
               <div className="relative px-2 py-1 flex items-center justify-around">
                 {/* Reaction Trigger */}
                 <div
@@ -708,18 +776,18 @@ export default function Feed() {
                   onMouseEnter={() => setHoveredReactionPostId(post.id)}
                   onMouseLeave={() => setHoveredReactionPostId(null)}
                 >
-                  {/* Floating Reaction Drawer */}
+                  {/* Floating 6-Reaction Animated WebP Drawer */}
                   {hoveredReactionPostId === post.id && (
-                    <div className="absolute bottom-full left-0 mb-1 z-30 flex items-center gap-1 bg-card/95 backdrop-blur-md p-1.5 rounded-full border border-border shadow-xl animate-in zoom-in-95 duration-150">
+                    <div className="absolute bottom-full left-0 mb-1 z-30 flex items-center gap-1.5 bg-card/95 backdrop-blur-md p-1.5 rounded-full border border-border shadow-2xl animate-in zoom-in-95 duration-150">
                       {(Object.keys(REACTION_CONFIG) as ReactionType[]).map((rKey) => (
                         <button
                           key={rKey}
                           type="button"
                           onClick={() => handleReaction(post.id, rKey)}
-                          className="w-8 h-8 flex items-center justify-center text-lg hover:scale-135 transition-transform active:scale-95 cursor-pointer"
-                          title={REACTION_CONFIG[rKey].label}
+                          className="w-9 h-9 p-1 rounded-full hover:bg-muted/80 hover:scale-130 transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+                          title={isAmharic ? REACTION_CONFIG[rKey].labelAm : REACTION_CONFIG[rKey].label}
                         >
-                          {REACTION_CONFIG[rKey].emoji}
+                          <img src={REACTION_CONFIG[rKey].icon} alt={REACTION_CONFIG[rKey].label} className="w-full h-full object-contain" />
                         </button>
                       ))}
                     </div>
@@ -727,15 +795,23 @@ export default function Feed() {
 
                   <button
                     type="button"
-                    onClick={() => handleReaction(post.id, post.userReaction || "like")}
+                    onClick={() => handleReaction(post.id, post.userReaction || "star")}
                     className={`w-full py-2 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
                       userReactionConfig
-                        ? `${userReactionConfig.color} bg-primary/10`
+                        ? `${userReactionConfig.badgeBg} border`
                         : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                     }`}
                   >
-                    <span>{userReactionConfig ? userReactionConfig.emoji : "👍"}</span>
-                    <span style={displayFont}>{userReactionConfig ? userReactionConfig.label : (isAmharic ? "ውደድ" : "Like")}</span>
+                    <img
+                      src={userReactionConfig ? userReactionConfig.icon : starIcon}
+                      alt="Reaction"
+                      className="w-5 h-5 object-contain"
+                    />
+                    <span style={displayFont}>
+                      {userReactionConfig
+                        ? (isAmharic ? userReactionConfig.labelAm : isOromo ? userReactionConfig.labelOr : userReactionConfig.label)
+                        : (isAmharic ? "ኮከብ" : isOromo ? "Urjii" : "Star")}
+                    </span>
                   </button>
                 </div>
 
@@ -745,8 +821,8 @@ export default function Feed() {
                   onClick={() => setActiveCommentsPostId(activeCommentsPostId === post.id ? null : post.id)}
                   className="flex-1 py-2 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all cursor-pointer"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  <span style={displayFont}>{isAmharic ? "አስተያየት" : "Comment"}</span>
+                  <img src={commentsIcon} alt="Comment" className="w-5 h-5 object-contain" />
+                  <span style={displayFont}>{isAmharic ? "አስተያየት" : isOromo ? "Yaada" : "Comment"}</span>
                 </button>
 
                 {/* Share Button */}
@@ -755,8 +831,8 @@ export default function Feed() {
                   onClick={() => handleShare(post)}
                   className="flex-1 py-2 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span style={displayFont}>{isAmharic ? "አጋራ" : "Share"}</span>
+                  <img src={shareIcon} alt="Share" className="w-5 h-5 object-contain" />
+                  <span style={displayFont}>{isAmharic ? "አጋራ" : isOromo ? "Qoodaa" : "Share"}</span>
                 </button>
               </div>
 
@@ -767,8 +843,8 @@ export default function Feed() {
                   <div className="space-y-2 mb-3">
                     {post.comments.map(c => (
                       <div key={c.id} className="flex items-start gap-2 text-xs">
-                        <div className="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">
-                          {c.authorName.charAt(0)}
+                        <div className="w-7 h-7 rounded-full border border-border overflow-hidden bg-muted flex-shrink-0 mt-0.5">
+                          <img src={c.authorAvatar || avatarMan1} alt="" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 bg-card p-2.5 rounded-2xl border border-border">
                           <div className="flex items-center justify-between mb-0.5">
@@ -810,13 +886,16 @@ export default function Feed() {
 
       {/* ── CREATE POST MODAL ── */}
       {isComposerOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-3 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm p-3 animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-card rounded-3xl border border-border shadow-2xl overflow-hidden animate-in slide-in-from-bottom-6 duration-200">
             {/* Modal Header */}
             <div className="p-4 border-b border-border flex items-center justify-between">
-              <h3 className="font-bold text-base text-foreground" style={displayFont}>
-                {isAmharic ? "አዲስ መልዕክት አጋራ" : isOromo ? "Maxxansa Haaraa" : "Create Post"}
-              </h3>
+              <div className="flex items-center gap-2">
+                <img src={pencilIcon} alt="" className="w-5 h-5 object-contain" />
+                <h3 className="font-bold text-base text-foreground" style={displayFont}>
+                  {isAmharic ? "አዲስ መልዕክት አጋራ" : isOromo ? "Maxxansa Haaraa" : "Create Post"}
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsComposerOpen(false)}
@@ -830,14 +909,17 @@ export default function Feed() {
             <div className="p-4 max-h-[70vh] overflow-y-auto space-y-3">
               {/* User badge */}
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-full bg-primary/20 text-primary font-black flex items-center justify-center">
-                  {user?.fullName?.charAt(0).toUpperCase() || "N"}
+                <div className="w-10 h-10 rounded-full border border-border overflow-hidden bg-muted">
+                  <img src={avatarWoman2} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h4 className="font-bold text-sm text-foreground leading-tight" style={displayFont}>
                     {user?.fullName || "Naomi Member"}
                   </h4>
-                  <span className="text-[11px] text-muted-foreground">Public • Community</span>
+                  <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
+                    <img src={globeIcon} alt="Public" className="w-3.5 h-3.5 object-contain" />
+                    <span>Public • Community</span>
+                  </div>
                 </div>
               </div>
 
@@ -917,13 +999,13 @@ export default function Feed() {
                 </div>
               )}
 
-              {/* Add to post media bar */}
+              {/* Add to post media bar with WebP Icons */}
               <div className="p-3 rounded-2xl bg-muted/40 border border-border flex items-center justify-between">
                 <span className="text-xs font-bold text-foreground" style={displayFont}>
                   {isAmharic ? "ማያያዣዎችን ጨምር፦" : "Add to your post:"}
                 </span>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   {/* Photo picker */}
                   <input
                     ref={filePhotoRef}
@@ -936,10 +1018,10 @@ export default function Feed() {
                   <button
                     type="button"
                     onClick={() => filePhotoRef.current?.click()}
-                    className="p-2 rounded-xl hover:bg-muted text-emerald-500 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-xl hover:bg-muted transition-all cursor-pointer hover:scale-115"
                     title="Add Photo"
                   >
-                    <ImageIcon className="w-5 h-5" />
+                    <img src={photoIcon} alt="Photo" className="w-6 h-6 object-contain" />
                   </button>
 
                   {/* Video picker */}
@@ -953,10 +1035,10 @@ export default function Feed() {
                   <button
                     type="button"
                     onClick={() => fileVideoRef.current?.click()}
-                    className="p-2 rounded-xl hover:bg-muted text-blue-500 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-xl hover:bg-muted transition-all cursor-pointer hover:scale-115"
                     title="Add Video"
                   >
-                    <Video className="w-5 h-5" />
+                    <img src={videoIcon} alt="Video" className="w-6 h-6 object-contain" />
                   </button>
 
                   {/* Audio / Voice Record trigger */}
@@ -966,12 +1048,12 @@ export default function Feed() {
                       if (isRecording) stopVoiceRecording();
                       else startVoiceRecording();
                     }}
-                    className={`p-2 rounded-xl hover:bg-muted transition-colors cursor-pointer ${
-                      isRecording ? "text-red-500 bg-red-500/10" : "text-amber-500"
+                    className={`p-1.5 rounded-xl hover:bg-muted transition-all cursor-pointer hover:scale-115 ${
+                      isRecording ? "bg-red-500/20 rounded-xl" : ""
                     }`}
                     title="Record Voice Note"
                   >
-                    <Mic className="w-5 h-5" />
+                    <img src={micIcon} alt="Mic" className="w-6 h-6 object-contain" />
                   </button>
                 </div>
               </div>
@@ -982,10 +1064,11 @@ export default function Feed() {
               <button
                 type="button"
                 onClick={handleCreatePost}
-                className="w-full py-3.5 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+                className="w-full py-3.5 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
                 style={displayFont}
               >
-                {isAmharic ? "አሁን ለጥፍ" : isOromo ? "Amma Maxxansi" : "Post to Feed"}
+                <Send className="w-4 h-4" />
+                <span>{isAmharic ? "አሁን ለጥፍ" : isOromo ? "Amma Maxxansi" : "Post to Feed"}</span>
               </button>
             </div>
           </div>
