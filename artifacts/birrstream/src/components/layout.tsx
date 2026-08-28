@@ -154,8 +154,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {/* Mobile Bottom Nav — With larger icons & localized text labels in #b4d8a8 Main Balance green */}
-      <nav className="md:hidden fixed bottom-3 left-3 right-3 h-[72px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10 flex items-center justify-around px-1 z-40">
+      {/* Mobile Bottom Nav — Touching bottom of screen with no bottom gap */}
+      <nav className="md:hidden fixed bottom-0 left-3 right-3 h-[72px] bg-[#1A1A1A] rounded-t-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border-t border-x border-white/10 flex items-center justify-around px-1 z-40">
         {MOBILE_NAV.map(({ href, icon: Icon, label }) => {
           const active = location === href || (href !== "/dashboard" && location.startsWith(href));
           const showBadge = href === "/dashboard" && unreadCount > 0;

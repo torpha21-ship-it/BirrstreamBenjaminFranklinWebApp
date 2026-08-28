@@ -6,6 +6,20 @@ import mainBalanceDarkThemeIcon from "@/assets/dashboard-icons/dark-theme/Main B
 import pointingHand from "@/assets/decor/pointing-hand.webp";
 import lockDollarIcon from "@/assets/decor/wired-outline-946-lock-dollar-in-reveal.webp";
 
+import batteryEmpty from "@/assets/decor/wired-outline-2765-battery-vertical-level-4-morph-empty.webp";
+import batteryLevel1 from "@/assets/decor/wired-outline-2765-battery-vertical-level-4-morph-level-1.webp";
+import batteryLevel2 from "@/assets/decor/wired-outline-2765-battery-vertical-level-4-morph-level-2.webp";
+import batteryLevel3 from "@/assets/decor/wired-outline-2765-battery-vertical-level-4-morph-level-3.webp";
+import batteryLevel4 from "@/assets/decor/wired-outline-2765-battery-vertical-level-4-hover-pinch.webp";
+
+function getBatteryIcon(daysLeft: number) {
+  if (daysLeft <= 0) return batteryEmpty;
+  if (daysLeft <= 2) return batteryLevel1;
+  if (daysLeft <= 4) return batteryLevel2;
+  if (daysLeft <= 6) return batteryLevel3;
+  return batteryLevel4;
+}
+
 interface WalletCardProps {
   summary: any;
   isLoading: boolean;
@@ -393,9 +407,14 @@ export function WalletCard({
                 </span>
                 {summary.daysUntilExpiry !== null && (
                   <span
-                    className="text-xs text-[#7ea873]"
+                    className="inline-flex items-center gap-1 text-xs text-[#7ea873]"
                     style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                   >
+                    <img
+                      src={getBatteryIcon(summary.daysUntilExpiry)}
+                      alt=""
+                      className="w-4 h-4 object-contain flex-shrink-0"
+                    />
                     {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
                   </span>
                 )}
@@ -404,10 +423,15 @@ export function WalletCard({
               <div className="pt-0.5">
                 <Link
                   href="/packages"
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold hover:bg-emerald-500/30 transition-all group"
                   style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
                 >
-                  {isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}{" "}
+                  <img
+                    src={batteryEmpty}
+                    alt=""
+                    className="w-4 h-4 object-contain flex-shrink-0 group-hover:scale-110 transition-transform"
+                  />
+                  <span>{isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}</span>
                   <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>

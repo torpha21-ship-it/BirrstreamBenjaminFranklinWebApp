@@ -2,17 +2,40 @@ import { useGetVipUpgradeGoals, getGetVipUpgradeGoalsQueryKey } from "@workspace
 import { ArrowLeft, Lock, CheckCircle2, Users, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { useLanguage } from "@/context/language-context";
-import creatorImg from "@/assets/decor/creator.png";
-import explorerImg from "@/assets/decor/explorer.png";
-import jesterImg from "@/assets/decor/jester.png";
-import outlawImg from "@/assets/decor/outlaw.png";
+import vip1Bg from "@/assets/decor/vip1.svg";
+import vip2Bg from "@/assets/decor/vip3.svg";
+import vip3Bg from "@/assets/decor/vip2.svg";
+import vip4Bg from "@/assets/decor/vip4.svg";
+import vip5Bg from "@/assets/decor/vip5.svg";
+import eliteBg from "@/assets/decor/vip-elite.png";
+import apexBg from "@/assets/decor/vip-apex.png";
+import titanBg from "@/assets/decor/vip-titan.png";
+import alphaBg from "@/assets/decor/vip-alpha.png";
 
 function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-/** One background image per tier, cycling if there are more than 4 goals */
-const GOAL_BG_IMAGES = [creatorImg, explorerImg, jesterImg, outlawImg];
+const VIP_CARD_BACKGROUNDS: Record<string, string> = {
+  vip1: vip1Bg,
+  vip2: vip3Bg,
+  vip3: vip2Bg,
+  vip4: vip4Bg,
+  vip5: vip5Bg,
+  elite: eliteBg,
+  apex: apexBg,
+  titan: titanBg,
+  alpha: alphaBg,
+};
+
+function getGoalBackground(packageName: string, index: number) {
+  const key = packageName.toLowerCase().replace(/\s+/g, "");
+  for (const k of Object.keys(VIP_CARD_BACKGROUNDS)) {
+    if (key.includes(k)) return VIP_CARD_BACKGROUNDS[k];
+  }
+  const keys = Object.keys(VIP_CARD_BACKGROUNDS);
+  return VIP_CARD_BACKGROUNDS[keys[index % keys.length]];
+}
 
 /** Progress-bar colour per tier */
 const BAR_COLORS = ["bg-[#D4B61B]", "bg-[#5B44BE]", "bg-[#C0402E]", "bg-primary"];
@@ -61,7 +84,7 @@ export default function VipUpgrades() {
               <div key={i} className="h-56 bg-card rounded-3xl animate-pulse border border-border" />
             ))
           : goals?.map((goal, i) => {
-              const bgImg = GOAL_BG_IMAGES[i % GOAL_BG_IMAGES.length];
+              const bgImg = getGoalBackground(goal.packageName, i);
               const barColor = BAR_COLORS[i % BAR_COLORS.length];
 
               return (

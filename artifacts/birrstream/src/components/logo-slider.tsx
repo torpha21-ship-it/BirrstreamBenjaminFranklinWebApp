@@ -1,18 +1,12 @@
-import amdLogo from "@/assets/partners/amd.png";
 import googlePlayLogo from "@/assets/partners/google-play.png";
-import nvidiaLogo from "@/assets/partners/nvidia.png";
 import redditLogo from "@/assets/partners/reddit.png";
 import googleLogo from "@/assets/partners/search.png";
 import twitchLogo from "@/assets/partners/twitch.png";
-import ubuntuLogo from "@/assets/partners/ubuntu.png";
 import zteLogo from "@/assets/partners/zte.png";
 
 const PARTNER_LOGOS = [
-  { name: "AMD", src: amdLogo },
-  { name: "NVIDIA", src: nvidiaLogo },
   { name: "Google", src: googleLogo },
   { name: "Google Play", src: googlePlayLogo },
-  { name: "Ubuntu", src: ubuntuLogo },
   { name: "ZTE", src: zteLogo },
   { name: "Twitch", src: twitchLogo },
   { name: "Reddit", src: redditLogo },

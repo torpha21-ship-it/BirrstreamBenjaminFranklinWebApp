@@ -216,8 +216,9 @@ export function SpecialVipCardSlider() {
       const normX = posRef.current.x / 160;
       const normY = posRef.current.y / 200;
 
-      xSet(Math.max(-25, Math.min(25, normX * 25)));
-      ySet(Math.max(-25, Math.min(25, -normY * 25)));
+      // Restrict downward tilt (rotateX < 0) so the Activate button never dips down out of reach
+      xSet(Math.max(-10, Math.min(10, normX * 10)));
+      ySet(Math.max(-2, Math.min(5, -normY * 4)));
 
       animFrameId = requestAnimationFrame(updateTilt);
     };
@@ -520,24 +521,6 @@ export function SpecialVipCardSlider() {
         className="w-full flex items-center justify-center relative touch-pan-y py-4 select-none"
         style={{ perspective: "1500px" }}
       >
-        {/* Navigation Arrow Controls */}
-        <button
-          onClick={handlePrev}
-          disabled={isAnimating}
-          aria-label="Previous card"
-          className="absolute left-1 z-30 w-11 h-11 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-full flex items-center justify-center text-foreground border border-border shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
-        >
-          <ChevronLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={isAnimating}
-          aria-label="Next card"
-          className="absolute right-1 z-30 w-11 h-11 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-full flex items-center justify-center text-foreground border border-border shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
-        >
-          <ChevronRight className="w-6 h-6 text-foreground" />
-        </button>
-
         {/* Scaled 3D Card Wrapper — Preserving Original Ghoul NFT Proportions */}
         <div
           className="card-wrapper relative"
@@ -721,16 +704,36 @@ export function SpecialVipCardSlider() {
         </div>
       </div>
 
-      {/* Pagination Dots Indicator */}
-      <div className="flex justify-center items-center gap-2 mt-2">
-        {CARDS_DATA.map((_, i) => (
-          <div
-            key={i}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === currentIdx ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
-            }`}
-          />
-        ))}
+      {/* Bottom Controls Row: Prev Button + Pagination Dots + Next Button */}
+      <div className="flex justify-center items-center gap-4 mt-3">
+        <button
+          onClick={handlePrev}
+          disabled={isAnimating}
+          aria-label="Previous card"
+          className="w-9 h-9 bg-card rounded-full flex items-center justify-center text-foreground border border-border shadow-md hover:scale-105 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center gap-2">
+          {CARDS_DATA.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === currentIdx ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
+              }`}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={handleNext}
+          disabled={isAnimating}
+          aria-label="Next card"
+          className="w-9 h-9 bg-card rounded-full flex items-center justify-center text-foreground border border-border shadow-md hover:scale-105 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
