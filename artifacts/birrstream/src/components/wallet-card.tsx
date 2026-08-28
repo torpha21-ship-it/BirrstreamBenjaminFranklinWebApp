@@ -296,10 +296,9 @@ export function WalletCard({
           </div>
         </div>
 
-        {/* 4. Realistic Front Leather Pocket */}
+        {/* 4. Realistic Front Leather Pocket (Clean with no outer shadow) */}
         <div
           className="relative z-40 mx-2 -mt-2 rounded-b-[40px] overflow-hidden"
-          style={{ filter: "drop-shadow(0 14px 24px rgba(0, 0, 0, 0.6))" }}
           onClick={() => setActiveCard(null)}
         >
           {/* Background SVG that dynamically stretches to 100% width and 100% height */}
@@ -351,9 +350,9 @@ export function WalletCard({
                 title={showBalance ? "Hide Balance" : "Reveal Balance"}
               >
                 {showBalance ? (
-                  <EyeOff className="w-4 h-4 text-[#a2cb95]" />
-                ) : (
                   <Eye className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <EyeOff className="w-4 h-4 text-[#a2cb95]" />
                 )}
               </button>
             </div>
@@ -413,7 +412,7 @@ export function WalletCard({
                     <img
                       src={getBatteryIcon(summary.daysUntilExpiry)}
                       alt=""
-                      className="w-8 h-8 object-contain flex-shrink-0"
+                      className="w-8 h-8 object-contain flex-shrink-0 [filter:invert(1)]"
                     />
                     {summary.daysUntilExpiry}{isAmharic ? " ቀናት ቀርተዋል" : isOromo ? " guyyoota hafan" : "d left"}
                   </span>
@@ -429,7 +428,7 @@ export function WalletCard({
                   <img
                     src={batteryEmpty}
                     alt=""
-                    className="w-8 h-8 object-contain flex-shrink-0 group-hover:scale-110 transition-transform"
+                    className="w-8 h-8 object-contain flex-shrink-0 group-hover:scale-110 transition-transform [filter:invert(1)]"
                   />
                   <span>{isAmharic ? "የቪአይፒ ፓኬጅ ይውሰዱ" : isOromo ? "Paakeejii VIP Fudhadhaa" : "Get a VIP Package"}</span>
                   <ChevronRight className="w-3.5 h-3.5" />

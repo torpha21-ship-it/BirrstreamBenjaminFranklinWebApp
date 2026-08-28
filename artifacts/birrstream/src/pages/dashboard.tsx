@@ -208,15 +208,15 @@ export default function Dashboard() {
         </div>
 
         {/* KYC Warning Triangle in middle with chat bubble */}
-        <Link href="/profile" className="relative flex flex-col items-center group cursor-pointer mx-auto">
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-yellow-500 text-black font-extrabold text-[9px] px-2 py-0.5 rounded shadow-md whitespace-nowrap animate-bounce flex items-center gap-1 z-20">
+        <Link href="/profile#kyc" className="relative flex flex-col items-center group cursor-pointer mx-auto">
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#F5E6A3] text-[#8B7200] font-extrabold text-[9px] px-2 py-0.5 rounded shadow-sm whitespace-nowrap animate-bounce flex items-center gap-1 z-20">
             <span>{isAmharic ? "KYC ያረጋግጡ" : isOromo ? "KYC Mirkaneessi" : "Verify KYC"}</span>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-yellow-500" />
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#F5E6A3]" />
           </div>
           <img
             src={warningTriangleIcon}
             alt="KYC Warning"
-            className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110"
+            className="w-8 h-8 object-contain select-none transition-transform group-hover:scale-110 dark:[filter:invert(1)_hue-rotate(180deg)]"
           />
         </Link>
 

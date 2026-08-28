@@ -203,7 +203,7 @@ export default function Profile() {
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-yellow-500/15 flex items-center justify-center flex-shrink-0">
-              <img src={warningTriangleIcon} alt="" className="w-6 h-6 object-contain" />
+              <img src={warningTriangleIcon} alt="" className="w-6 h-6 object-contain dark:[filter:invert(1)_hue-rotate(180deg)]" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-foreground leading-tight" style={displayFont}>
