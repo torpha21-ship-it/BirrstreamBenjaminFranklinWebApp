@@ -122,14 +122,10 @@ export function AdSlider() {
             <div className="w-8 h-8 border-3 border-white/20 border-t-primary rounded-full animate-spin" />
           </div>
         )}
-
-        {/* Subtle Vignettes for crisp text readability over videos */}
-        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* Top Left: Sharp Ad Badge flush in the far left top corner overlapping the top border */}
-      <div className="absolute -top-[1px] -left-[1px] z-30 flex items-center gap-1.5 px-3 py-1 bg-white text-black pointer-events-none select-none shadow-md">
+      {/* Top Left: Ad Badge with ONLY bottom-right corner rounded */}
+      <div className="absolute -top-[1px] -left-[1px] z-30 flex items-center gap-1.5 px-3 py-1 bg-white text-black rounded-none rounded-br-2xl pointer-events-none select-none shadow-sm">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         <span
           className="text-[11px] font-bold tracking-wider"

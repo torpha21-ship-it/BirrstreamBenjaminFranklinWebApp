@@ -23,7 +23,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location] = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
-  const { t, isAmharic, currency } = useLanguage();
+  const { t, isAmharic, isOromo, currency } = useLanguage();
 
   const NAV_ITEMS = [
     { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
@@ -38,11 +38,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   ];
 
   const MOBILE_NAV = [
-    { href: "/dashboard", icon: NavHomeIcon, label: t("nav.home") },
-    { href: "/tasks", icon: NavTasksIcon, label: t("nav.tasks") },
-    { href: "/games", icon: NavGamesIcon, label: t("nav.games"), isCenterGame: true },
-    { href: "/support", icon: NavSupportIcon, label: t("nav.support") },
-    { href: "/profile", icon: NavProfileIcon, label: t("nav.profile") },
+    { href: "/dashboard", icon: NavHomeIcon, label: isAmharic ? "ዋና" : isOromo ? "Fuula Dura" : "Home" },
+    { href: "/tasks", icon: NavTasksIcon, label: isAmharic ? "ተግባራት" : isOromo ? "Hojii" : "Tasks" },
+    { href: "/games", icon: NavGamesIcon, label: isAmharic ? "ጨዋታ" : isOromo ? "Taphawwan" : "Games" },
+    { href: "/support", icon: NavSupportIcon, label: isAmharic ? "ድጋፍ" : isOromo ? "Deeggarsa" : "Support" },
+    { href: "/profile", icon: NavProfileIcon, label: isAmharic ? "መገለጫ" : isOromo ? "Piroofaayilii" : "Profile" },
   ];
 
   useEffect(() => {
@@ -154,9 +154,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {/* Mobile Bottom Nav — White, Black & Green palette with original two-tone icons */}
-      <nav className="md:hidden fixed bottom-4 left-4 right-4 h-[64px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-white/10 flex items-center justify-around px-2 z-40">
-        {MOBILE_NAV.map(({ href, icon: Icon }) => {
+      {/* Mobile Bottom Nav — With clean icons & localized text labels */}
+      <nav className="md:hidden fixed bottom-3 left-3 right-3 h-[68px] bg-[#1A1A1A] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10 flex items-center justify-around px-1 z-40">
+        {MOBILE_NAV.map(({ href, icon: Icon, label }) => {
           const active = location === href || (href !== "/dashboard" && location.startsWith(href));
           const showBadge = href === "/dashboard" && unreadCount > 0;
 
@@ -164,24 +164,36 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               key={href}
               href={href}
-              aria-label={href === "/dashboard" ? "Dashboard" : href}
+              aria-label={label}
               onClick={href === "/dashboard" ? clearBadge : undefined}
-              className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all ${
-                active 
-                  ? "bg-white border-2 border-primary shadow-lg shadow-primary/30 scale-105" 
-                  : "bg-white/90 hover:bg-white"
-              }`}
+              className="relative flex flex-col items-center justify-center flex-1 py-1 group transition-all"
             >
-              <Icon
-                className="w-6 h-6"
-                blackStroke="#121331"
-                greenStroke={active ? "#15803D" : "#185219"}
-              />
-              {showBadge && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-[#1A1A1A] flex items-center justify-center px-0.5">
-                  <span className="text-white text-[10px] font-bold leading-none">{unreadCount > 9 ? "9+" : unreadCount}</span>
-                </span>
-              )}
+              <div
+                className={`relative flex items-center justify-center w-9 h-9 rounded-xl transition-all ${
+                  active 
+                    ? "bg-white border-2 border-primary shadow-md shadow-primary/30 scale-105" 
+                    : "bg-white/90 group-hover:bg-white"
+                }`}
+              >
+                <Icon
+                  className="w-5 h-5"
+                  blackStroke="#121331"
+                  greenStroke={active ? "#15803D" : "#185219"}
+                />
+                {showBadge && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full border-2 border-[#1A1A1A] flex items-center justify-center px-0.5">
+                    <span className="text-white text-[9px] font-bold leading-none">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                  </span>
+                )}
+              </div>
+              <span
+                className={`text-[10px] font-semibold mt-1 transition-colors leading-none truncate max-w-[64px] text-center ${
+                  active ? "text-primary font-bold" : "text-gray-400 group-hover:text-gray-200"
+                }`}
+                style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : { fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                {label}
+              </span>
             </Link>
           );
         })}

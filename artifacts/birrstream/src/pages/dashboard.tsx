@@ -228,7 +228,12 @@ export default function Dashboard() {
 
       {/* Main Balance Card */}
       <div className="bg-[#1A1A1A] rounded-3xl px-6 pt-3 pb-6 text-white relative z-10 overflow-hidden -mx-4">
-        <img src={pointingHand} alt="" aria-hidden="true" className="absolute -right-[90px] -top-4 h-1/2 object-contain object-right-top pointer-events-none select-none opacity-90" />
+        <img
+          src={pointingHand}
+          alt=""
+          aria-hidden="true"
+          className="absolute -right-[80px] -top-2 h-[105px] w-auto object-contain object-right-top pointer-events-none select-none opacity-90 z-0"
+        />
         <div className="relative z-10">
         <div className="flex items-center gap-2 mb-1">
           <img src={mainBalanceDarkThemeIcon} alt="" className="w-7 h-7 object-contain flex-shrink-0" />
