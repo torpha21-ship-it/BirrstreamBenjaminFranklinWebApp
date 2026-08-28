@@ -76,7 +76,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background pb-28 md:pb-0 md:pl-64">
+    <div className="min-h-[100dvh] bg-background pb-28 md:pb-0 md:pl-64 overflow-x-hidden">
       <EarningAlertContainer />
       {user && <DepositWatcher />}
       {/* Desktop Sidebar */}
@@ -150,7 +150,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <main className="w-full max-w-md mx-auto md:max-w-none min-h-[100dvh] relative">
+      <main className="w-full max-w-md mx-auto md:max-w-none min-h-[100dvh] relative overflow-x-hidden">
         {children}
       </main>
 

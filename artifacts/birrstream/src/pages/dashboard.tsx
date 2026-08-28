@@ -184,7 +184,7 @@ export default function Dashboard() {
   }, [streak, isAmharic]);
 
   return (
-    <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative">
+    <div className="px-4 pt-4 pb-6 space-y-4 max-w-md mx-auto relative overflow-x-hidden">
       {/* Top Bar: Brand Logo on left with Language Toggle on right */}
       <div className="flex items-center justify-between z-20 min-h-[44px] px-1">
         <div className="flex items-center">

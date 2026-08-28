@@ -45,13 +45,15 @@ export function WalletCard({
 
       {/* Outer Wallet Wrapper */}
       <div className="relative w-full pt-4 pb-2">
-        {/* Pointing hand floating above wallet and cards on top-right */}
-        <img
-          src={pointingHand}
-          alt=""
-          aria-hidden="true"
-          className="absolute -right-5 -top-3 h-[95px] w-auto object-contain pointer-events-none select-none opacity-95 z-[60] drop-shadow-lg"
-        />
+        {/* Pointing hand floating above wallet and cards on top-right (clipped to card edge) */}
+        <div className="absolute right-0 -top-3 w-36 h-20 overflow-hidden pointer-events-none z-[60]">
+          <img
+            src={pointingHand}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-contain object-right-top select-none opacity-95 drop-shadow-md"
+          />
+        </div>
 
         {/* 1. Wallet Back Liner — dark leather backing behind all cards */}
         <div
