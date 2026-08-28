@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { TrendingUp, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
@@ -67,12 +67,12 @@ export function WalletCard({
         onMouseLeave={() => setIsWalletHovered(false)}
         onTouchStart={() => setIsWalletHovered(prev => !prev)}
       >
-        {/* Pointing hand floating behind/beside the wallet */}
+        {/* Pointing hand floating and overlapping the wallet and cards */}
         <img
           src={pointingHand}
           alt=""
           aria-hidden="true"
-          className="absolute -right-6 -top-2 h-[95px] w-auto object-contain pointer-events-none select-none opacity-90 z-20"
+          className="absolute -right-5 -top-3 h-[105px] w-auto object-contain pointer-events-none select-none opacity-95 z-[60] drop-shadow-lg"
         />
 
         {/* 1. Wallet Back Liner */}
