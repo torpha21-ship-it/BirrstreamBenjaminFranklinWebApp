@@ -29,7 +29,7 @@ import DeleteAccount from "@/pages/delete-account";
 import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
 import Games from "@/pages/games";
-import Feed from "@/pages/feed";
+import Leaderboard from "@/pages/leaderboard";
 
 import { WindowsLoader } from "@/components/windows-loader";
 
@@ -75,7 +75,7 @@ function Router() {
         <Route path="/forgot-password" component={() => <PublicRoute component={ForgotPassword} />} />
         <Route path="/reset-password" component={() => <PublicRoute component={ResetPassword} />} />
         <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-        <Route path="/feed" component={() => <ProtectedRoute component={Feed} />} />
+        <Route path="/leaderboard" component={() => <ProtectedRoute component={Leaderboard} />} />
         <Route path="/games" component={() => <ProtectedRoute component={Games} />} />
         <Route path="/packages" component={() => <ProtectedRoute component={Packages} />} />
         <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
