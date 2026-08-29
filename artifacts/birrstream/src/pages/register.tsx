@@ -7,6 +7,8 @@ import { useLanguage } from "@/context/language-context";
 import logoNaomi from "@/assets/decor/LogoNaomi.jpg";
 import { Camera, Upload, CheckCircle2, ShieldCheck, GraduationCap, CreditCard, X } from "lucide-react";
 
+import { compressImageDataUrl } from "@/hooks/use-kyc";
+
 export default function Register() {
   const [, setLocation] = useLocation();
   const { login } = useAuth();
@@ -35,26 +37,34 @@ export default function Register() {
     letterSpacing: isAmharic ? "0.045em" : "-0.01em",
   };
 
-  const handleFrontUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFrontUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIdFileNameFront(file.name);
     const reader = new FileReader();
-    reader.onload = () => setIdImageFront(reader.result as string);
+    reader.onload = async () => {
+      const compressed = await compressImageDataUrl(reader.result as string, 750, 0.72);
+      setIdImageFront(compressed);
+    };
     reader.readAsDataURL(file);
   };
 
-  const handleBackUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIdFileNameBack(file.name);
     const reader = new FileReader();
-    reader.onload = () => setIdImageBack(reader.result as string);
+    reader.onload = async () => {
+      const compressed = await compressImageDataUrl(reader.result as string, 750, 0.72);
+      setIdImageBack(compressed);
+    };
     reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (registerMutation.isPending) return;
 
     if (form.password !== form.confirmPassword) {
       toast({
@@ -104,30 +114,35 @@ export default function Register() {
       { data: { ...form, referralCode: form.referralCode || null } },
       {
         onSuccess: (data) => {
-          // Save dual KYC record linked to user
-          const kycRecord = {
-            status: "pending",
-            idType,
-            frontImage: idImageFront,
-            backImage: idImageBack,
-            frontFileName: idFileNameFront,
-            backFileName: idFileNameBack,
-            submittedAt: new Date().toISOString(),
-            userId: data.user?.id,
-            username: data.user?.username,
-          };
-          localStorage.setItem(`birrstream_kyc_${data.user?.id}`, JSON.stringify(kycRecord));
-          localStorage.setItem(`birrstream_kyc_${data.user?.username}`, JSON.stringify(kycRecord));
-          localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(kycRecord));
-          window.dispatchEvent(new CustomEvent("birr:kyc-updated", { detail: kycRecord }));
+          try {
+            // Save dual KYC record linked to user
+            const kycRecord = {
+              status: "pending",
+              idType,
+              frontImage: idImageFront,
+              backImage: idImageBack,
+              frontFileName: idFileNameFront,
+              backFileName: idFileNameBack,
+              submittedAt: new Date().toISOString(),
+              userId: data.user?.id,
+              username: data.user?.username,
+            };
+            localStorage.setItem(`birrstream_kyc_${data.user?.id}`, JSON.stringify(kycRecord));
+            localStorage.setItem(`birrstream_kyc_${data.user?.username}`, JSON.stringify(kycRecord));
+            localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(kycRecord));
+            window.dispatchEvent(new CustomEvent("birr:kyc-updated", { detail: kycRecord }));
+          } catch (storageErr) {
+            console.warn("Storage warning during registration KYC save", storageErr);
+          }
 
           login(data.token, data.user);
           setLocation("/dashboard");
         },
-        onError: () => {
+        onError: (err: any) => {
+          const errMsg = err?.response?.data?.error || err?.message || (isAmharic ? "የተጠቃሚ ስም ወይም ኢሜይል አስቀድሞ ተይዟል።" : "Username or email may already be in use.");
           toast({
             title: isAmharic ? "መመዝገብ አልተሳካም" : isOromo ? "Galmeen hin milkoofne" : "Registration failed",
-            description: isAmharic ? "የተጠቃሚ ስም ወይም ኢሜይል አስቀድሞ ተይዟል።" : "Username or email may already be in use.",
+            description: errMsg,
             variant: "destructive"
           });
         },

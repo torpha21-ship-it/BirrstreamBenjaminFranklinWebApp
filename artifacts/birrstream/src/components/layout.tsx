@@ -163,6 +163,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               key={href}
               href={href}
+              id={`tut-nav-${href.replace("/", "")}`}
               aria-label={label}
               onClick={href === "/dashboard" ? clearBadge : undefined}
               className="relative flex flex-col items-center justify-center flex-1 py-1 group transition-all"

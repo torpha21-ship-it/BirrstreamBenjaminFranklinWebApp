@@ -252,16 +252,18 @@ export default function Dashboard() {
       </div>
 
       {/* Realistic Wallet Balance Card */}
-      <WalletCard
-        summary={summary}
-        isLoading={isLoading}
-        user={user}
-        pendingWithdrawalTotal={pendingWithdrawalTotal}
-        displayFont={displayFont}
-      />
+      <div id="tut-wallet">
+        <WalletCard
+          summary={summary}
+          isLoading={isLoading}
+          user={user}
+          pendingWithdrawalTotal={pendingWithdrawalTotal}
+          displayFont={displayFont}
+        />
+      </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-4 gap-3 relative z-10">
+      <div id="tut-actions" className="grid grid-cols-4 gap-3 relative z-10">
         {[
           { iconSrc: depositIcon, label: t("dash.deposit"), href: "/deposit", color: "bg-[#FCE7EE]" },
           { iconSrc: withdrawIcon, label: t("dash.withdraw"), href: "/withdraw", color: "bg-[#F5E6A3]" },
@@ -282,7 +284,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 gap-3 relative z-10 -mx-4">
+      <div id="tut-statcards" className="grid grid-cols-2 gap-3 relative z-10 -mx-4">
         {statCards.map(card => (
           <div key={card.label} className={`${card.color} rounded-2xl p-4 relative overflow-hidden`}>
             <img
@@ -301,7 +303,7 @@ export default function Dashboard() {
       </div>
 
       {/* Login Streak */}
-      <div className="bg-card rounded-3xl p-5 border border-border relative z-10 -mx-4">
+      <div id="tut-streak" className="bg-card rounded-3xl p-5 border border-border relative z-10 -mx-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
@@ -421,7 +423,7 @@ export default function Dashboard() {
       </div>
 
       {/* Special 3D VIP Upgrade Cards Slider */}
-      <div className="relative z-10 -mx-4">
+      <div id="tut-vipcards" className="relative z-10 -mx-4">
         <SpecialVipCardSlider />
       </div>
 

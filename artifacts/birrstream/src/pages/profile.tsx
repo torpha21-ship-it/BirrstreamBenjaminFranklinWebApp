@@ -3,7 +3,7 @@ import { useGetUserProfile, getGetUserProfileQueryKey, useLogout } from "@worksp
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { Trash2, ChevronRight, LogOut, ArrowLeft, Camera, ShieldAlert, ShieldCheck, CheckCircle2, X, UploadCloud, FileText } from "lucide-react";
+import { Trash2, ChevronRight, LogOut, ArrowLeft, Camera, ShieldAlert, ShieldCheck, CheckCircle2, X, UploadCloud, FileText, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { BSLogo } from "@/components/bs-logo";
