@@ -105,6 +105,9 @@ const TIER_ANIMATED_ICONS: Record<string, string> = {
   vip3: vip3Anim,
   vip4: vip4Anim,
   vip5: vip5Anim,
+};
+
+const TIER_BG_IMAGES: Record<string, string> = {
   elite: vip4Svg, // User instruction: "first use the VIP4 SVG in place of VIP Elite"
   apex: apexBg,
   titan: titanBg,
@@ -143,30 +146,23 @@ export default function Packages() {
             });
           } else {
             toast({
-              title: isAmharic ? "በቂ ያልሆነ ቀሪ ሂሳብ" : isOromo ? "Hafteen qarshii gahaa miti" : "Insufficient balance",
-              description: isAmharic ? "እባክዎ መጀመሪያ ገንዘብ ያስገቡ።" : isOromo ? "Duraan dursaa qarshii galchaa." : data.message,
+              title: isAmharic ? "ማንቃት አልተሳካም" : isOromo ? "Hojjechiisuun hin milkoofne" : "Activation failed",
+              description: isAmharic ? "እባክዎ ቀሪ ሂሳብዎን ያረጋግጡ" : isOromo ? "Haftee qarshii keessanii mirkaneeffadhaa" : "Please check your balance",
               variant: "destructive"
             });
-            if (data.shortfallAmount) setLocation("/deposit");
           }
         },
-        onError: () => toast({
-          title: isAmharic ? "ግዢው አልተሳካም" : isOromo ? "Bitiin hin milkoofne" : "Purchase failed",
-          variant: "destructive"
-        }),
+        onError: () => toast({ title: isAmharic ? "ስህተት ተከስቷል" : isOromo ? "Dogoggorri uumameera" : "An error occurred", variant: "destructive" }),
       }
     );
   };
 
   return (
-    <div className="px-4 pt-0 pb-6 max-w-md mx-auto">
-      {/* Centred brand mark */}
-      <div className="flex justify-center mb-0">
-        <BSLogo />
-      </div>
-      <div className="flex items-center gap-3 mb-6">
-        <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border">
-          <ArrowLeft className="w-4 h-4" />
+    <div className="px-4 pt-6 pb-8 max-w-md mx-auto space-y-4">
+      {/* Top Header */}
+      <div className="flex items-center gap-3">
+        <Link href="/dashboard" className="w-9 h-9 bg-card rounded-full flex items-center justify-center border border-border shadow-sm flex-shrink-0">
+          <ArrowLeft className="w-4 h-4 text-foreground" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground" style={displayFont}>
@@ -185,52 +181,60 @@ export default function Packages() {
           const colors = TIER_COLORS[pkg.tier] ?? TIER_COLORS.vip1;
           const canAfford = (summary?.mainBalance ?? 0) >= pkg.cost;
           const animatedIcon = TIER_ANIMATED_ICONS[pkg.tier];
+          const bgImg = TIER_BG_IMAGES[pkg.tier];
 
           return (
             <div key={pkg.id} className={`${colors.bg} rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between shadow-sm`}>
+              {/* Background Artwork for Elite, Apex, Titan, Alpha (Original state) */}
+              {bgImg && (
+                <img
+                  src={bgImg}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute right-0 top-0 w-44 h-44 object-contain object-right-top pointer-events-none select-none opacity-80"
+                />
+              )}
+
               {pkg.tier === "vip5" && (
                 <div className="absolute top-3 right-3 z-10">
                   <Star className="w-5 h-5 text-yellow-300 fill-yellow-300 animate-spin" style={{ animationDuration: "8s" }} />
                 </div>
               )}
 
-              {/* Card Header: VIP Badge (Left), 2x Animated Icon (Center), Money Amount (Right) */}
-              <div className="flex items-center justify-between gap-2 mb-4 relative z-10">
-                {/* Left: VIP Badge & Lock */}
-                <div className="flex-1 min-w-0 pr-1">
-                  <span className={`text-xs font-black px-3 py-1 rounded-full ${colors.badge} inline-block shadow-sm`} style={displayFont}>
+              {/* Card Header: Tier Badge on left, Price on right */}
+              <div className="flex justify-between items-start mb-2 relative z-10">
+                <div>
+                  <span className={`text-xs font-black px-3.5 py-1 rounded-full whitespace-nowrap shadow-sm ${colors.badge}`} style={displayFont}>
                     {pkg.name}
                   </span>
                   {pkg.isLocked && (
-                    <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-sm bg-white/25 rounded-full px-2 py-0.5 border border-white/30 max-w-full">
-                      <Lock className={`w-3 h-3 flex-shrink-0 ${colors.text}`} />
-                      <span className={`text-[10px] font-semibold ${colors.text} truncate`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                        {isAmharic ? "የተቆለፈ" : isOromo ? "Cufameera" : "Locked"}
+                    <div className="inline-flex items-center gap-1 mt-1.5 backdrop-blur-sm bg-white/20 rounded-full px-2.5 py-0.5 border border-white/30 whitespace-nowrap">
+                      <Lock className={`w-3 h-3 ${colors.text}`} />
+                      <span className={`text-[10.5px] font-semibold ${colors.text}`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                        {isAmharic ? "የተቆለፈ — በቪአይፒ ግቦች ይክፈቱ" : isOromo ? "Cufameera — Sadarkaa VIPtiin banaa" : "Locked — unlock via VIP Upgrades"}
                       </span>
                     </div>
                   )}
                 </div>
-
-                {/* Center: Animated VIP Icon placed right in the middle with 2x size */}
-                {animatedIcon && (
-                  <div className="flex items-center justify-center flex-shrink-0 mx-auto px-1">
-                    <img
-                      src={animatedIcon}
-                      alt={pkg.name}
-                      className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md pointer-events-none select-none"
-                    />
-                  </div>
-                )}
-
-                {/* Right: Money Amount */}
-                <div className="flex-1 text-right pl-1">
-                  <p className={`text-2xl sm:text-3xl font-black ${colors.text} leading-none`}>{fmt(pkg.cost)}</p>
+                <div className="text-right">
+                  <p className={`text-2xl font-black ${colors.text} leading-none`}>{fmt(pkg.cost)}</p>
                   <p className={`text-xs ${colors.text} opacity-80 font-bold mt-1`} style={displayFont}>{currency}</p>
                 </div>
               </div>
 
-              {/* Glass Details Card & Action Button (Moved downward with tight tidy spacing) */}
-              <div className="relative z-10 space-y-2 mt-auto">
+              {/* Centered Animated Icon for VIP 1–5 ONLY */}
+              {animatedIcon && (
+                <div className="flex items-center justify-center my-1 relative z-10">
+                  <img
+                    src={animatedIcon}
+                    alt={pkg.name}
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-sm pointer-events-none select-none"
+                  />
+                </div>
+              )}
+
+              {/* Glass Details Card & Action Button */}
+              <div className="relative z-10 space-y-2 mt-2">
                 <div className={`flex gap-2 ${colors.text} backdrop-blur-md ${colors.glassBg} rounded-2xl px-3 py-2 border`}>
                   <div className="flex-1 text-center">
                     <p className="text-[10px] opacity-75 font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
