@@ -29,8 +29,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background-color: #0f1410;
+        background-color: #ffffff;
         z-index: 99999;
+      }
+      @media (prefers-color-scheme: dark) {
+        #initial-loader {
+          background-color: #121331;
+        }
       }
       .win-preloader {
         position: relative;
@@ -44,13 +49,12 @@
         height: 44%;
         border-radius: 4px;
         transform-origin: center;
-        animation: winPreAnim 4000ms cubic-bezier(1, 0, 0, 1) infinite,
-                   winPreBlink 1000ms ease-in-out infinite;
+        animation: winPreAnim 4000ms cubic-bezier(1, 0, 0, 1) infinite;
       }
-      .win-pre-sq1 { background-color: #F5E6A3; box-shadow: 0 0 10px rgba(245, 230, 163, 0.8), 0 0 24px rgba(245, 230, 163, 0.4); }
-      .win-pre-sq2 { background-color: #C9BDF5; box-shadow: 0 0 10px rgba(201, 189, 245, 0.8), 0 0 24px rgba(201, 189, 245, 0.4); animation-delay: -1000ms, -75ms; }
-      .win-pre-sq3 { background-color: #F2A89A; box-shadow: 0 0 10px rgba(242, 168, 154, 0.8), 0 0 24px rgba(242, 168, 154, 0.4); animation-delay: -2000ms, -150ms; }
-      .win-pre-sq4 { background-color: #A8D5B5; box-shadow: 0 0 10px rgba(168, 213, 181, 0.8), 0 0 24px rgba(168, 213, 181, 0.4); animation-delay: -3000ms, -225ms; }
+      .win-pre-sq1 { background-color: #F5E6A3; }
+      .win-pre-sq2 { background-color: #C9BDF5; animation-delay: -1000ms; }
+      .win-pre-sq3 { background-color: #F2A89A; animation-delay: -2000ms; }
+      .win-pre-sq4 { background-color: #A8D5B5; animation-delay: -3000ms; }
 
       @keyframes winPreAnim {
         0% { transform: translate(0, 0); }
@@ -58,10 +62,6 @@
         50% { transform: translate(125%, 125%); }
         75% { transform: translate(0, 125%); }
         100% { transform: translate(0, 0); }
-      }
-      @keyframes winPreBlink {
-        0%, 20%, 80%, 100% { filter: brightness(115%); }
-        50% { filter: brightness(75%); }
       }
       @keyframes winPreRotate {
         0%, 100% { transform: scale(1); }
