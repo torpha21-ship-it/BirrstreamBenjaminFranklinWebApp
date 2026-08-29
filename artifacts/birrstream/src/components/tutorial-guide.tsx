@@ -21,7 +21,6 @@ interface TutorialStep {
   actionHint?: string;
   actionHintAm?: string;
   actionHintOr?: string;
-  nextRoute?: string;
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
@@ -31,7 +30,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "Main Wallet Balance",
     titleAm: "ዋና ቀሪ ሂሳብ",
     titleOr: "Haftee Qarshii",
-    description: "Your live ETB balance with guaranteed safety floor protection.",
+    description: "Your live ETB balance with safety floor protection.",
     descriptionAm: "ዋና የብር ሂሳብዎ በሪዘርቭ ፍሎር ሙሉ በሙሉ የተጠበቀ ነው።",
     descriptionOr: "Hafteen qarshii keessanii eegumsa guutuu qaba.",
     targetBadge: "1/8",
@@ -40,7 +39,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👇 Tap Deposit below to fund!",
     actionHintAm: "👇 ለማስገባት ተቀማጭን ይጫኑ!",
     actionHintOr: "👇 Galchuuf tuqaa!",
-    nextRoute: "/deposit",
   },
   {
     route: "/deposit",
@@ -48,8 +46,8 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "Instant Deposit",
     titleAm: "ፈጣን ተቀማጭ",
     titleOr: "Galcha Saffisaa",
-    description: "Transfer via Telebirr/CBE & submit receipt for auto verification.",
-    descriptionAm: "በቴሌብር/ንግድ ባንክ ያስተላልፉና ደረሰኝ በማያያዝ ያረጋግጡ።",
+    description: "Transfer via Telebirr/CBE & submit receipt.",
+    descriptionAm: "በቴሌብር/ንግድ ባንክ ያስተላልፉና ደረሰኝ ያረጋግጡ።",
     descriptionOr: "Telebirr ykn CBE dhaan galchaa nagahee galchaa.",
     targetBadge: "2/8",
     targetBadgeAm: "2/8",
@@ -57,7 +55,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: 7-Day VIP Packages!",
     actionHintAm: "👉 ቀጣይ፦ የ 7 ቀን ቪአይፒ!",
     actionHintOr: "👉 Itti aanee: Paakeejota VIP!",
-    nextRoute: "/packages",
   },
   {
     route: "/packages",
@@ -65,8 +62,8 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "7-Day VIP Packages",
     titleAm: "የ 7 ቀን ቪአይፒ ፓኬጆች",
     titleOr: "Paakeejota VIP 7",
-    description: "Activate VIP 1–5 tiers for streaming daily returns every 24h.",
-    descriptionAm: "በየ 24 ሰዓቱ የተረጋገጠ ትርፍ የሚያስገኙ ፓኬጆችን ይክፈቱ።",
+    description: "Activate VIP 1–5 tiers for daily profit streaming.",
+    descriptionAm: "በየቀኑ የተረጋገጠ ትርፍ የሚያስገኙ ፓኬጆችን ይክፈቱ።",
     descriptionOr: "Paakeejota VIP banuudhaan bu'aa guyyaa argadhaa.",
     targetBadge: "3/8",
     targetBadgeAm: "3/8",
@@ -74,7 +71,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: Naomi Arcade Games!",
     actionHintAm: "👉 ቀጣይ፦ ናኦሚ አርኬድ!",
     actionHintOr: "👉 Itti aanee: Taphawwan Naomi!",
-    nextRoute: "/games",
   },
   {
     route: "/games",
@@ -82,8 +78,8 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "Naomi Arcade Games",
     titleAm: "ናኦሚ አርኬድ ጨዋታዎች",
     titleOr: "Taphawwan Naomi",
-    description: "Spin the Minecraft Mob Picker to win instant Birr cash jackpots.",
-    descriptionAm: "የማይንክራፍት ካራክተሮችን በማሽከርከር የገንዘብ ሽልማት ያሸንፉ።",
+    description: "Spin Minecraft Mob Picker for cash jackpots.",
+    descriptionAm: "የማይንክራፍት ካራክተሮችን በማሽከርከር ገንዘብ ያሸንፉ።",
     descriptionOr: "Taphawwan taphachuun badhaasa qarshii argadhaa.",
     targetBadge: "4/8",
     targetBadgeAm: "4/8",
@@ -91,7 +87,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: Daily Task Rewards!",
     actionHintAm: "👉 ቀጣይ፦ የዕለት ተግባራት!",
     actionHintOr: "👉 Itti aanee: Hojiiwwan Guyyaa!",
-    nextRoute: "/tasks",
   },
   {
     route: "/tasks",
@@ -99,7 +94,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "Daily Tasks & Videos",
     titleAm: "የዕለት ተግባራት",
     titleOr: "Hojiiwwan Guyyaa",
-    description: "Watch short videos & complete habits to collect free extra Birr.",
+    description: "Watch short videos & complete daily habits for extra Birr.",
     descriptionAm: "ቪዲዮዎችን በመመልከት እና ቀላል ተግባራትን በማጠናቀቅ ተጨማሪ ብር ያግኙ።",
     descriptionOr: "Viidiyoo daawwachuun qarshii dabalataa sassaabbadhaa.",
     targetBadge: "5/8",
@@ -108,7 +103,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: Live 689 Leaderboard!",
     actionHintAm: "👉 ቀጣይ፦ ደረጃ ሰንጠረዥ!",
     actionHintOr: "👉 Itti aanee: Sadarkaa Miseensota!",
-    nextRoute: "/leaderboard",
   },
   {
     route: "/leaderboard",
@@ -116,7 +110,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "689 Member Leaderboard",
     titleAm: "የደረጃ ሰንጠረዥ",
     titleOr: "Sadarkaa Miseensota",
-    description: "Real-time active rankings competition with animated key badges.",
+    description: "Active rankings competition with animated key badges.",
     descriptionAm: "የ 689 ተጠቃሚዎች የቀጥታ የገቢ ደረጃዎች እና ውድድር።",
     descriptionOr: "Dorgommii sadarkaa miseensota 689 yeroo qabatamaa.",
     targetBadge: "6/8",
@@ -125,7 +119,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: Identity Verification!",
     actionHintAm: "👉 ቀጣይ፦ የማንነት ማረጋገጫ!",
     actionHintOr: "👉 Itti aanee: Mirkaneessa Eenyummaa!",
-    nextRoute: "/profile",
   },
   {
     route: "/profile",
@@ -133,7 +126,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "KYC ID Verification",
     titleAm: "የማንነት ማረጋገጫ (KYC)",
     titleOr: "Mirkaneessa KYC",
-    description: "Submit your National/University ID to unlock instant withdrawals.",
+    description: "Submit your National/University ID for instant withdrawals.",
     descriptionAm: "መታወቂያዎን በማስገባት የገንዘብ ማውጫ ፈቃድ ያረጋግጡ።",
     descriptionOr: "Waraqaa eenyummaa galchuun baasii eeggadhaa.",
     targetBadge: "7/8",
@@ -142,7 +135,6 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     actionHint: "👉 Next: Daily Login Streak!",
     actionHintAm: "👉 ቀጣይ፦ የዕለት ጉርሻ!",
     actionHintOr: "👉 Itti aanee: Hirmaannaa Guyyaa!",
-    nextRoute: "/dashboard",
   },
   {
     route: "/dashboard",
@@ -150,7 +142,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: "Login Streak (+5 ETB)",
     titleAm: "የዕለት ተሳትፎ (+5 ብር)",
     titleOr: "Hirmaannaa Guyyaa (+5)",
-    description: "Check in every 24h for free cash. You are all set to start earning!",
+    description: "Check in every 24h for free cash. You are all set!",
     descriptionAm: "በየቀኑ ተሳትፎ በመመዝገብ የ 5 ብር ነፃ ጉርሻ ያግኙ። አሁን ዝግጁ ኖት!",
     descriptionOr: "Guyyaa hunda galmaa'aa. Amma eegaluuf qophiidha!",
     targetBadge: "8/8",
@@ -162,7 +154,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   },
 ];
 
-const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v4_completed";
+const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v5_completed";
 
 interface TargetBox {
   x: number;
@@ -173,12 +165,14 @@ interface TargetBox {
   centerY: number;
 }
 
+type AnimPhase = "idle" | "collapsing" | "walking" | "expanding";
+
 export function TutorialGuide() {
   const { isAmharic, isOromo } = useLanguage();
   const [location, setLocation] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animPhase, setAnimPhase] = useState<AnimPhase>("idle");
   const [targetBox, setTargetBox] = useState<TargetBox | null>(null);
 
   const displayFont = {
@@ -207,7 +201,7 @@ export function TutorialGuide() {
     }
   }, [currentStep]);
 
-  // Handle route change & smooth element scrolling
+  // Handle step / route changes
   useEffect(() => {
     if (!isOpen) return;
 
@@ -222,11 +216,15 @@ export function TutorialGuide() {
       const el = document.querySelector(step.targetSelector);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(updateTargetBox, 300);
+        setTimeout(() => {
+          updateTargetBox();
+          setAnimPhase("idle");
+        }, 280);
       } else {
         updateTargetBox();
+        setAnimPhase("idle");
       }
-    }, 150);
+    }, 180);
 
     return () => clearTimeout(timer);
   }, [isOpen, currentStep, location, setLocation, updateTargetBox]);
@@ -248,7 +246,7 @@ export function TutorialGuide() {
     if (!completed) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 1200);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -257,7 +255,7 @@ export function TutorialGuide() {
   useEffect(() => {
     const handleStart = () => {
       setCurrentStep(0);
-      setIsTransitioning(false);
+      setAnimPhase("idle");
       setIsOpen(true);
       if (location !== "/dashboard") {
         setLocation("/dashboard");
@@ -267,13 +265,23 @@ export function TutorialGuide() {
     return () => window.removeEventListener("birr:start-tutorial", handleStart);
   }, [location, setLocation]);
 
+  // Snappy Multi-Stage Transition: Collapse line/bubble into avatar -> Walk to new feature -> Expand line & bubble
+  const advanceStep = useCallback((nextStepIdx: number) => {
+    if (animPhase !== "idle") return;
+
+    // Stage 1: Gracefully collapse the black dotted line and speech bubble INTO the avatar
+    setAnimPhase("collapsing");
+
+    setTimeout(() => {
+      // Stage 2: Avatar turns into walking avatar and starts traveling across screen
+      setAnimPhase("walking");
+      setCurrentStep(nextStepIdx);
+    }, 220);
+  }, [animPhase]);
+
   const handleNext = () => {
     if (currentStep < TUTORIAL_STEPS.length - 1) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentStep((prev) => prev + 1);
-        setIsTransitioning(false);
-      }, 400);
+      advanceStep(currentStep + 1);
     } else {
       handleComplete();
     }
@@ -281,11 +289,7 @@ export function TutorialGuide() {
 
   const handlePrev = () => {
     if (currentStep > 0) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentStep((prev) => prev - 1);
-        setIsTransitioning(false);
-      }, 400);
+      advanceStep(currentStep - 1);
     }
   };
 
@@ -299,114 +303,162 @@ export function TutorialGuide() {
   const step = TUTORIAL_STEPS[currentStep];
   const isLast = currentStep === TUTORIAL_STEPS.length - 1;
 
-  // Placement calculation for tiny floating bubble
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
-  const isTargetInBottomHalf = targetBox ? targetBox.centerY > viewportHeight / 2 : false;
-  const showBubbleAtTop = isTargetInBottomHalf;
+  // Spatial Proximity Calculation
+  // We place [Target Feature] <--- [Black Dotted Line] ---> [Avatar Icon] ---> [Chat Bubble]
+  // ALL 3 are closely anchored together.
+  const winWidth = typeof window !== "undefined" ? window.innerWidth : 380;
+  const winHeight = typeof window !== "undefined" ? window.innerHeight : 700;
 
-  // Exact anchor coordinates for connecting pointer
-  const bubbleAnchorX = typeof window !== "undefined" ? Math.min(window.innerWidth / 2, 170) : 160;
-  const bubbleAnchorY = showBubbleAtTop ? 180 : viewportHeight - 180;
+  const isTargetInBottomHalf = targetBox ? targetBox.centerY > winHeight * 0.45 : false;
 
-  const targetAnchorX = targetBox ? targetBox.centerX : bubbleAnchorX;
-  const targetAnchorY = targetBox
-    ? showBubbleAtTop
-      ? targetBox.y - 4
-      : targetBox.y + targetBox.height + 4
-    : bubbleAnchorY;
+  // Avatar position (tightly anchored right beside/above the target element)
+  const avatarSize = 48; // Compact 48px avatar
+  const avatarX = targetBox ? Math.min(Math.max(targetBox.centerX, 50), winWidth - 50) : winWidth / 2;
+  const avatarY = targetBox
+    ? isTargetInBottomHalf
+      ? Math.max(targetBox.y - avatarSize - 28, 20)
+      : Math.min(targetBox.y + targetBox.height + 28, winHeight - avatarSize - 80)
+    : winHeight / 2;
+
+  // Dotted Line coordinates connecting Feature <---> Avatar
+  const lineStartX = targetBox ? targetBox.centerX : avatarX;
+  const lineStartY = targetBox
+    ? isTargetInBottomHalf
+      ? targetBox.y - 2
+      : targetBox.y + targetBox.height + 2
+    : avatarY;
+
+  const lineEndX = avatarX;
+  const lineEndY = isTargetInBottomHalf ? avatarY + avatarSize - 4 : avatarY + 4;
+
+  // Chat Bubble coordinates (directly adjacent to the Avatar)
+  const bubbleWidth = Math.min(240, winWidth - 32);
+  const bubbleX = Math.min(Math.max(avatarX - bubbleWidth / 2, 16), winWidth - bubbleWidth - 16);
+  const bubbleY = isTargetInBottomHalf ? avatarY - 88 : avatarY + avatarSize + 10;
+
+  const isCollapsing = animPhase === "collapsing";
+  const isWalking = animPhase === "walking";
+  const isVisible = animPhase === "idle";
 
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none select-none">
-      {/* ── CLEAN SPOTLIGHT ON TARGET (Clickable so user can interact!) ── */}
+      {/* ── TARGET COMPONENT SPOTLIGHT (Clickable to advance interactively!) ── */}
       {targetBox && (
         <div
           onClick={handleNext}
           className="absolute z-10 pointer-events-auto cursor-pointer transition-all duration-300 ease-out group"
           style={{
-            left: targetBox.x - 4,
-            top: targetBox.y - 4,
-            width: targetBox.width + 8,
-            height: targetBox.height + 8,
+            left: targetBox.x - 3,
+            top: targetBox.y - 3,
+            width: targetBox.width + 6,
+            height: targetBox.height + 6,
           }}
-          title="Click to interact & advance"
+          title="Click component to interact & advance"
         >
-          {/* Animated Gold Glowing Ring */}
-          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_18px_rgba(245,230,163,0.9)] group-hover:border-emerald-400 transition-colors" />
+          {/* Crisp highlight ring */}
+          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_16px_rgba(245,230,163,0.85)] group-hover:border-emerald-400 transition-colors" />
 
-          {/* Interactive Tap Ping Beacon */}
+          {/* Beacon Point */}
           <div
             className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none"
             style={{
-              top: showBubbleAtTop ? -10 : "auto",
-              bottom: showBubbleAtTop ? "auto" : -10,
+              top: isTargetInBottomHalf ? -8 : "auto",
+              bottom: isTargetInBottomHalf ? "auto" : -8,
             }}
           >
-            <span className="relative flex h-4 w-4">
+            <span className="relative flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border border-white shadow-sm" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500 border border-white shadow-sm" />
             </span>
           </div>
         </div>
       )}
 
-      {/* ── ANIMATED CONNECTING POINTER LINE ── */}
+      {/* ── 1. BLACK DOTTED LINE (Connecting Target Feature to Avatar) ── */}
       {targetBox && (
-        <svg className="absolute inset-0 w-full h-full z-20 pointer-events-none overflow-visible">
-          <defs>
-            <linearGradient id="pointerLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#F5E6A3" stopOpacity="1" />
-              <stop offset="100%" stopColor="#22c55e" stopOpacity="1" />
-            </linearGradient>
-          </defs>
-
-          <path
-            d={`M ${targetAnchorX} ${targetAnchorY} Q ${(targetAnchorX + bubbleAnchorX) / 2} ${(targetAnchorY + bubbleAnchorY) / 2} ${bubbleAnchorX} ${bubbleAnchorY}`}
-            fill="none"
-            stroke="url(#pointerLineGrad)"
+        <svg
+          className="absolute inset-0 w-full h-full z-20 pointer-events-none overflow-visible transition-opacity duration-200"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isCollapsing ? `scale(0)` : `scale(1)`,
+            transformOrigin: `${avatarX}px ${avatarY}px`,
+            transition: "all 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
+          {/* Black Dotted Line */}
+          <line
+            x1={lineStartX}
+            y1={lineStartY}
+            x2={lineEndX}
+            y2={lineEndY}
+            stroke="#121331"
             strokeWidth="2.5"
-            strokeDasharray="4,3"
-            className="animate-[dash_1s_linear_infinite]"
+            strokeDasharray="4,4"
+            className="dark:stroke-white drop-shadow-sm"
           />
-          <circle cx={targetAnchorX} cy={targetAnchorY} r="4" fill="#F5E6A3" stroke="#121331" strokeWidth="1.5" />
+
+          {/* Anchor Dots */}
+          <circle cx={lineStartX} cy={lineStartY} r="3.5" fill="#121331" className="dark:fill-white" />
+          <circle cx={lineEndX} cy={lineEndY} r="3.5" fill="#121331" className="dark:fill-white" />
         </svg>
       )}
 
-      {/* ── TINY FLOATING SPEECH BUBBLE & COMPACT AVATAR ── */}
+      {/* ── 2. ANIMATED AVATAR ICON (Positioned Between Line & Bubble) ── */}
       <div
-        className={`absolute left-0 right-0 px-3 z-30 flex flex-col items-center pointer-events-auto transition-all duration-300 ease-out max-w-[260px] sm:max-w-[290px] mx-auto ${
-          showBubbleAtTop ? "top-3 sm:top-5" : "bottom-3 sm:bottom-5"
-        }`}
+        className="absolute z-30 pointer-events-none transition-all duration-400 ease-out"
+        style={{
+          left: avatarX - avatarSize / 2,
+          top: avatarY,
+          width: avatarSize,
+          height: avatarSize,
+          transition: isWalking
+            ? "all 450ms cubic-bezier(0.25, 1, 0.5, 1)"
+            : "all 250ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
       >
-        {/* Compact Avatar */}
-        <div
-          className={`relative z-40 transition-all duration-300 flex flex-col items-center ${
-            showBubbleAtTop ? "order-2 -mt-2" : "order-1 -mb-2"
-          }`}
-        >
-          {isTransitioning ? (
-            <div className="w-12 h-12 sm:w-14 sm:h-14 animate-bounce drop-shadow-md">
-              <img src={walkingAvatar} alt="Guide" className="w-full h-full object-contain" />
-            </div>
-          ) : (
-            <div className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md animate-in zoom-in-90 duration-200">
-              <img src={protestAvatar} alt="Guide" className="w-full h-full object-contain" />
-            </div>
-          )}
-        </div>
+        {isWalking ? (
+          // Walking Avatar: Travels smoothly across screen to the feature
+          <div className="w-full h-full animate-bounce drop-shadow-md">
+            <img
+              src={walkingAvatar}
+              alt="Walking Guide"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
+            />
+          </div>
+        ) : (
+          // Protesting Avatar: Appears right near feature pointing and explaining
+          <div className="w-full h-full drop-shadow-md animate-in zoom-in-75 duration-200">
+            <img
+              src={protestAvatar}
+              alt="Explaining Guide"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
+            />
+          </div>
+        )}
+      </div>
 
-        {/* Tiny Comic Speech Bubble */}
-        <div
-          className={`w-full bg-card/95 border-2 border-primary/70 rounded-2xl p-2.5 sm:p-3 shadow-lg relative z-30 ${
-            showBubbleAtTop ? "order-1" : "order-2"
-          }`}
-        >
+      {/* ── 3. TINY CHAT BUBBLE (Gracefully Collapses & Expands From Avatar) ── */}
+      <div
+        className="absolute z-40 pointer-events-auto transition-all"
+        style={{
+          left: bubbleX,
+          top: bubbleY,
+          width: bubbleWidth,
+          transform: isVisible ? "scale(1) translateY(0px)" : "scale(0) translateY(12px)",
+          transformOrigin: `${avatarX - bubbleX}px ${isTargetInBottomHalf ? "100%" : "0%"}`,
+          opacity: isVisible ? 1 : 0,
+          transition: "all 250ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+      >
+        {/* Comic Speech Bubble Body */}
+        <div className="w-full bg-card border-2 border-[#121331] dark:border-white rounded-2xl p-2.5 shadow-xl relative">
           {/* Header */}
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1">
-              <span className="px-1.5 py-0.2 rounded-full bg-primary/15 text-primary border border-primary/30 text-[8.5px] font-black uppercase">
+              <span className="px-1.5 py-0.2 rounded-full bg-primary/15 text-primary border border-primary/30 text-[8px] font-black uppercase">
                 {isAmharic ? step.targetBadgeAm : isOromo ? step.targetBadgeOr : step.targetBadge}
               </span>
-              <span className="text-[8.5px] text-amber-500 font-bold flex items-center gap-0.5">
+              <span className="text-[8px] text-amber-500 font-bold flex items-center gap-0.5">
                 <Sparkles className="w-2 h-2" />
                 <span>Guide</span>
               </span>
@@ -415,33 +467,33 @@ export function TutorialGuide() {
             <button
               type="button"
               onClick={handleComplete}
-              className="w-5 h-5 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
+              className="w-4 h-4 rounded-full bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
               title="Close Tutorial"
             >
-              <X className="w-3 h-3" />
+              <X className="w-2.5 h-2.5" />
             </button>
           </div>
 
           {/* Title */}
-          <h4 className="font-bold text-xs text-foreground mb-0.5 leading-tight" style={displayFont}>
+          <h4 className="font-bold text-[11.5px] text-foreground mb-0.5 leading-tight" style={displayFont}>
             {isAmharic ? step.titleAm : isOromo ? step.titleOr : step.title}
           </h4>
 
           {/* Description */}
           <p
-            className="text-[10.5px] text-muted-foreground leading-snug mb-1.5"
+            className="text-[10px] text-muted-foreground leading-snug mb-1"
             style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
           >
             {isAmharic ? step.descriptionAm : isOromo ? step.descriptionOr : step.description}
           </p>
 
-          {/* Action Hint / Click Target */}
+          {/* Action Hint */}
           {step.actionHint && (
             <div
               onClick={handleNext}
-              className="bg-primary/10 border border-primary/25 rounded-lg px-2 py-1 mb-1.5 flex items-center gap-1 text-[9.5px] font-bold text-primary cursor-pointer hover:bg-primary/20 transition-colors"
+              className="bg-primary/10 border border-primary/25 rounded-md px-1.5 py-0.5 mb-1 flex items-center gap-1 text-[9px] font-bold text-primary cursor-pointer hover:bg-primary/20 transition-colors"
             >
-              <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+              <CheckCircle2 className="w-2.5 h-2.5 flex-shrink-0" />
               <span className="truncate">{isAmharic ? step.actionHintAm : isOromo ? step.actionHintOr : step.actionHint}</span>
             </div>
           )}
@@ -455,7 +507,7 @@ export function TutorialGuide() {
                   key={idx}
                   className={`h-1 rounded-full transition-all duration-200 ${
                     idx === currentStep
-                      ? "w-3 bg-primary"
+                      ? "w-2.5 bg-primary"
                       : idx < currentStep
                       ? "w-1 bg-primary/40"
                       : "w-0.5 bg-muted-foreground/30"
@@ -470,11 +522,10 @@ export function TutorialGuide() {
                 <button
                   type="button"
                   onClick={handlePrev}
-                  disabled={isTransitioning}
-                  className="px-2 py-0.5 rounded-full text-[10px] font-bold text-muted-foreground hover:text-foreground bg-muted/60 transition-colors flex items-center gap-0.5 cursor-pointer"
+                  className="px-1.5 py-0.2 rounded-full text-[9px] font-bold text-muted-foreground hover:text-foreground bg-muted/60 transition-colors flex items-center gap-0.5 cursor-pointer"
                   style={displayFont}
                 >
-                  <ArrowLeft className="w-2.5 h-2.5" />
+                  <ArrowLeft className="w-2 h-2" />
                   <span>{isAmharic ? "ወደ ኋላ" : "Back"}</span>
                 </button>
               )}
@@ -482,8 +533,7 @@ export function TutorialGuide() {
               <button
                 type="button"
                 onClick={handleNext}
-                disabled={isTransitioning}
-                className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-0.5 cursor-pointer"
+                className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-primary text-primary-foreground shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-0.5 cursor-pointer"
                 style={displayFont}
               >
                 <span>
@@ -499,7 +549,7 @@ export function TutorialGuide() {
                     ? "Itti Fufi"
                     : "Next"}
                 </span>
-                <ArrowRight className="w-2.5 h-2.5" />
+                <ArrowRight className="w-2 h-2" />
               </button>
             </div>
           </div>
