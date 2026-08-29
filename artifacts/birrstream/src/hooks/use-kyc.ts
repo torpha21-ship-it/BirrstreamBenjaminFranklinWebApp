@@ -29,7 +29,7 @@ function getStorageKey(userIdentifier?: string | number | null): string {
 /**
  * Compresses an image data URL to ensure it fits comfortably within browser localStorage quota
  */
-export function compressImageDataUrl(dataUrl: string, maxDim = 800, quality = 0.75): Promise<string> {
+export function compressImageDataUrl(dataUrl: string, maxDim = 500, quality = 0.65): Promise<string> {
   return new Promise((resolve) => {
     if (!dataUrl || !dataUrl.startsWith("data:image")) {
       resolve(dataUrl);
@@ -124,10 +124,10 @@ export function useKyc() {
       frontFileName?: string;
       backFileName?: string;
     }) => {
-      // Compress both images before persisting to localStorage
+      // Compress both images to valid ~25KB JPEG data URLs
       const [compressedFront, compressedBack] = await Promise.all([
-        compressImageDataUrl(frontImage, 800, 0.72),
-        compressImageDataUrl(backImage, 800, 0.72),
+        compressImageDataUrl(frontImage, 500, 0.65),
+        compressImageDataUrl(backImage, 500, 0.65),
       ]);
 
       const newRecord: KycData = {
@@ -147,15 +147,18 @@ export function useKyc() {
         localStorage.setItem(key, JSON.stringify(newRecord));
         localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(newRecord));
       } catch (storageErr) {
-        console.warn("Storage quota exceeded, storing lightweight record", storageErr);
-        // Fallback storing lightweight record without full base64 if quota tight
-        const lightRecord: KycData = {
-          ...newRecord,
-          frontImage: compressedFront.slice(0, 1000) + "...",
-          backImage: compressedBack.slice(0, 1000) + "...",
-        };
+        console.warn("Storage quota warning, storing high-compression clean image", storageErr);
         try {
-          localStorage.setItem(key, JSON.stringify(lightRecord));
+          const [tinyFront, tinyBack] = await Promise.all([
+            compressImageDataUrl(frontImage, 320, 0.5),
+            compressImageDataUrl(backImage, 320, 0.5),
+          ]);
+          const tinyRecord: KycData = {
+            ...newRecord,
+            frontImage: tinyFront,
+            backImage: tinyBack,
+          };
+          localStorage.setItem(key, JSON.stringify(tinyRecord));
         } catch {
           // ignore
         }

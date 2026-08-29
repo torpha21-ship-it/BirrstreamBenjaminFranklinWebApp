@@ -161,7 +161,6 @@ export default function Profile() {
       items: [
         { imgSrc: withdrawalSettingsIcon, label: t("profile.withdrawal_settings"), href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
         { imgSrc: transactionHistoryIcon, label: t("profile.transaction_history"), href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
-        { icon: Sparkles, label: isAmharic ? "የመተግበሪያ መመሪያ (Tutorial)" : isOromo ? "Qajeelfama Appii" : "App Walkthrough Guide", onClick: () => window.dispatchEvent(new CustomEvent("birr:start-tutorial")), color: "bg-amber-500/15 text-amber-600 dark:text-amber-300" },
       ],
     },
     {
@@ -316,24 +315,44 @@ export default function Profile() {
 
             {/* Submitted Previews (Front & Back) */}
             <div className="grid grid-cols-2 gap-2">
-              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border">
+              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border flex flex-col">
                 <span className="text-[10px] font-bold text-muted-foreground block mb-1">
                   1. {isAmharic ? "የፊት ገጽ" : "Front Side"}
                 </span>
-                {kycData?.frontImage ? (
-                  <img src={kycData.frontImage} alt="Front ID" className="w-full h-24 object-cover rounded-xl border border-border" />
+                {kycData?.frontImage && kycData.frontImage.startsWith("data:image") ? (
+                  <img
+                    src={kycData.frontImage}
+                    alt="Front ID"
+                    className="w-full h-24 object-cover rounded-xl border border-border"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = "none";
+                    }}
+                  />
                 ) : (
-                  <div className="w-full h-24 bg-muted/60 rounded-xl flex items-center justify-center text-[10px] text-muted-foreground">Attached</div>
+                  <div className="w-full h-24 bg-muted/60 rounded-xl flex flex-col items-center justify-center text-[10px] text-muted-foreground font-semibold gap-1 p-2 text-center">
+                    <FileText className="w-5 h-5 text-primary opacity-80" />
+                    <span>{kycData?.frontFileName || (isAmharic ? "የፊት ሰነድ ተያይዟል" : "Front ID Attached")}</span>
+                  </div>
                 )}
               </div>
-              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border">
+              <div className="bg-muted/40 p-2.5 rounded-2xl border border-border flex flex-col">
                 <span className="text-[10px] font-bold text-muted-foreground block mb-1">
                   2. {isAmharic ? "የጀርባ ገጽ" : "Back Side"}
                 </span>
-                {kycData?.backImage ? (
-                  <img src={kycData.backImage} alt="Back ID" className="w-full h-24 object-cover rounded-xl border border-border" />
+                {kycData?.backImage && kycData.backImage.startsWith("data:image") ? (
+                  <img
+                    src={kycData.backImage}
+                    alt="Back ID"
+                    className="w-full h-24 object-cover rounded-xl border border-border"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = "none";
+                    }}
+                  />
                 ) : (
-                  <div className="w-full h-24 bg-muted/60 rounded-xl flex items-center justify-center text-[10px] text-muted-foreground">Attached</div>
+                  <div className="w-full h-24 bg-muted/60 rounded-xl flex flex-col items-center justify-center text-[10px] text-muted-foreground font-semibold gap-1 p-2 text-center">
+                    <FileText className="w-5 h-5 text-primary opacity-80" />
+                    <span>{kycData?.backFileName || (isAmharic ? "የጀርባ ሰነድ ተያይዟል" : "Back ID Attached")}</span>
+                  </div>
                 )}
               </div>
             </div>
