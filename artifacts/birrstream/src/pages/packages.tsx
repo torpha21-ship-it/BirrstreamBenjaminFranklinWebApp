@@ -6,12 +6,16 @@ import { Lock, Star, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { BSLogo } from "@/components/bs-logo";
 import { useLanguage } from "@/context/language-context";
-import vip1Bg from "@/assets/decor/vip1.svg";
-import vip2Bg from "@/assets/decor/vip2.svg";
-import vip3Bg from "@/assets/decor/vip3.svg";
-import vip4Bg from "@/assets/decor/vip4.svg";
-import vip5Bg from "@/assets/decor/vip5.svg";
-import eliteBg from "@/assets/decor/vip-elite.png";
+
+// Animated VIP icons from `VIP Icons`
+import vip1Anim from "@/assets/vip-icons/wired-outline-1145-wings-hover-pinch.webp";
+import vip2Anim from "@/assets/vip-icons/wired-outline-1148-bee-hover-pinch.webp";
+import vip3Anim from "@/assets/vip-icons/wired-outline-1154-spider-hover-pinch.webp";
+import vip4Anim from "@/assets/vip-icons/wired-outline-2815-ghost-hover-pinch.webp";
+import vip5Anim from "@/assets/vip-icons/wired-outline-2936-mistletoe-hover-pinch.webp";
+
+// SVGs and special tier arts (VIP4 SVG used for VIP Elite as instructed)
+import vip4Svg from "@/assets/decor/vip4.svg";
 import apexBg from "@/assets/decor/vip-apex.png";
 import titanBg from "@/assets/decor/vip-titan.png";
 import alphaBg from "@/assets/decor/vip-alpha.png";
@@ -20,25 +24,88 @@ function fmt(n: number) {
   return n.toLocaleString("en-ET", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-const TIER_COLORS: Record<string, { bg: string; text: string; badge: string }> = {
-  vip1: { bg: "bg-[#A8D5B5]", text: "text-[#2B7A4B]", badge: "bg-[#2B7A4B] text-white" },
-  vip2: { bg: "bg-[#F5E6A3]", text: "text-[#8B7200]", badge: "bg-[#D4B61B] text-white" },
-  vip3: { bg: "bg-[#C9BDF5]", text: "text-[#5B44BE]", badge: "bg-[#5B44BE] text-white" },
-  vip4: { bg: "bg-[#F2A89A]", text: "text-[#C0402E]", badge: "bg-[#C0402E] text-white" },
-  vip5: { bg: "bg-primary", text: "text-white", badge: "bg-white text-primary" },
-  elite: { bg: "bg-[#1A1A1A]", text: "text-white", badge: "bg-primary text-white" },
-  apex: { bg: "bg-[#1A1A1A]", text: "text-white", badge: "bg-primary text-white" },
-  titan: { bg: "bg-[#1A1A1A]", text: "text-white", badge: "bg-primary text-white" },
-  alpha: { bg: "bg-[#1A1A1A]", text: "text-white", badge: "bg-primary text-white" },
+const TIER_COLORS: Record<string, { bg: string; text: string; badge: string; glassBg: string; buttonBg: string; buttonText: string }> = {
+  vip1: {
+    bg: "bg-[#A8D5B5]",
+    text: "text-[#1B5E38]",
+    badge: "bg-[#1B5E38] text-white",
+    glassBg: "bg-white/30 border-white/40",
+    buttonBg: "bg-[#1B5E38] hover:bg-[#1B5E38]/90",
+    buttonText: "text-white",
+  },
+  vip2: {
+    bg: "bg-[#F5E6A3]",
+    text: "text-[#7A5E00]",
+    badge: "bg-[#7A5E00] text-white",
+    glassBg: "bg-white/30 border-white/40",
+    buttonBg: "bg-[#7A5E00] hover:bg-[#7A5E00]/90",
+    buttonText: "text-white",
+  },
+  vip3: {
+    bg: "bg-[#C9BDF5]",
+    text: "text-[#4A359C]",
+    badge: "bg-[#4A359C] text-white",
+    glassBg: "bg-white/30 border-white/40",
+    buttonBg: "bg-[#4A359C] hover:bg-[#4A359C]/90",
+    buttonText: "text-white",
+  },
+  vip4: {
+    bg: "bg-[#F2A89A]",
+    text: "text-[#A32B1C]",
+    badge: "bg-[#A32B1C] text-white",
+    glassBg: "bg-white/30 border-white/40",
+    buttonBg: "bg-[#A32B1C] hover:bg-[#A32B1C]/90",
+    buttonText: "text-white",
+  },
+  vip5: {
+    bg: "bg-[#2B7A4B]",
+    text: "text-white",
+    badge: "bg-white text-[#2B7A4B]",
+    glassBg: "bg-white/20 border-white/30",
+    buttonBg: "bg-white hover:bg-white/90",
+    buttonText: "text-[#2B7A4B]",
+  },
+  elite: {
+    bg: "bg-[#1E1E2F]",
+    text: "text-white",
+    badge: "bg-amber-400 text-black",
+    glassBg: "bg-white/10 border-white/20",
+    buttonBg: "bg-amber-400 hover:bg-amber-300",
+    buttonText: "text-black",
+  },
+  apex: {
+    bg: "bg-[#1A1A1A]",
+    text: "text-white",
+    badge: "bg-primary text-white",
+    glassBg: "bg-white/10 border-white/20",
+    buttonBg: "bg-primary hover:bg-primary/90",
+    buttonText: "text-white",
+  },
+  titan: {
+    bg: "bg-[#1A1A1A]",
+    text: "text-white",
+    badge: "bg-primary text-white",
+    glassBg: "bg-white/10 border-white/20",
+    buttonBg: "bg-primary hover:bg-primary/90",
+    buttonText: "text-white",
+  },
+  alpha: {
+    bg: "bg-[#1A1A1A]",
+    text: "text-white",
+    badge: "bg-primary text-white",
+    glassBg: "bg-white/10 border-white/20",
+    buttonBg: "bg-primary hover:bg-primary/90",
+    buttonText: "text-white",
+  },
 };
 
-const TIER_BG_IMAGES: Record<string, string> = {
-  vip1: vip1Bg,
-  vip2: vip3Bg,
-  vip3: vip2Bg,
-  vip4: vip4Bg,
-  vip5: vip5Bg,
-  elite: eliteBg,
+const TIER_ANIMATED_ICONS: Record<string, string> = {
+  vip1: vip1Anim,
+  vip2: vip2Anim,
+  vip3: vip3Anim,
+  vip4: vip4Anim,
+  vip5: vip5Anim,
+  elite: vip4Svg, // User instruction: "first use the VIP4 SVG in place of VIP Elite"
   apex: apexBg,
   titan: titanBg,
   alpha: alphaBg,
@@ -113,86 +180,102 @@ export default function Packages() {
 
       <div className="space-y-4">
         {isLoading ? Array(5).fill(0).map((_, i) => (
-          <div key={i} className="h-40 bg-card rounded-3xl animate-pulse border border-border" />
+          <div key={i} className="h-48 bg-card rounded-3xl animate-pulse border border-border" />
         )) : packages?.map(pkg => {
           const colors = TIER_COLORS[pkg.tier] ?? TIER_COLORS.vip1;
           const canAfford = (summary?.mainBalance ?? 0) >= pkg.cost;
-          const bgImage = TIER_BG_IMAGES[pkg.tier];
+          const animatedIcon = TIER_ANIMATED_ICONS[pkg.tier];
+
           return (
-            <div key={pkg.id} className={`${colors.bg} rounded-3xl p-5 relative overflow-hidden`}>
-              {bgImage && (
-                <img
-                  src={bgImage}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute right-1/4 top-0 w-1/2 h-1/2 object-contain object-center pointer-events-none select-none"
-                />
-              )}
-              {pkg.tier === "vip5" && (
-                <div className="absolute top-3 right-3 z-10">
-                  <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" />
+            <div key={pkg.id} className={`${colors.bg} rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between shadow-sm`}>
+              {/* Animated VIP Icon Displayed with crisp visibility */}
+              {animatedIcon && (
+                <div className="absolute right-4 top-3 w-20 h-20 sm:w-24 sm:h-24 pointer-events-none select-none z-0">
+                  <img
+                    src={animatedIcon}
+                    alt={pkg.name}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               )}
-              <div className="flex justify-between items-start mb-3 relative z-10">
+
+              {pkg.tier === "vip5" && (
+                <div className="absolute top-3 right-3 z-10">
+                  <Star className="w-5 h-5 text-yellow-300 fill-yellow-300 animate-spin" style={{ animationDuration: "8s" }} />
+                </div>
+              )}
+
+              {/* Card Header: Tier Badge & Price */}
+              <div className="flex justify-between items-start mb-6 relative z-10">
                 <div>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${colors.badge}`} style={displayFont}>{pkg.name}</span>
+                  <span className={`text-xs font-black px-3 py-1 rounded-full ${colors.badge}`} style={displayFont}>
+                    {pkg.name}
+                  </span>
                   {pkg.isLocked && (
-                    <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-sm bg-white/25 rounded-full px-2.5 py-1 border border-white/30">
+                    <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-sm bg-white/25 rounded-full px-2.5 py-0.5 border border-white/30 block w-max">
                       <Lock className={`w-3 h-3 ${colors.text}`} />
-                      <span className={`text-xs font-medium ${colors.text}`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                      <span className={`text-[11px] font-semibold ${colors.text}`} style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
                         {isAmharic ? "የተቆለፈ — በቪአይፒ ግቦች ይክፈቱ" : isOromo ? "Cufameera — Sadarkaa VIPtiin banaa" : "Locked — unlock via VIP Upgrades"}
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="text-right">
-                  <p className={`text-2xl font-bold ${colors.text}`}>{fmt(pkg.cost)}</p>
-                  <p className={`text-xs ${colors.text} opacity-70`} style={displayFont}>{currency}</p>
+                  <p className={`text-2xl font-black ${colors.text}`}>{fmt(pkg.cost)}</p>
+                  <p className={`text-xs ${colors.text} opacity-80 font-bold`} style={displayFont}>{currency}</p>
                 </div>
               </div>
-              <div className={`flex gap-3 mb-4 relative z-10 ${colors.text} backdrop-blur-sm bg-white/20 rounded-2xl px-3 py-2.5 border border-white/30`}>
-                <div className="flex-1">
-                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {t("packages.daily_return")}
-                  </p>
-                  <p className="font-bold text-sm">+{fmt(pkg.dailyReturn)} {currency}</p>
+
+              {/* Glass Details Card & Action Button (Moved downward with tight tidy spacing) */}
+              <div className="relative z-10 space-y-2 mt-auto">
+                <div className={`flex gap-2 ${colors.text} backdrop-blur-md ${colors.glassBg} rounded-2xl px-3 py-2 border`}>
+                  <div className="flex-1 text-center">
+                    <p className="text-[10px] opacity-75 font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                      {t("packages.daily_return")}
+                    </p>
+                    <p className="font-extrabold text-xs sm:text-sm">+{fmt(pkg.dailyReturn)} {currency}</p>
+                  </div>
+                  <div className="w-px bg-current opacity-20 self-stretch" />
+                  <div className="flex-1 text-center">
+                    <p className="text-[10px] opacity-75 font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                      {isAmharic ? "የ 7 ቀን ትርፍ" : isOromo ? "Waliigala Guyyaa 7" : "7-Day Total"}
+                    </p>
+                    <p className="font-extrabold text-xs sm:text-sm">{fmt(pkg.totalYield)} {currency}</p>
+                  </div>
+                  <div className="w-px bg-current opacity-20 self-stretch" />
+                  <div className="flex-1 text-center">
+                    <p className="text-[10px] opacity-75 font-semibold" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
+                      {t("packages.duration")}
+                    </p>
+                    <p className="font-extrabold text-xs sm:text-sm">{pkg.durationDays} {isAmharic ? "ቀናት" : isOromo ? "guyyoota" : "days"}</p>
+                  </div>
                 </div>
-                <div className="w-px bg-white/20 self-stretch" />
-                <div className="flex-1">
-                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {isAmharic ? "የ 7 ቀን ትርፍ" : isOromo ? "Waliigala Guyyaa 7" : "7-Day Total"}
-                  </p>
-                  <p className="font-bold text-sm">{fmt(pkg.totalYield)} {currency}</p>
-                </div>
-                <div className="w-px bg-white/20 self-stretch" />
-                <div className="flex-1">
-                  <p className="text-xs opacity-70" style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}>
-                    {t("packages.duration")}
-                  </p>
-                  <p className="font-bold text-sm">{pkg.durationDays} {isAmharic ? "ቀናት" : isOromo ? "guyyoota" : "days"}</p>
-                </div>
+
+                {!pkg.isLocked ? (
+                  <button
+                    onClick={() => handlePurchase(pkg.id, pkg.name, pkg.cost)}
+                    disabled={purchaseMutation.isPending || !canAfford}
+                    className={`w-full py-2.5 rounded-2xl font-extrabold text-xs transition-all active:scale-[0.98] shadow-sm cursor-pointer ${
+                      canAfford
+                        ? `${colors.buttonBg} ${colors.buttonText}`
+                        : "bg-white/20 opacity-50 cursor-not-allowed " + colors.text
+                    }`}
+                    style={displayFont}
+                  >
+                    {!canAfford
+                      ? (isAmharic ? `ተጨማሪ ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} ብር ያስፈልጋል` : isOromo ? `Dabalataan ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} Qarshii barbaachisa` : `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`)
+                      : purchaseMutation.isPending ? (isAmharic ? "በማንቃት ላይ..." : isOromo ? "Hojjechiisaa jira..." : "Activating...") : (isAmharic ? `${pkg.name} ፓኬጅን ይግዙ` : isOromo ? `Paakeejii ${pkg.name} Biti` : `Activate ${pkg.name}`)}
+                  </button>
+                ) : (
+                  <Link
+                    href="/vip-upgrades"
+                    className={`block w-full py-2.5 rounded-2xl font-bold text-xs text-center bg-white/20 hover:bg-white/30 border border-white/30 transition-colors ${colors.text}`}
+                    style={displayFont}
+                  >
+                    {isAmharic ? "የመክፈቻ መስፈርቶችን ይመልከቱ" : isOromo ? "Ulaagaalee Banuuf Barbaachisan Ilaalaa" : "View Unlock Requirements"}
+                  </Link>
+                )}
               </div>
-              {!pkg.isLocked && (
-                <button
-                  onClick={() => handlePurchase(pkg.id, pkg.name, pkg.cost)}
-                  disabled={purchaseMutation.isPending || !canAfford}
-                  className={`w-full py-3 rounded-2xl font-bold text-sm transition-all active:scale-[0.98] relative z-10 ${
-                    canAfford
-                      ? "bg-white/20 hover:bg-white/30 " + colors.text
-                      : "bg-white/10 opacity-50 cursor-not-allowed " + colors.text
-                  }`}
-                  style={displayFont}
-                >
-                  {!canAfford
-                    ? (isAmharic ? `ተጨማሪ ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} ብር ያስፈልጋል` : isOromo ? `Dabalataan ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} Qarshii barbaachisa` : `Need ${fmt(pkg.cost - (summary?.mainBalance ?? 0))} more ETB`)
-                    : purchaseMutation.isPending ? (isAmharic ? "በማንቃት ላይ..." : isOromo ? "Hojjechiisaa jira..." : "Activating...") : (isAmharic ? `${pkg.name} ፓኬጅን ይግዙ` : isOromo ? `Paakeejii ${pkg.name} Biti` : `Activate ${pkg.name}`)}
-                </button>
-              )}
-              {pkg.isLocked && (
-                <Link href="/vip-upgrades" className={`block w-full py-3 rounded-2xl font-bold text-sm text-center bg-white/10 relative z-10 ${colors.text}`} style={displayFont}>
-                  {isAmharic ? "የመክፈቻ መስፈርቶችን ይመልከቱ" : isOromo ? "Ulaagaalee Banuuf Barbaachisan Ilaalaa" : "View Unlock Requirements"}
-                </Link>
-              )}
             </div>
           );
         })}
@@ -200,7 +283,7 @@ export default function Packages() {
 
       {/* Active package info */}
       {summary?.activePackageName && (
-        <div className="mt-6 bg-card rounded-3xl p-5 border border-border">
+        <div className="mt-6 bg-card rounded-3xl p-5 border border-border shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="w-5 h-5 text-accent-foreground" />
             <span className="font-bold text-foreground" style={displayFont}>

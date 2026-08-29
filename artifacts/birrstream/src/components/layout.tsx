@@ -12,6 +12,7 @@ import { useDepositWatcher } from "@/hooks/use-deposit-watcher";
 import { NightDayToggle } from "@/components/night-day-toggle";
 import { useLanguage } from "@/context/language-context";
 import { WindowsLoader } from "@/components/windows-loader";
+import { TutorialGuide } from "@/components/tutorial-guide";
 
 const ADMIN_NAV_ITEM = { href: "/admin", icon: ShieldAlert, labelKey: "nav.admin" };
 
@@ -196,6 +197,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
+
+      {/* First-Time User Tutorial Guide */}
+      <TutorialGuide />
     </div>
   );
 }

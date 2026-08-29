@@ -10,34 +10,36 @@ import threeKeyIcon from "@/assets/decor/wired-outline-1286-three-key-hover-pres
 
 /* ── Ethiopian Name Pool ── */
 const FIRST_NAMES = [
-  "Abebe","Abel","Abraham","Abrham","Abiy","Adane","Adisu","Alemu","Almaz","Amare","Amina","Aster","Ayele","Azeb",
-  "Bekele","Bereket","Berhanu","Bethlehem","Biniam","Biruk","Bisrat","Bruktawit","Chaltu","Dagmawi","Daniel","Dawit",
-  "Dereje","Desta","Eden","Eleni","Ephrem","Ermias","Eyob","Eyuel","Fikre","Fitsum","Frezer","Gelila","Gemechu",
-  "Getachew","Girma","Gizaw","Habte","Haimanot","Hana","Henok","Hiwot","Ifa","Kalkidan","Kassahun","Kebede",
-  "Kidist","Kidus","Lensa","Lidya","Liya","Mahlet","Marta","Mekdes","Mekonnen","Melat","Meron","Meseret",
-  "Meskerem","Mihret","Mikyas","Mulu","Nahom","Natnael","Netsanet","Rediet","Ruth","Sara","Selamawit","Selam",
-  "Samuel","Solomon","Tadesse","Tariku","Teferi","Teshome","Tigist","Tilahun","Tinsae","Tsion","Wubet","Yared",
-  "Yohannes","Yonas","Zerihun","Zinash","Zelalem","Fikirte","Obsa","Tolosa","Hundesa","Dabala","Boru","Gudeta",
-  "Hirut","Worku","Alemayehu","Tesfaye","Mulugeta","Fasil","Negash","Habtamu","Asnake","Belay","Tsega","Tekalign",
+  "Ephrem","Bethlehem","Yonas","Hiwot","Abel","Tewodros","Almaz","Kidus","Marta","Binyam","Desta","Rahel","Samuel",
+  "Tsion","Natnael","Meseret","Henok","Lidya","Dawit","Helen","Abebe","Abraham","Abrham","Abiy","Adane","Adisu",
+  "Alemu","Amare","Amina","Aster","Ayele","Azeb","Bekele","Bereket","Berhanu","Biniam","Biruk","Bisrat","Bruktawit",
+  "Chaltu","Dagmawi","Daniel","Dereje","Eden","Eleni","Ermias","Eyob","Eyuel","Fikre","Fitsum","Frezer","Gelila",
+  "Gemechu","Getachew","Girma","Gizaw","Habte","Haimanot","Hana","Ifa","Kalkidan","Kassahun","Kebede","Kidist",
+  "Lensa","Liya","Mahlet","Mekdes","Mekonnen","Melat","Meron","Meskerem","Mihret","Mikyas","Mulu","Nahom",
+  "Netsanet","Rediet","Ruth","Sara","Selamawit","Selam","Solomon","Tadesse","Tariku","Teferi","Teshome","Tigist",
+  "Tilahun","Tinsae","Wubet","Yared","Yohannes","Zerihun","Zinash","Zelalem","Fikirte","Obsa","Tolosa","Hundesa",
+  "Dabala","Boru","Gudeta","Hirut","Worku","Alemayehu","Tesfaye","Mulugeta","Fasil","Negash","Habtamu","Asnake","Belay","Tsega","Tekalign",
 ];
 
 const LAST_NAMES = [
-  "Tadesse","Bekele","Haile","Assefa","Kebede","Girma","Wolde","Mengistu","Getachew","Tesfaye","Abebe","Gebremedhin",
-  "Berhane","Yohannes","Solomon","Alemayehu","Teshome","Negash","Demissie","Kassahun","Worku","Ayele","Tilahun",
-  "Mulugeta","Fikre","Dawit","Kassa","Mekonnen","Habte","Legesse","Gebru","Desta","Seyoum","Belay","Ararsa",
-  "Hundessa","Tolosa","Gudeta","Boru","Dabala","Feyisa","Dinka","Yadeta","Regasa","Lemi","Galata","Tufa","Kumsa",
+  "Tadesse","Assefa","Girma","Mengistu","Tesfaye","Kassahun","Ayana","Yohannes","Bekele","Girmay","Haile","Getachew",
+  "Wolde","Alemayehu","Berhanu","Defar","Mulatu","Solomon","Kebede","Fikre","Abebe","Gebremedhin","Berhane","Teshome",
+  "Negash","Demissie","Worku","Ayele","Tilahun","Mulugeta","Dawit","Kassa","Mekonnen","Habte","Legesse","Gebru",
+  "Desta","Seyoum","Belay","Ararsa","Hundessa","Tolosa","Gudeta","Boru","Dabala","Feyisa","Dinka","Yadeta","Regasa",
+  "Lemi","Galata","Tufa","Kumsa",
 ];
 
 const VIP_TIERS = [
-  { name: "VIP 5 Apex",   color: "bg-amber-500/15 text-amber-600 dark:text-amber-300 border-amber-500/30",   short: "Apex" },
-  { name: "VIP 4 Titan",  color: "bg-purple-500/15 text-purple-600 dark:text-purple-300 border-purple-500/30", short: "Titan" },
-  { name: "VIP 3 Grand",  color: "bg-blue-500/15 text-blue-600 dark:text-blue-300 border-blue-500/30",       short: "Grand" },
-  { name: "VIP 2 Pro",    color: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/30", short: "Pro" },
-  { name: "VIP 1 Starter",color: "bg-slate-500/15 text-slate-600 dark:text-slate-300 border-slate-500/30",   short: "Starter" },
+  { name: "VIP 5 Apex",    color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",   short: "Apex" },
+  { name: "VIP 4 Titan",   color: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30", short: "Titan" },
+  { name: "VIP 3 Grand",   color: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30",       short: "Grand" },
+  { name: "VIP 2 Pro",     color: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30", short: "Pro" },
+  { name: "VIP 1 Starter", color: "bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30",   short: "Starter" },
 ];
 
-interface LeaderboardUser {
+export interface LeaderboardUser {
   id: number;
+  rank: number;
   name: string;
   earnings: number;
   dailyYield: number;
@@ -55,58 +57,63 @@ function seededRandom(seed: number) {
   };
 }
 
-/* Generate 689 users once */
+/* Generate 689 users once with stable authentic profiles */
 function generateUsers(): LeaderboardUser[] {
-  const rng = seededRandom(42);
+  const rng = seededRandom(108);
   const users: LeaderboardUser[] = [];
   const avatarPool = [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=80&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1548142813-c348350df52b?w=80&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=70",
+    "https://images.unsplash.com/photo-1548142813-c348350df52b?w=100&auto=format&fit=crop&q=70",
   ];
 
   for (let i = 0; i < 689; i++) {
-    const first = FIRST_NAMES[Math.floor(rng() * FIRST_NAMES.length)];
-    const last = LAST_NAMES[Math.floor(rng() * LAST_NAMES.length)];
-
-    // Top users earn more — exponential decay
+    const first = FIRST_NAMES[i % FIRST_NAMES.length];
+    const last = LAST_NAMES[i % LAST_NAMES.length];
     const rank = i + 1;
-    const baseEarnings = Math.max(500, Math.round(280000 * Math.exp(-rank * 0.007) + rng() * 3000));
-    const dailyYield = Math.max(15, Math.round(baseEarnings * (0.01 + rng() * 0.005)));
+
+    // Realistic earnings scale
+    let baseEarnings: number;
+    if (rank === 1) baseEarnings = 248950;
+    else if (rank === 2) baseEarnings = 194300;
+    else if (rank === 3) baseEarnings = 156800;
+    else {
+      baseEarnings = Math.max(850, Math.round(145000 * Math.exp(-rank * 0.006) + (rng() * 2500)));
+    }
+
+    const dailyYield = Math.max(25, Math.round(baseEarnings * (0.012 + (rng() * 0.004))));
 
     let vipIdx: number;
-    if (rank <= 5) vipIdx = 0;
-    else if (rank <= 25) vipIdx = 1;
-    else if (rank <= 80) vipIdx = 2;
-    else if (rank <= 250) vipIdx = 3;
+    if (rank <= 3) vipIdx = 0;
+    else if (rank <= 20) vipIdx = 1;
+    else if (rank <= 75) vipIdx = 2;
+    else if (rank <= 220) vipIdx = 3;
     else vipIdx = 4;
 
     users.push({
-      id: i,
+      id: i + 1,
+      rank,
       name: `${first} ${last}`,
       earnings: baseEarnings,
       dailyYield,
       vipIdx,
-      streakDays: Math.max(1, Math.round(90 * Math.exp(-rank * 0.005) + rng() * 10)),
-      avatar: avatarPool[Math.floor(rng() * avatarPool.length)],
+      streakDays: Math.max(2, Math.round(89 * Math.exp(-rank * 0.005) + (rng() * 6))),
+      avatar: avatarPool[i % avatarPool.length],
     });
   }
 
-  // Sort by earnings descending initially
-  users.sort((a, b) => b.earnings - a.earnings);
   return users;
 }
 
@@ -127,23 +134,26 @@ export default function Leaderboard() {
     letterSpacing: isAmharic ? "0.045em" : "-0.01em",
   };
 
-  /* ── Slow animated rank shuffling every 6 seconds ── */
+  /* ── Slow animated rank shuffling every 7 seconds for live competition feel (outside top 3) ── */
   useEffect(() => {
     const interval = setInterval(() => {
       setUsers(prev => {
         const next = [...prev];
-        // Pick 3-5 random swap pairs outside top 3 (top 3 stay stable)
-        const swapCount = 3 + Math.floor(Math.random() * 3);
+        const swapCount = 2 + Math.floor(Math.random() * 3);
         for (let s = 0; s < swapCount; s++) {
-          const i = 3 + Math.floor(Math.random() * (next.length - 4));
-          const j = i + 1 + Math.floor(Math.random() * Math.min(4, next.length - i - 1));
+          const i = 3 + Math.floor(Math.random() * (next.length - 6));
+          const j = i + 1 + Math.floor(Math.random() * 3);
           if (j < next.length) {
+            // Swap ranks cleanly
+            const tempRank = next[i].rank;
+            next[i].rank = next[j].rank;
+            next[j].rank = tempRank;
             [next[i], next[j]] = [next[j], next[i]];
           }
         }
         return next;
       });
-    }, 6000);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, []);
@@ -152,12 +162,12 @@ export default function Leaderboard() {
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 200) {
-      setVisibleCount(prev => Math.min(prev + 30, 689));
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 150) {
+      setVisibleCount(prev => Math.min(prev + 35, 689));
     }
   }, []);
 
-  /* Filter by search */
+  /* Filter by search query while strictly maintaining true user rank */
   const filtered = searchQuery.trim()
     ? users.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : users;
@@ -165,127 +175,142 @@ export default function Leaderboard() {
   const displayed = filtered.slice(0, visibleCount);
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-80px)] max-w-md mx-auto">
-      {/* ── PAGE HEADER ── */}
-      <div className="px-4 pt-3 pb-2 bg-card border-b border-border">
-        <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col h-full max-w-md mx-auto relative bg-background">
+      {/* ── CLEAN HEADER ── */}
+      <div className="px-4 pt-3 pb-3 bg-card border-b border-border/80 sticky top-0 z-20">
+        <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0 shadow-sm">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-extrabold text-base text-foreground leading-tight" style={displayFont}>
-                {isAmharic ? "ደረጃ ሰንጠረዥ" : isOromo ? "Sadarkaa Galiiwwan" : "Top Earners Leaderboard"}
+              <h1 className="font-black text-base text-foreground leading-tight" style={displayFont}>
+                {isAmharic ? "የደረጃ ሰንጠረዥ" : isOromo ? "Sadarkaa Galiiwwan" : "Top Earners Leaderboard"}
               </h1>
-              <p className="text-[11px] text-muted-foreground">
-                {isAmharic ? `${users.length} ተሳታፊዎች • ቀጥታ ውድድር` : `${users.length} members • Live competition`}
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {isAmharic ? "የ 689 ተጠቃሚዎች የገቢ ደረጃዎች" : isOromo ? "Sadarkaa miseensota 689" : "Official earnings rankings (689 active members)"}
               </p>
             </div>
           </div>
-          <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 rounded-full text-[9px] font-black uppercase tracking-wider animate-pulse border border-emerald-500/30">
-            ● Live
-          </span>
         </div>
 
-        {/* Search */}
+        {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder={isAmharic ? "ተሳታፊ ፈልግ..." : "Search member..."}
-            className="w-full pl-9 pr-3 py-2 bg-muted/40 border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+            placeholder={isAmharic ? "በስም ፈልግ..." : isOromo ? "Maqaadhaan barbaadi..." : "Search member by name..."}
+            className="w-full pl-9 pr-4 py-2 bg-muted/40 hover:bg-muted/60 focus:bg-card border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-colors"
           />
         </div>
       </div>
 
-      {/* ── SCROLLABLE LEADERBOARD LIST ── */}
+      {/* ── SCROLLABLE LIST ── */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-3 py-3 space-y-1.5 no-scrollbar"
+        className="flex-1 overflow-y-auto px-3 py-3 space-y-2 no-scrollbar"
+        style={{ minHeight: 0 }}
       >
-        {displayed.map((earner, idx) => {
-          const rank = idx + 1;
-          const isTop3 = rank <= 3;
-          const keyIcon = rank === 1 ? oneKeyIcon : rank === 2 ? twoKeyIcon : rank === 3 ? threeKeyIcon : null;
+        {displayed.map((earner) => {
+          const isRank1 = earner.rank === 1;
+          const isRank2 = earner.rank === 2;
+          const isRank3 = earner.rank === 3;
+          const isTop3 = isRank1 || isRank2 || isRank3;
+          const keyIcon = isRank1 ? oneKeyIcon : isRank2 ? twoKeyIcon : isRank3 ? threeKeyIcon : null;
           const vip = VIP_TIERS[earner.vipIdx];
 
-          // Top 3 get special styling
-          const top3Border = rank === 1
-            ? "border-amber-400/60 bg-gradient-to-r from-amber-500/10 to-card"
-            : rank === 2
-            ? "border-slate-400/50 bg-gradient-to-r from-slate-400/10 to-card"
-            : rank === 3
-            ? "border-amber-700/40 bg-gradient-to-r from-amber-800/10 to-card"
-            : "border-border bg-card";
+          /* ── Task 8: Top 3 Earners use the 4 dashboard stat card colors ── */
+          // Rank 1: Total Yield color (#F5E6A3)
+          // Rank 2: Total Deposited color (#C9BDF5)
+          // Rank 3: Total Withdrawn color (#F2A89A)
+          let cardStyle = "bg-card border border-border shadow-sm hover:border-border/80";
+          let keyAnimClass = "";
 
-          const animClass = rank === 1
-            ? "animate-earner-rank1"
-            : rank === 2
-            ? "animate-earner-rank2"
-            : rank === 3
-            ? "animate-earner-rank3"
-            : "";
+          if (isRank1) {
+            cardStyle = "bg-[#F5E6A3]/35 dark:bg-[#F5E6A3]/15 border-2 border-[#F5E6A3] dark:border-[#F5E6A3]/50 shadow-md";
+            keyAnimClass = "animate-earner-rank1";
+          } else if (isRank2) {
+            cardStyle = "bg-[#C9BDF5]/35 dark:bg-[#C9BDF5]/15 border-2 border-[#C9BDF5] dark:border-[#C9BDF5]/50 shadow-md";
+            keyAnimClass = "animate-earner-rank2";
+          } else if (isRank3) {
+            cardStyle = "bg-[#F2A89A]/35 dark:bg-[#F2A89A]/15 border-2 border-[#F2A89A] dark:border-[#F2A89A]/50 shadow-md";
+            keyAnimClass = "animate-earner-rank3";
+          }
 
           return (
             <div
               key={earner.id}
-              className={`flex items-center gap-2.5 p-2.5 rounded-2xl border transition-all duration-700 ease-in-out ${top3Border} ${animClass}`}
-              style={{ transitionProperty: "transform, opacity" }}
+              className={`flex items-center gap-3 p-3 rounded-2xl transition-colors duration-300 ${cardStyle}`}
             >
-              {/* Rank Number or Key Icon */}
-              <div className="w-8 flex items-center justify-center flex-shrink-0">
+              {/* Rank Badge or Animated Key Icon */}
+              <div className="w-9 flex items-center justify-center flex-shrink-0">
                 {keyIcon ? (
-                  <img src={keyIcon} alt={`Rank ${rank}`} className="w-7 h-7 object-contain" />
+                  <img
+                    src={keyIcon}
+                    alt={`Rank ${earner.rank}`}
+                    className={`w-7 h-7 object-contain ${keyAnimClass}`}
+                  />
                 ) : (
-                  <span className={`text-xs font-black ${rank <= 10 ? "text-foreground" : "text-muted-foreground"}`}>
-                    #{rank}
+                  <span className={`text-xs font-black ${earner.rank <= 10 ? "text-foreground font-extrabold" : "text-muted-foreground"}`}>
+                    #{earner.rank}
                   </span>
                 )}
               </div>
 
-              {/* Avatar */}
-              <img
-                src={earner.avatar}
-                alt={earner.name}
-                className={`w-9 h-9 rounded-full object-cover flex-shrink-0 ${
-                  isTop3 ? "border-2 border-amber-400 shadow-md" : "border border-border"
-                }`}
-                loading="lazy"
-              />
+              {/* Avatar Frame */}
+              <div className="relative flex-shrink-0">
+                <img
+                  src={earner.avatar}
+                  alt={earner.name}
+                  className={`w-10 h-10 rounded-full object-cover ${
+                    isRank1
+                      ? "border-2 border-[#F5E6A3] shadow-sm"
+                      : isRank2
+                      ? "border-2 border-[#C9BDF5] shadow-sm"
+                      : isRank3
+                      ? "border-2 border-[#F2A89A] shadow-sm"
+                      : "border border-border/80"
+                  }`}
+                  loading="lazy"
+                />
+              </div>
 
-              {/* Name, VIP, Streak */}
+              {/* Earner Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span
-                    className={`text-xs font-bold truncate ${isTop3 ? "text-foreground" : "text-foreground"}`}
+                    className="text-xs font-black text-foreground truncate block leading-tight"
                     style={displayFont}
                   >
                     {earner.name}
                   </span>
-                  <span className={`text-[8px] px-1.5 py-0 rounded-full font-extrabold border ${vip.color} flex-shrink-0`}>
+                  <span className={`text-[8.5px] px-1.5 py-0.2 rounded-full font-black border ${vip.color}`}>
                     {vip.short}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
-                  <span className="flex items-center gap-0.5 text-amber-500">
-                    <Flame className="w-2.5 h-2.5" />
-                    {earner.streakDays}d
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-1">
+                  <span className="flex items-center gap-0.5 text-amber-500 font-bold">
+                    <Flame className="w-3 h-3" />
+                    <span>{earner.streakDays}d</span>
                   </span>
-                  <span className="text-emerald-500 font-semibold">
+                  <span>•</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                     +{fmt(earner.dailyYield)}/{isAmharic ? "ቀን" : "day"}
                   </span>
                 </div>
               </div>
 
-              {/* Total Earnings */}
+              {/* ETB Total Earnings */}
               <div className="text-right flex-shrink-0 pl-1">
-                <span className={`text-xs font-black block ${isTop3 ? "text-amber-600 dark:text-amber-300" : "text-foreground"}`}>
+                <span className={`text-xs font-black block ${
+                  isRank1 ? "text-amber-800 dark:text-amber-300" : isRank2 ? "text-purple-800 dark:text-purple-300" : isRank3 ? "text-rose-800 dark:text-rose-300" : "text-foreground"
+                }`}>
                   {fmt(earner.earnings)}
                 </span>
-                <span className="text-[10px] text-muted-foreground font-semibold">
+                <span className="text-[10px] text-muted-foreground font-bold">
                   {currency}
                 </span>
               </div>
@@ -293,18 +318,25 @@ export default function Leaderboard() {
           );
         })}
 
-        {/* Load more indicator */}
+        {/* Empty search result */}
+        {filtered.length === 0 && (
+          <div className="py-12 text-center text-muted-foreground">
+            <p className="text-xs font-semibold">{isAmharic ? "ተጠቃሚው አልተገኘም" : "No member found"}</p>
+          </div>
+        )}
+
+        {/* Infinite Scroll Trigger Indicator */}
         {visibleCount < filtered.length && (
-          <div className="py-4 text-center">
-            <span className="text-[11px] text-muted-foreground font-semibold animate-pulse">
-              {isAmharic ? "ተጨማሪ በመጫን ላይ..." : "Loading more..."}
+          <div className="py-3 text-center">
+            <span className="text-[11px] text-muted-foreground font-semibold">
+              {isAmharic ? "ተጨማሪ በመጫን ላይ..." : "Loading more members..."}
             </span>
           </div>
         )}
       </div>
 
-      {/* ── STICKY BOTTOM: YOUR RANK ── */}
-      <div className="px-4 py-3 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/20 border-t border-primary/30 flex items-center justify-between">
+      {/* ── STICKY BOTTOM: YOUR ACCOUNT RANK STANDING ── */}
+      <div className="p-3 bg-card border-t border-border shadow-lg flex items-center justify-between sticky bottom-0 z-20">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground font-black text-xs flex items-center justify-center flex-shrink-0 shadow-md">
             {user?.fullName?.charAt(0).toUpperCase() || "U"}
@@ -314,8 +346,8 @@ export default function Leaderboard() {
               <span className="text-xs font-bold text-foreground" style={displayFont}>
                 {user?.fullName || "Your Account"}
               </span>
-              <span className="px-1.5 py-0 bg-primary/20 text-primary rounded-full text-[9px] font-bold">
-                #{user?.id ? (Number(user.id) % 200) + 45 : 128}
+              <span className="px-1.5 py-0.2 bg-primary/15 text-primary rounded-full text-[9px] font-black border border-primary/25">
+                #{user?.id ? (Number(user.id) % 150) + 38 : 72}
               </span>
             </div>
             <span className="text-[10px] text-muted-foreground">
@@ -328,7 +360,7 @@ export default function Leaderboard() {
             {user?.mainBalance ? fmt(user.mainBalance) : "18,450"} {currency}
           </span>
           <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-0.5 justify-end">
-            <TrendingUp className="w-3 h-3" /> +3
+            <TrendingUp className="w-3 h-3" /> +3 this week
           </span>
         </div>
       </div>

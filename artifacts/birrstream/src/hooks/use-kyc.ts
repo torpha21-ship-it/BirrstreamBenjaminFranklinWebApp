@@ -26,6 +26,47 @@ function getStorageKey(userIdentifier?: string | number | null): string {
   return "birrstream_kyc_default";
 }
 
+/**
+ * Compresses an image data URL to ensure it fits comfortably within browser localStorage quota
+ */
+export function compressImageDataUrl(dataUrl: string, maxDim = 800, quality = 0.75): Promise<string> {
+  return new Promise((resolve) => {
+    if (!dataUrl || !dataUrl.startsWith("data:image")) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+          return;
+        }
+      } catch {
+        // fallback to original
+      }
+      resolve(dataUrl);
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 export function useKyc() {
   const { user } = useAuth();
   const userIdKey = user?.id ? String(user.id) : user?.username || "current";
@@ -70,7 +111,7 @@ export function useKyc() {
   }, [loadKyc]);
 
   const submitKyc = useCallback(
-    ({
+    async ({
       idType,
       frontImage,
       backImage,
@@ -83,11 +124,17 @@ export function useKyc() {
       frontFileName?: string;
       backFileName?: string;
     }) => {
+      // Compress both images before persisting to localStorage
+      const [compressedFront, compressedBack] = await Promise.all([
+        compressImageDataUrl(frontImage, 800, 0.72),
+        compressImageDataUrl(backImage, 800, 0.72),
+      ]);
+
       const newRecord: KycData = {
         status: "pending",
         idType,
-        frontImage,
-        backImage,
+        frontImage: compressedFront,
+        backImage: compressedBack,
         frontFileName,
         backFileName,
         submittedAt: new Date().toISOString(),
@@ -96,11 +143,27 @@ export function useKyc() {
       };
 
       const key = getStorageKey(userIdKey);
-      localStorage.setItem(key, JSON.stringify(newRecord));
-      localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(newRecord));
+      try {
+        localStorage.setItem(key, JSON.stringify(newRecord));
+        localStorage.setItem("birrstream_kyc_latest_pending", JSON.stringify(newRecord));
+      } catch (storageErr) {
+        console.warn("Storage quota exceeded, storing lightweight record", storageErr);
+        // Fallback storing lightweight record without full base64 if quota tight
+        const lightRecord: KycData = {
+          ...newRecord,
+          frontImage: compressedFront.slice(0, 1000) + "...",
+          backImage: compressedBack.slice(0, 1000) + "...",
+        };
+        try {
+          localStorage.setItem(key, JSON.stringify(lightRecord));
+        } catch {
+          // ignore
+        }
+      }
 
       setKycData(newRecord);
       window.dispatchEvent(new CustomEvent(KYC_EVENT, { detail: newRecord }));
+      return newRecord;
     },
     [userIdKey, user?.id, user?.username]
   );

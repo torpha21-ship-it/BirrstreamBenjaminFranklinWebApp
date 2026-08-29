@@ -69,12 +69,21 @@ export default function Profile() {
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: isAmharic ? "የፎቶ መጠን ከ 5MB በታች መሆን አለበት" : isOromo ? "Guddinni suuraa 5MB gadi ta'uu qaba" : "Photo size exceeds 5MB limit",
+        description: isAmharic ? "እባክዎ ከ 5MB ያነሰ ፎቶ ይምረጡ።" : "Please select an image file under 5MB.",
+        variant: "destructive",
+      });
+      e.target.value = "";
+      return;
+    }
     try {
       await upload(file);
       qc.invalidateQueries({ queryKey: getGetUserProfileQueryKey() });
       toast({ title: isAmharic ? "የመገለጫ ፎቶ ተዘምኗል!" : isOromo ? "Suuraan piroofaayilii haaromeera!" : "Profile photo updated!" });
-    } catch {
-      toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : isOromo ? "Suuraa fe'uun hin danda'amne" : "Upload failed", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: isAmharic ? "ፎቶ መጫን አልተሳካም" : isOromo ? "Suuraa fe'uun hin danda'amne" : "Upload failed", description: err?.message || "Failed to update profile photo", variant: "destructive" });
     }
     e.target.value = "";
   };
@@ -97,7 +106,7 @@ export default function Profile() {
     reader.readAsDataURL(file);
   };
 
-  const handleKycSubmit = () => {
+  const handleKycSubmit = async () => {
     if (!canSubmit) {
       toast({
         title: isAmharic ? "ማረጋገጫ በመጠባበቅ ላይ ነው" : isOromo ? "Mirkaneessi Eeggamaa Jira" : "Verification In Review",
@@ -121,20 +130,27 @@ export default function Profile() {
     }
 
     setIsSubmittingKyc(true);
-    setTimeout(() => {
-      submitKyc({
+    try {
+      await submitKyc({
         idType: kycIdType,
         frontImage: kycFrontImage,
         backImage: kycBackImage,
         frontFileName: kycFrontFileName,
         backFileName: kycBackFileName,
       });
-      setIsSubmittingKyc(false);
       toast({
-        title: isAmharic ? "የ KYC ማረጋገጫ ተልኳል!" : isOromo ? "Mirkaneessi KYC Ergamaera!" : "KYC Submitted Successfully!",
+        title: isAmharic ? "የ KYC መረጃ ተልኳል!" : isOromo ? "Odeeffannoon KYC Ergamaera!" : "KYC Info Submitted Successfully!",
         description: isAmharic ? "ሰነድዎ በአስተዳዳሪው እየተገመገመ ነው።" : isOromo ? "Sanadni keessan gamaaggamaa jira." : "Both front and back ID photos are under review by our security team.",
       });
-    }, 800);
+    } catch (err: any) {
+      toast({
+        title: isAmharic ? "ማስገባት አልተሳካም" : "Submission Failed",
+        description: err?.message || "Please try uploading again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingKyc(false);
+    }
   };
 
   const initials = user?.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() ?? "U";
@@ -145,6 +161,7 @@ export default function Profile() {
       items: [
         { imgSrc: withdrawalSettingsIcon, label: t("profile.withdrawal_settings"), href: "/withdrawal-settings", color: "bg-[#A8D5B5] text-[#2B7A4B]" },
         { imgSrc: transactionHistoryIcon, label: t("profile.transaction_history"), href: "/transactions", color: "bg-[#C9BDF5] text-[#5B44BE]" },
+        { icon: Sparkles, label: isAmharic ? "የመተግበሪያ መመሪያ (Tutorial)" : isOromo ? "Qajeelfama Appii" : "App Walkthrough Guide", onClick: () => window.dispatchEvent(new CustomEvent("birr:start-tutorial")), color: "bg-amber-500/15 text-amber-600 dark:text-amber-300" },
       ],
     },
     {
@@ -475,7 +492,7 @@ export default function Profile() {
               ) : (
                 <>
                   <UploadCloud className="w-4 h-4" />
-                  <span>{isAmharic ? "ሁለቱንም ገጾች አስገባ" : isOromo ? "Fuula Lamaan Galchi" : "Submit Both ID Sides"}</span>
+                  <span>{isAmharic ? "የ KYC መረጃ አስገባ" : isOromo ? "Odeeffannoo KYC Galchi" : "Submit KYC Info"}</span>
                 </>
               )}
             </button>
@@ -558,6 +575,34 @@ export default function Profile() {
           <div className="bg-card rounded-3xl border border-border overflow-hidden -mx-4">
             {section.items.map((item: any, i: number) => {
               const Icon = item.icon;
+              const content = (
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.color}`}>
+                    {item.imgSrc
+                      ? <img src={item.imgSrc} alt="" className="w-5 h-5 object-contain" />
+                      : <Icon className="w-4 h-4" />
+                    }
+                  </div>
+                  <span className="font-semibold text-[22px] text-foreground" style={displayFont}>{item.label}</span>
+                </div>
+              );
+
+              if (item.onClick) {
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={item.onClick}
+                    className={`w-full flex items-center justify-between px-4 py-4 hover:bg-muted/30 transition-colors text-left cursor-pointer ${
+                      i < section.items.length - 1 ? "border-b border-border" : ""
+                    }`}
+                  >
+                    {content}
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  </button>
+                );
+              }
+
               return (
                 <Link
                   key={item.label}
@@ -566,15 +611,7 @@ export default function Profile() {
                     i < section.items.length - 1 ? "border-b border-border" : ""
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.color}`}>
-                      {item.imgSrc
-                        ? <img src={item.imgSrc} alt="" className="w-5 h-5 object-contain" />
-                        : <Icon className="w-4 h-4" />
-                      }
-                    </div>
-                    <span className="font-semibold text-[22px] text-foreground" style={displayFont}>{item.label}</span>
-                  </div>
+                  {content}
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 </Link>
               );

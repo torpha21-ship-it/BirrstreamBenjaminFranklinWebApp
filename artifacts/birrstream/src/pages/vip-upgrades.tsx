@@ -2,12 +2,12 @@ import { useGetVipUpgradeGoals, getGetVipUpgradeGoalsQueryKey } from "@workspace
 import { ArrowLeft, Lock, CheckCircle2, Users, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { useLanguage } from "@/context/language-context";
-import vip1Bg from "@/assets/decor/vip1.svg";
-import vip2Bg from "@/assets/decor/vip3.svg";
-import vip3Bg from "@/assets/decor/vip2.svg";
-import vip4Bg from "@/assets/decor/vip4.svg";
-import vip5Bg from "@/assets/decor/vip5.svg";
-import eliteBg from "@/assets/decor/vip-elite.png";
+import vip1Anim from "@/assets/vip-icons/wired-outline-1145-wings-hover-pinch.webp";
+import vip2Anim from "@/assets/vip-icons/wired-outline-1148-bee-hover-pinch.webp";
+import vip3Anim from "@/assets/vip-icons/wired-outline-1154-spider-hover-pinch.webp";
+import vip4Anim from "@/assets/vip-icons/wired-outline-2815-ghost-hover-pinch.webp";
+import vip5Anim from "@/assets/vip-icons/wired-outline-2936-mistletoe-hover-pinch.webp";
+import vip4Svg from "@/assets/decor/vip4.svg";
 import apexBg from "@/assets/decor/vip-apex.png";
 import titanBg from "@/assets/decor/vip-titan.png";
 import alphaBg from "@/assets/decor/vip-alpha.png";
@@ -17,12 +17,12 @@ function fmt(n: number) {
 }
 
 const VIP_CARD_BACKGROUNDS: Record<string, string> = {
-  vip1: vip1Bg,
-  vip2: vip3Bg,
-  vip3: vip2Bg,
-  vip4: vip4Bg,
-  vip5: vip5Bg,
-  elite: eliteBg,
+  vip1: vip1Anim,
+  vip2: vip2Anim,
+  vip3: vip3Anim,
+  vip4: vip4Anim,
+  vip5: vip5Anim,
+  elite: vip4Svg, // User instruction: "first use the VIP4 SVG in place of VIP Elite"
   apex: apexBg,
   titan: titanBg,
   alpha: alphaBg,
