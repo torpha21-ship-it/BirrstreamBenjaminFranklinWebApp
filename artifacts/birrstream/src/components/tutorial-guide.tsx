@@ -21,156 +21,148 @@ interface TutorialStep {
   actionHint?: string;
   actionHintAm?: string;
   actionHintOr?: string;
+  nextRoute?: string;
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
   {
     route: "/dashboard",
     targetSelector: "#tut-wallet",
-    title: "Main Balance & Reserve Floor",
-    titleAm: "ዋና ቀሪ ሂሳብ እና የሪዘርቭ ዋስትና",
-    titleOr: "Haftee Qarshii fi Eegumsa Rizarvii",
-    description: "Here is your live ETB balance. Your deposited funds are 100% protected and compound every 24 hours.",
-    descriptionAm: "ዋና የብር ሂሳብዎ እዚህ ይገኛል። የተቀማጭ ገንዘብዎ በሪዘርቭ ፍሎር ሙሉ በሙሉ የተጠበቀ ነው።",
-    descriptionOr: "Hafteen qarshii keessanii asitti mul'ata. Qarshiin keessan eegumsa guutuu qaba.",
-    targetBadge: "1 of 9 • Dashboard",
-    targetBadgeAm: "1 ከ 9 • ዳሽቦርድ",
-    targetBadgeOr: "1/9 • Daashboordii",
-    actionHint: "Live balance tracking & Reserve safety 🛡️",
-    actionHintAm: "ቀጥታ የሂሳብ ቁጥጥር እና የሪዘርቭ ዋስትና 🛡️",
-    actionHintOr: "Hordoffii haftee fi eegumsa rizarvii 🛡️",
+    title: "Main Wallet Balance",
+    titleAm: "ዋና ቀሪ ሂሳብ",
+    titleOr: "Haftee Qarshii",
+    description: "Your live ETB balance with guaranteed safety floor protection.",
+    descriptionAm: "ዋና የብር ሂሳብዎ በሪዘርቭ ፍሎር ሙሉ በሙሉ የተጠበቀ ነው።",
+    descriptionOr: "Hafteen qarshii keessanii eegumsa guutuu qaba.",
+    targetBadge: "1/8",
+    targetBadgeAm: "1/8",
+    targetBadgeOr: "1/8",
+    actionHint: "👇 Tap Deposit below to fund!",
+    actionHintAm: "👇 ለማስገባት ተቀማጭን ይጫኑ!",
+    actionHintOr: "👇 Galchuuf tuqaa!",
+    nextRoute: "/deposit",
   },
   {
-    route: "/dashboard",
-    targetSelector: "#tut-actions",
-    title: "Quick Action Center",
-    titleAm: "ፈጣን የአገልግሎት አዝራሮች",
-    titleOr: "Wiirtuu Tajaajila Saffisaa",
-    description: "Easily Deposit funds via Telebirr/CBE, request Withdrawals, view VIP Packages, and earn from Daily Tasks.",
-    descriptionAm: "በቴሌብር ወይም ንግድ ባንክ ገንዘብ ያስገቡ፣ ያውጡ፣ ፓኬጆችን ይክፈቱ እና ከዕለት ተግባራት ተጨማሪ ብር ያግኙ።",
-    descriptionOr: "Telebirr yookiin CBE dhaan qarshii galchaa, baasaa, hojiiwwan hojjedhaa.",
-    targetBadge: "2 of 9 • Actions",
-    targetBadgeAm: "2 ከ 9 • አገልግሎቶች",
-    targetBadgeOr: "2/9 • Tajaajiloota",
-    actionHint: "Min deposit is only 500 ETB 💳",
-    actionHintAm: "ዝቅተኛው ተቀማጭ 500 ብር ብቻ ነው 💳",
-    actionHintOr: "Galchi xiqqaan 500 Qarshiidha 💳",
-  },
-  {
-    route: "/dashboard",
-    targetSelector: "#tut-streak",
-    title: "Daily Login Streak (+5 ETB)",
-    titleAm: "የዕለት ተሳትፎ ጉርሻ (+5 ብር)",
-    titleOr: "Hirmaannaa Guyyaa (+5 Qarshii)",
-    description: "Tap the Check-In button once every 24 hours to earn free instant cash bonuses added to your balance.",
-    descriptionAm: "በየቀኑ ይህንን አዝራር በመጫን የ 5 ብር የዕለት ጉርሻዎን በቀጥታ ወደ ዋና ሂሳብዎ ያስገቡ።",
-    descriptionOr: "Guyyaa hunda galmaa'uun badhaasa qarshii 5 battalumatti fudhadhaa.",
-    targetBadge: "3 of 9 • Login Streak",
-    targetBadgeAm: "3 ከ 9 • የዕለት ጉርሻ",
-    targetBadgeOr: "3/9 • Hirmaannaa Guyyaa",
-    actionHint: "Daily check-in gives free cash rewards 🎁",
-    actionHintAm: "ነፃ የዕለት ተሳትፎ ሽልማቶች 🎁",
-    actionHintOr: "Badhaasa galmee guyyaa bilisaa 🎁",
-  },
-  {
-    route: "/dashboard",
-    targetSelector: "#tut-vipcards",
-    title: "3D VIP Time Cards",
-    titleAm: "የ 7 ቀን ቪአይፒ ካርዶች",
-    titleOr: "Kaardota VIP 3D",
-    description: "Explore interactive 3D time cards and preview your 7-day daily return potential with VIP multipliers.",
-    descriptionAm: "የ 7 ተከታታይ ቀናት ከፍተኛ የዕለት ትርፍ የሚያስገኙ የቪአይፒ ካርዶችን እዚህ ይመልከቱ እና ያግብሩ።",
-    descriptionOr: "Kaardota VIP 3D ilaaluun bu'aa olaanaa guyyoota 7f argadhaa.",
-    targetBadge: "4 of 9 • VIP Time Cards",
-    targetBadgeAm: "4 ከ 9 • ቪአይፒ ካርዶች",
-    targetBadgeOr: "4/9 • Kaardota VIP",
-    actionHint: "Up to +4,375 ETB weekly returns 📈",
-    actionHintAm: "በሳምንት እስከ +4,375 ብር ትርፍ 📈",
-    actionHintOr: "Torbanitti hanga +4,375 Qarshii 📈",
+    route: "/deposit",
+    targetSelector: "#tut-deposit-form",
+    title: "Instant Deposit",
+    titleAm: "ፈጣን ተቀማጭ",
+    titleOr: "Galcha Saffisaa",
+    description: "Transfer via Telebirr/CBE & submit receipt for auto verification.",
+    descriptionAm: "በቴሌብር/ንግድ ባንክ ያስተላልፉና ደረሰኝ በማያያዝ ያረጋግጡ።",
+    descriptionOr: "Telebirr ykn CBE dhaan galchaa nagahee galchaa.",
+    targetBadge: "2/8",
+    targetBadgeAm: "2/8",
+    targetBadgeOr: "2/8",
+    actionHint: "👉 Next: 7-Day VIP Packages!",
+    actionHintAm: "👉 ቀጣይ፦ የ 7 ቀን ቪአይፒ!",
+    actionHintOr: "👉 Itti aanee: Paakeejota VIP!",
+    nextRoute: "/packages",
   },
   {
     route: "/packages",
     targetSelector: "#tut-packages-list",
-    title: "VIP 1 - VIP 5 Yield Packages",
-    titleAm: "የ 7 ቀን የቪአይፒ ፓኬጆች",
-    titleOr: "Paakeejota VIP 1 - VIP 5",
-    description: "Activate VIP packages with animated power icons for guaranteed daily profit streaming directly into your account.",
-    descriptionAm: "በየቀኑ የተረጋገጠ ትርፍ የሚያስገኙ የቪአይፒ ፓኬጆችን እዚህ ይክፈቱ።",
-    descriptionOr: "Paakeejota VIP banuudhaan bu'aa guyyaa mirkanaa'e argadhaa.",
-    targetBadge: "5 of 9 • Packages Page",
-    targetBadgeAm: "5 ከ 9 • ፓኬጆች",
-    targetBadgeOr: "5/9 • Paakeejota",
-    actionHint: "Daily returns credited every 24 hours ⚡",
-    actionHintAm: "ትርፍ በየ 24 ሰዓቱ ወደ ሂሳብዎ ይገባል ⚡",
-    actionHintOr: "Bu'aan sa'aatii 24 hundatti galama ⚡",
+    title: "7-Day VIP Packages",
+    titleAm: "የ 7 ቀን ቪአይፒ ፓኬጆች",
+    titleOr: "Paakeejota VIP 7",
+    description: "Activate VIP 1–5 tiers for streaming daily returns every 24h.",
+    descriptionAm: "በየ 24 ሰዓቱ የተረጋገጠ ትርፍ የሚያስገኙ ፓኬጆችን ይክፈቱ።",
+    descriptionOr: "Paakeejota VIP banuudhaan bu'aa guyyaa argadhaa.",
+    targetBadge: "3/8",
+    targetBadgeAm: "3/8",
+    targetBadgeOr: "3/8",
+    actionHint: "👉 Next: Naomi Arcade Games!",
+    actionHintAm: "👉 ቀጣይ፦ ናኦሚ አርኬድ!",
+    actionHintOr: "👉 Itti aanee: Taphawwan Naomi!",
+    nextRoute: "/games",
   },
   {
     route: "/games",
     targetSelector: "#tut-games-spinner",
-    title: "Naomi Arcade & Mob Spinner",
-    titleAm: "ናኦሚ አርኬድ እና የሞብ ስፒነር",
-    titleOr: "Taphawwan Naomi fi Mob Spinner",
-    description: "Spin the Minecraft Mob Picker to win Birr jackpots and rewards. VIP 4+ gets unlimited daily spins!",
-    descriptionAm: "የማይንክራፍት ካራክተር መምረጫውን በማሽከርከር የገንዘብ ሽልማቶችን ያሸንፉ።",
-    descriptionOr: "Taphawwan taphachuun badhaasa qarshii olaanaa argadhaa.",
-    targetBadge: "6 of 9 • Naomi Arcade",
-    targetBadgeAm: "6 ከ 9 • ናኦሚ አርኬድ",
-    targetBadgeOr: "6/9 • Taphawwan",
-    actionHint: "Win up to +215 ETB per lucky spin 🎮",
-    actionHintAm: "በአንድ ማሽከርከር እስከ +215 ብር ያሸንፉ 🎮",
-    actionHintOr: "Naannessuu tokkoon hanga 215 Qarshii 🎮",
+    title: "Naomi Arcade Games",
+    titleAm: "ናኦሚ አርኬድ ጨዋታዎች",
+    titleOr: "Taphawwan Naomi",
+    description: "Spin the Minecraft Mob Picker to win instant Birr cash jackpots.",
+    descriptionAm: "የማይንክራፍት ካራክተሮችን በማሽከርከር የገንዘብ ሽልማት ያሸንፉ።",
+    descriptionOr: "Taphawwan taphachuun badhaasa qarshii argadhaa.",
+    targetBadge: "4/8",
+    targetBadgeAm: "4/8",
+    targetBadgeOr: "4/8",
+    actionHint: "👉 Next: Daily Task Rewards!",
+    actionHintAm: "👉 ቀጣይ፦ የዕለት ተግባራት!",
+    actionHintOr: "👉 Itti aanee: Hojiiwwan Guyyaa!",
+    nextRoute: "/tasks",
   },
   {
     route: "/tasks",
     targetSelector: "#tut-tasks-list",
-    title: "Daily Tasks & Video Rewards",
-    titleAm: "የዕለት ተግባራት እና ቪዲዮዎች",
-    titleOr: "Hojiiwwan Guyyaa fi Viidiyoowwan",
-    description: "Complete quick video watches, Telegram channel joins, and referral activities to collect extra daily Birr.",
+    title: "Daily Tasks & Videos",
+    titleAm: "የዕለት ተግባራት",
+    titleOr: "Hojiiwwan Guyyaa",
+    description: "Watch short videos & complete habits to collect free extra Birr.",
     descriptionAm: "ቪዲዮዎችን በመመልከት እና ቀላል ተግባራትን በማጠናቀቅ ተጨማሪ ብር ያግኙ።",
-    descriptionOr: "Viidiyoo daawwachuun qarshii dabalataa guyyaa hunda sassaabbadhaa.",
-    targetBadge: "7 of 9 • Daily Tasks",
-    targetBadgeAm: "7 ከ 9 • ተግባራት",
-    targetBadgeOr: "7/9 • Hojiiwwan",
-    actionHint: "Daily habits that boost your earnings 💰",
-    actionHintAm: "ገቢዎን የሚያሳድጉ የዕለት ተግባራት 💰",
-    actionHintOr: "Galii keessan kan dabalan 💰",
+    descriptionOr: "Viidiyoo daawwachuun qarshii dabalataa sassaabbadhaa.",
+    targetBadge: "5/8",
+    targetBadgeAm: "5/8",
+    targetBadgeOr: "5/8",
+    actionHint: "👉 Next: Live 689 Leaderboard!",
+    actionHintAm: "👉 ቀጣይ፦ ደረጃ ሰንጠረዥ!",
+    actionHintOr: "👉 Itti aanee: Sadarkaa Miseensota!",
+    nextRoute: "/leaderboard",
   },
   {
     route: "/leaderboard",
     targetSelector: "#tut-leaderboard-top",
-    title: "Top 689 Earners Live Board",
-    titleAm: "የ 689 ተጠቃሚዎች ደረጃ ሰንጠረዥ",
-    titleOr: "Sadarkaa Miseensota 689",
-    description: "Check live ranking positions across all 689 members with animated key badges and active earnings competition.",
-    descriptionAm: "የ 689 ተጠቃሚዎችን የቀጥታ የገቢ ደረጃዎች እና የዋንጫ አሸናፊዎችን እዚህ ይመልከቱ።",
-    descriptionOr: "Sadarkaa miseensota 689 fi galii isaanii hordofaa.",
-    targetBadge: "8 of 9 • Leaderboard",
-    targetBadgeAm: "8 ከ 9 • የደረጃ ሰንጠረዥ",
-    targetBadgeOr: "8/9 • Sadarkaa",
-    actionHint: "Real-time active rankings competition 🏆",
-    actionHintAm: "የቀጥታ ውድድር እና ደረጃዎች 🏆",
-    actionHintOr: "Dorgommii sadarkaa yeroo qabatamaa 🏆",
+    title: "689 Member Leaderboard",
+    titleAm: "የደረጃ ሰንጠረዥ",
+    titleOr: "Sadarkaa Miseensota",
+    description: "Real-time active rankings competition with animated key badges.",
+    descriptionAm: "የ 689 ተጠቃሚዎች የቀጥታ የገቢ ደረጃዎች እና ውድድር።",
+    descriptionOr: "Dorgommii sadarkaa miseensota 689 yeroo qabatamaa.",
+    targetBadge: "6/8",
+    targetBadgeAm: "6/8",
+    targetBadgeOr: "6/8",
+    actionHint: "👉 Next: Identity Verification!",
+    actionHintAm: "👉 ቀጣይ፦ የማንነት ማረጋገጫ!",
+    actionHintOr: "👉 Itti aanee: Mirkaneessa Eenyummaa!",
+    nextRoute: "/profile",
   },
   {
     route: "/profile",
     targetSelector: "#tut-profile-kyc",
-    title: "Profile & KYC Verification",
-    titleAm: "መገለጫ እና የማንነት ማረጋገጫ (KYC)",
-    titleOr: "Piroofaayilii fi Mirkaneessa KYC",
-    description: "Upload your ID to verify your account, customize your profile picture up to 5MB, and manage your withdrawal settings.",
-    descriptionAm: "መታወቂያዎን በማስገባት ሂሳብዎን ያረጋግጡ እና የገንዘብ ማውጫ ሂሳብዎን ያስተካክሉ።",
-    descriptionOr: "Waraqaa eenyummaa galchuun herrega keessan mirkaneessaa.",
-    targetBadge: "9 of 9 • Profile & KYC",
-    targetBadgeAm: "9 ከ 9 • መገለጫ",
-    targetBadgeOr: "9/9 • Piroofaayilii",
-    actionHint: "You are all set to start earning! 🚀",
-    actionHintAm: "አሁን ገቢ ማግኘት ለመጀመር ሙሉ በሙሉ ዝግጁ ነዎት! 🚀",
-    actionHintOr: "Amma eegaluuf guutummaatti qophiidha! 🚀",
+    title: "KYC ID Verification",
+    titleAm: "የማንነት ማረጋገጫ (KYC)",
+    titleOr: "Mirkaneessa KYC",
+    description: "Submit your National/University ID to unlock instant withdrawals.",
+    descriptionAm: "መታወቂያዎን በማስገባት የገንዘብ ማውጫ ፈቃድ ያረጋግጡ።",
+    descriptionOr: "Waraqaa eenyummaa galchuun baasii eeggadhaa.",
+    targetBadge: "7/8",
+    targetBadgeAm: "7/8",
+    targetBadgeOr: "7/8",
+    actionHint: "👉 Next: Daily Login Streak!",
+    actionHintAm: "👉 ቀጣይ፦ የዕለት ጉርሻ!",
+    actionHintOr: "👉 Itti aanee: Hirmaannaa Guyyaa!",
+    nextRoute: "/dashboard",
+  },
+  {
+    route: "/dashboard",
+    targetSelector: "#tut-streak",
+    title: "Login Streak (+5 ETB)",
+    titleAm: "የዕለት ተሳትፎ (+5 ብር)",
+    titleOr: "Hirmaannaa Guyyaa (+5)",
+    description: "Check in every 24h for free cash. You are all set to start earning!",
+    descriptionAm: "በየቀኑ ተሳትፎ በመመዝገብ የ 5 ብር ነፃ ጉርሻ ያግኙ። አሁን ዝግጁ ኖት!",
+    descriptionOr: "Guyyaa hunda galmaa'aa. Amma eegaluuf qophiidha!",
+    targetBadge: "8/8",
+    targetBadgeAm: "8/8",
+    targetBadgeOr: "8/8",
+    actionHint: "🎉 Ready to earn! Tap Finish.",
+    actionHintAm: "🎉 ዝግጁ ኖት! ጨርስን ይጫኑ።",
+    actionHintOr: "🎉 Qophiidha! Xumuri tuqaa.",
   },
 ];
 
-const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v3_completed";
+const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v4_completed";
 
 interface TargetBox {
   x: number;
@@ -222,7 +214,6 @@ export function TutorialGuide() {
     const step = TUTORIAL_STEPS[currentStep];
     if (!step) return;
 
-    // Navigate to step's route if not already there
     if (location !== step.route) {
       setLocation(step.route);
     }
@@ -231,11 +222,11 @@ export function TutorialGuide() {
       const el = document.querySelector(step.targetSelector);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(updateTargetBox, 350);
+        setTimeout(updateTargetBox, 300);
       } else {
         updateTargetBox();
       }
-    }, 200);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [isOpen, currentStep, location, setLocation, updateTargetBox]);
@@ -257,7 +248,7 @@ export function TutorialGuide() {
     if (!completed) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 1400);
+      }, 1200);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -282,7 +273,7 @@ export function TutorialGuide() {
       setTimeout(() => {
         setCurrentStep((prev) => prev + 1);
         setIsTransitioning(false);
-      }, 450);
+      }, 400);
     } else {
       handleComplete();
     }
@@ -294,7 +285,7 @@ export function TutorialGuide() {
       setTimeout(() => {
         setCurrentStep((prev) => prev - 1);
         setIsTransitioning(false);
-      }, 450);
+      }, 400);
     }
   };
 
@@ -308,54 +299,51 @@ export function TutorialGuide() {
   const step = TUTORIAL_STEPS[currentStep];
   const isLast = currentStep === TUTORIAL_STEPS.length - 1;
 
-  // Placement calculation
+  // Placement calculation for tiny floating bubble
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
   const isTargetInBottomHalf = targetBox ? targetBox.centerY > viewportHeight / 2 : false;
   const showBubbleAtTop = isTargetInBottomHalf;
 
-  // Anchor points for animated pointer line
-  const bubbleAnchorX = typeof window !== "undefined" ? Math.min(window.innerWidth / 2, 200) : 180;
-  const bubbleAnchorY = showBubbleAtTop ? 220 : viewportHeight - 220;
+  // Exact anchor coordinates for connecting pointer
+  const bubbleAnchorX = typeof window !== "undefined" ? Math.min(window.innerWidth / 2, 170) : 160;
+  const bubbleAnchorY = showBubbleAtTop ? 180 : viewportHeight - 180;
 
   const targetAnchorX = targetBox ? targetBox.centerX : bubbleAnchorX;
   const targetAnchorY = targetBox
     ? showBubbleAtTop
-      ? targetBox.y - 6
-      : targetBox.y + targetBox.height + 6
+      ? targetBox.y - 4
+      : targetBox.y + targetBox.height + 4
     : bubbleAnchorY;
 
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none select-none">
-      {/* ── LIGHTWEIGHT NON-OBSCURING OVERLAY (NO HEAVY GLASS BLUR) ── */}
-      <div className="absolute inset-0 bg-black/20 pointer-events-none transition-opacity duration-300" />
-
-      {/* ── TARGET COMPONENT SPOTLIGHT & RADAR BEACON ── */}
+      {/* ── CLEAN SPOTLIGHT ON TARGET (Clickable so user can interact!) ── */}
       {targetBox && (
         <div
-          className="absolute z-10 pointer-events-none transition-all duration-300 ease-out"
+          onClick={handleNext}
+          className="absolute z-10 pointer-events-auto cursor-pointer transition-all duration-300 ease-out group"
           style={{
             left: targetBox.x - 4,
             top: targetBox.y - 4,
             width: targetBox.width + 8,
             height: targetBox.height + 8,
           }}
+          title="Click to interact & advance"
         >
-          {/* Crisp Glowing Golden Ring around the pointed component */}
-          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_20px_rgba(245,230,163,0.9)]" />
+          {/* Animated Gold Glowing Ring */}
+          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_18px_rgba(245,230,163,0.9)] group-hover:border-emerald-400 transition-colors" />
 
-          {/* Pulsing Beacon Dot */}
+          {/* Interactive Tap Ping Beacon */}
           <div
             className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none"
             style={{
-              top: showBubbleAtTop ? -12 : "auto",
-              bottom: showBubbleAtTop ? "auto" : -12,
+              top: showBubbleAtTop ? -10 : "auto",
+              bottom: showBubbleAtTop ? "auto" : -10,
             }}
           >
-            <span className="relative flex h-5 w-5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-85" />
-              <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md items-center justify-center text-[9px] font-black text-black">
-                ●
-              </span>
+            <span className="relative flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border border-white shadow-sm" />
             </span>
           </div>
         </div>
@@ -371,134 +359,123 @@ export function TutorialGuide() {
             </linearGradient>
           </defs>
 
-          {/* Animated Connecting Line Path */}
           <path
             d={`M ${targetAnchorX} ${targetAnchorY} Q ${(targetAnchorX + bubbleAnchorX) / 2} ${(targetAnchorY + bubbleAnchorY) / 2} ${bubbleAnchorX} ${bubbleAnchorY}`}
             fill="none"
             stroke="url(#pointerLineGrad)"
-            strokeWidth="3"
-            strokeDasharray="5,4"
+            strokeWidth="2.5"
+            strokeDasharray="4,3"
             className="animate-[dash_1s_linear_infinite]"
           />
-
-          {/* Glowing Target Anchor Dot */}
-          <circle cx={targetAnchorX} cy={targetAnchorY} r="4.5" fill="#F5E6A3" stroke="#121331" strokeWidth="1.5" />
+          <circle cx={targetAnchorX} cy={targetAnchorY} r="4" fill="#F5E6A3" stroke="#121331" strokeWidth="1.5" />
         </svg>
       )}
 
-      {/* ── NIMBLE COMPACT CHAT BUBBLE & MOVING AVATAR ── */}
+      {/* ── TINY FLOATING SPEECH BUBBLE & COMPACT AVATAR ── */}
       <div
-        className={`absolute left-0 right-0 px-3 z-30 flex flex-col items-center pointer-events-auto transition-all duration-400 ease-out max-w-[330px] sm:max-w-[360px] mx-auto ${
-          showBubbleAtTop ? "top-4 sm:top-6" : "bottom-4 sm:bottom-6"
+        className={`absolute left-0 right-0 px-3 z-30 flex flex-col items-center pointer-events-auto transition-all duration-300 ease-out max-w-[260px] sm:max-w-[290px] mx-auto ${
+          showBubbleAtTop ? "top-3 sm:top-5" : "bottom-3 sm:bottom-5"
         }`}
       >
-        {/* Animated Avatar */}
+        {/* Compact Avatar */}
         <div
-          className={`relative z-40 transition-all duration-400 flex flex-col items-center ${
-            showBubbleAtTop ? "order-2 -mt-3" : "order-1 -mb-3"
+          className={`relative z-40 transition-all duration-300 flex flex-col items-center ${
+            showBubbleAtTop ? "order-2 -mt-2" : "order-1 -mb-2"
           }`}
         >
           {isTransitioning ? (
-            <div className="w-16 h-16 sm:w-18 sm:h-18 animate-bounce drop-shadow-lg">
-              <img
-                src={walkingAvatar}
-                alt="Walking Guide"
-                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-              />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 animate-bounce drop-shadow-md">
+              <img src={walkingAvatar} alt="Guide" className="w-full h-full object-contain" />
             </div>
           ) : (
-            <div className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-lg animate-in zoom-in-90 duration-200">
-              <img
-                src={protestAvatar}
-                alt="Pointing Guide"
-                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-              />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md animate-in zoom-in-90 duration-200">
+              <img src={protestAvatar} alt="Guide" className="w-full h-full object-contain" />
             </div>
           )}
         </div>
 
-        {/* Compact Speech Bubble Card */}
+        {/* Tiny Comic Speech Bubble */}
         <div
-          className={`w-full bg-card/95 border-2 border-primary/60 rounded-3xl p-3.5 sm:p-4 shadow-xl relative z-30 overflow-hidden ${
+          className={`w-full bg-card/95 border-2 border-primary/70 rounded-2xl p-2.5 sm:p-3 shadow-lg relative z-30 ${
             showBubbleAtTop ? "order-1" : "order-2"
           }`}
         >
-          {/* Top colored accent line */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-primary" />
-
           {/* Header */}
-          <div className="flex items-center justify-between mb-1.5 pt-0.5">
-            <div className="flex items-center gap-1.5">
-              <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 text-[9.5px] font-black uppercase tracking-wider">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1">
+              <span className="px-1.5 py-0.2 rounded-full bg-primary/15 text-primary border border-primary/30 text-[8.5px] font-black uppercase">
                 {isAmharic ? step.targetBadgeAm : isOromo ? step.targetBadgeOr : step.targetBadge}
               </span>
-              <span className="text-[9.5px] text-amber-500 font-bold flex items-center gap-0.5">
-                <Sparkles className="w-2.5 h-2.5" />
-                <span>Tour</span>
+              <span className="text-[8.5px] text-amber-500 font-bold flex items-center gap-0.5">
+                <Sparkles className="w-2 h-2" />
+                <span>Guide</span>
               </span>
             </div>
 
             <button
               type="button"
               onClick={handleComplete}
-              className="w-6 h-6 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
+              className="w-5 h-5 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
               title="Close Tutorial"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           </div>
 
           {/* Title */}
-          <h3 className="font-bold text-sm text-foreground mb-1 leading-tight" style={displayFont}>
+          <h4 className="font-bold text-xs text-foreground mb-0.5 leading-tight" style={displayFont}>
             {isAmharic ? step.titleAm : isOromo ? step.titleOr : step.title}
-          </h3>
+          </h4>
 
           {/* Description */}
           <p
-            className="text-[11.5px] text-muted-foreground leading-relaxed mb-2.5"
+            className="text-[10.5px] text-muted-foreground leading-snug mb-1.5"
             style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
           >
             {isAmharic ? step.descriptionAm : isOromo ? step.descriptionOr : step.description}
           </p>
 
-          {/* Action Hint */}
+          {/* Action Hint / Click Target */}
           {step.actionHint && (
-            <div className="bg-primary/10 border border-primary/20 rounded-xl px-2.5 py-1.5 mb-2.5 flex items-center gap-1.5 text-[10.5px] font-bold text-primary">
-              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+            <div
+              onClick={handleNext}
+              className="bg-primary/10 border border-primary/25 rounded-lg px-2 py-1 mb-1.5 flex items-center gap-1 text-[9.5px] font-bold text-primary cursor-pointer hover:bg-primary/20 transition-colors"
+            >
+              <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
               <span className="truncate">{isAmharic ? step.actionHintAm : isOromo ? step.actionHintOr : step.actionHint}</span>
             </div>
           )}
 
           {/* Footer Controls */}
-          <div className="flex items-center justify-between pt-2 border-t border-border/60">
+          <div className="flex items-center justify-between pt-1 border-t border-border/60">
             {/* Step Dots */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               {TUTORIAL_STEPS.map((_, idx) => (
                 <div
                   key={idx}
                   className={`h-1 rounded-full transition-all duration-200 ${
                     idx === currentStep
-                      ? "w-4 bg-primary"
+                      ? "w-3 bg-primary"
                       : idx < currentStep
-                      ? "w-1.5 bg-primary/40"
-                      : "w-1 bg-muted-foreground/30"
+                      ? "w-1 bg-primary/40"
+                      : "w-0.5 bg-muted-foreground/30"
                   }`}
                 />
               ))}
             </div>
 
             {/* Nav Buttons */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               {currentStep > 0 && (
                 <button
                   type="button"
                   onClick={handlePrev}
                   disabled={isTransitioning}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-bold text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted transition-colors flex items-center gap-1 cursor-pointer"
+                  className="px-2 py-0.5 rounded-full text-[10px] font-bold text-muted-foreground hover:text-foreground bg-muted/60 transition-colors flex items-center gap-0.5 cursor-pointer"
                   style={displayFont}
                 >
-                  <ArrowLeft className="w-3 h-3" />
-                  <span>{isAmharic ? "ወደ ኋላ" : isOromo ? "Duuba" : "Back"}</span>
+                  <ArrowLeft className="w-2.5 h-2.5" />
+                  <span>{isAmharic ? "ወደ ኋላ" : "Back"}</span>
                 </button>
               )}
 
@@ -506,7 +483,7 @@ export function TutorialGuide() {
                 type="button"
                 onClick={handleNext}
                 disabled={isTransitioning}
-                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-primary text-primary-foreground shadow-sm shadow-primary/25 hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-0.5 cursor-pointer"
                 style={displayFont}
               >
                 <span>
@@ -522,7 +499,7 @@ export function TutorialGuide() {
                     ? "Itti Fufi"
                     : "Next"}
                 </span>
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-2.5 h-2.5" />
               </button>
             </div>
           </div>

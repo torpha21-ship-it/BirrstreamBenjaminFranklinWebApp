@@ -125,7 +125,7 @@ export default function Deposit() {
       </div>
 
       {/* Form */}
-      <div className="bg-card rounded-3xl p-5 border border-border mb-5">
+      <div id="tut-deposit-form" className="bg-card rounded-3xl p-5 border border-border mb-5">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2" style={displayFont}>
