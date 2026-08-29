@@ -705,58 +705,7 @@ html[lang="am"],
   pointer-events: none;
 }
 
-/* ── Top Earners Realistic Up-and-Down Bobbing & Floating Animation ── */
-@keyframes earnerBobRank1 {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-10px) scale(1.03);
-  }
-}
 
-@keyframes earnerBobRank2 {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-7px) scale(1.02);
-  }
-}
-
-@keyframes earnerBobRank3 {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-6px) scale(1.015);
-  }
-}
-
-@keyframes earnerGlowGold {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(234, 179, 8, 0.25), 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(234, 179, 8, 0.6), 0 14px 35px rgba(234, 179, 8, 0.3);
-  }
-}
-
-.animate-earner-rank1 {
-  animation: earnerBobRank1 2.6s ease-in-out infinite;
-}
-
-.animate-earner-rank2 {
-  animation: earnerBobRank2 3.1s ease-in-out infinite 0.4s;
-}
-
-.animate-earner-rank3 {
-  animation: earnerBobRank3 3.5s ease-in-out infinite 0.8s;
-}
-
-.animate-glow-gold {
-  animation: earnerGlowGold 2.5s ease-in-out infinite;
-}
 
 
 

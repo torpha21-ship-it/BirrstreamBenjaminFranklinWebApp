@@ -480,7 +480,7 @@ export default function Games() {
       </div>
 
       {/* Featured Game Card */}
-      <div className="relative flex flex-col space-y-3">
+      <div id="tut-games-spinner" className="relative flex flex-col space-y-3">
         <div className="relative w-full h-56 rounded-3xl overflow-hidden border border-border shadow-lg">
           <img src="/game-thumbnail.jpg" alt={t("games.featured")} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-4 flex flex-col justify-end">

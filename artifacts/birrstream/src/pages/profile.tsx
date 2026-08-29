@@ -239,7 +239,7 @@ export default function Profile() {
       </div>
 
       {/* ── KYC IDENTITY VERIFICATION SECTION ── */}
-      <div id="kyc" className="bg-card rounded-3xl p-5 mb-6 border border-border shadow-sm relative z-10 -mx-4">
+      <div id="tut-profile-kyc" className="bg-card rounded-3xl p-5 mb-6 border border-border shadow-sm relative z-10 -mx-4">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-yellow-500/15 flex items-center justify-center flex-shrink-0">

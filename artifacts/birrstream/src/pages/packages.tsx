@@ -178,7 +178,7 @@ export default function Packages() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div id="tut-packages-list" className="space-y-4">
         {isLoading ? Array(5).fill(0).map((_, i) => (
           <div key={i} className="h-48 bg-card rounded-3xl animate-pulse border border-border" />
         )) : packages?.map(pkg => {

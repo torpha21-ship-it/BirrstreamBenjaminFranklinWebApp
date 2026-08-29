@@ -134,28 +134,34 @@ export default function Leaderboard() {
     letterSpacing: isAmharic ? "0.045em" : "-0.01em",
   };
 
-  /* ── Slow animated rank shuffling every 7 seconds for live competition feel (outside top 3) ── */
+  /* ── Dynamic randomized rank shuffling (every 2.2s - 4.5s) for live competition feel ── */
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUsers(prev => {
-        const next = [...prev];
-        const swapCount = 2 + Math.floor(Math.random() * 3);
-        for (let s = 0; s < swapCount; s++) {
-          const i = 3 + Math.floor(Math.random() * (next.length - 6));
-          const j = i + 1 + Math.floor(Math.random() * 3);
-          if (j < next.length) {
-            // Swap ranks cleanly
-            const tempRank = next[i].rank;
-            next[i].rank = next[j].rank;
-            next[j].rank = tempRank;
-            [next[i], next[j]] = [next[j], next[i]];
-          }
-        }
-        return next;
-      });
-    }, 7000);
+    let timeoutId: NodeJS.Timeout;
 
-    return () => clearInterval(interval);
+    const scheduleNextShuffle = () => {
+      const nextDelay = 2200 + Math.floor(Math.random() * 2300); // Random interval between 2.2s and 4.5s
+      timeoutId = setTimeout(() => {
+        setUsers(prev => {
+          const next = [...prev];
+          const swapCount = 2 + Math.floor(Math.random() * 3);
+          for (let s = 0; s < swapCount; s++) {
+            const i = 3 + Math.floor(Math.random() * (next.length - 6));
+            const j = i + 1 + Math.floor(Math.random() * 2);
+            if (j < next.length) {
+              const tempRank = next[i].rank;
+              next[i].rank = next[j].rank;
+              next[j].rank = tempRank;
+              [next[i], next[j]] = [next[j], next[i]];
+            }
+          }
+          return next;
+        });
+        scheduleNextShuffle();
+      }, nextDelay);
+    };
+
+    scheduleNextShuffle();
+    return () => clearTimeout(timeoutId);
   }, []);
 
   /* ── Infinite scroll ── */
@@ -218,40 +224,33 @@ export default function Leaderboard() {
           const isRank1 = earner.rank === 1;
           const isRank2 = earner.rank === 2;
           const isRank3 = earner.rank === 3;
-          const isTop3 = isRank1 || isRank2 || isRank3;
           const keyIcon = isRank1 ? oneKeyIcon : isRank2 ? twoKeyIcon : isRank3 ? threeKeyIcon : null;
           const vip = VIP_TIERS[earner.vipIdx];
 
-          /* ── Task 8: Top 3 Earners use the 4 dashboard stat card colors ── */
-          // Rank 1: Total Yield color (#F5E6A3)
-          // Rank 2: Total Deposited color (#C9BDF5)
-          // Rank 3: Total Withdrawn color (#F2A89A)
+          /* ── Top 3 Earners use the 4 dashboard stat card colors ── */
           let cardStyle = "bg-card border border-border shadow-sm hover:border-border/80";
-          let keyAnimClass = "";
 
           if (isRank1) {
             cardStyle = "bg-[#F5E6A3]/35 dark:bg-[#F5E6A3]/15 border-2 border-[#F5E6A3] dark:border-[#F5E6A3]/50 shadow-md";
-            keyAnimClass = "animate-earner-rank1";
           } else if (isRank2) {
             cardStyle = "bg-[#C9BDF5]/35 dark:bg-[#C9BDF5]/15 border-2 border-[#C9BDF5] dark:border-[#C9BDF5]/50 shadow-md";
-            keyAnimClass = "animate-earner-rank2";
           } else if (isRank3) {
             cardStyle = "bg-[#F2A89A]/35 dark:bg-[#F2A89A]/15 border-2 border-[#F2A89A] dark:border-[#F2A89A]/50 shadow-md";
-            keyAnimClass = "animate-earner-rank3";
           }
 
           return (
             <div
               key={earner.id}
+              id={isRank1 ? "tut-leaderboard-top" : undefined}
               className={`flex items-center gap-3 p-3 rounded-2xl transition-colors duration-300 ${cardStyle}`}
             >
-              {/* Rank Badge or Animated Key Icon */}
+              {/* Rank Badge or Natural Animated Key Icon */}
               <div className="w-9 flex items-center justify-center flex-shrink-0">
                 {keyIcon ? (
                   <img
                     src={keyIcon}
                     alt={`Rank ${earner.rank}`}
-                    className={`w-7 h-7 object-contain ${keyAnimClass}`}
+                    className="w-7 h-7 object-contain"
                   />
                 ) : (
                   <span className={`text-xs font-black ${earner.rank <= 10 ? "text-foreground font-extrabold" : "text-muted-foreground"}`}>
@@ -278,11 +277,11 @@ export default function Leaderboard() {
                 />
               </div>
 
-              {/* Earner Info */}
+              {/* Earner Info — same font and size as Deposit, Withdraw, Packages, Tasks button labels */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span
-                    className="text-xs font-black text-foreground truncate block leading-tight"
+                    className="text-xs font-semibold text-foreground truncate block line-clamp-1"
                     style={displayFont}
                   >
                     {earner.name}

@@ -198,7 +198,7 @@ export default function Tasks() {
         {t("tasks.new_habits")}
       </h2>
 
-      <div className="space-y-3 relative z-10 -mx-4">
+      <div id="tut-tasks-list" className="space-y-3 relative z-10 -mx-4">
         {isLoading ? Array(4).fill(0).map((_, i) => (
           <div key={i} className="h-20 bg-card rounded-2xl animate-pulse border border-border" />
         )) : tasks?.map(task => {

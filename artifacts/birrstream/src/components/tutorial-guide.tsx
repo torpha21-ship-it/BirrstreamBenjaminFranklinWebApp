@@ -7,6 +7,7 @@ import protestAvatar from "@/assets/avatar/wired-outline-656-person-protesting-h
 import walkingAvatar from "@/assets/avatar/wired-outline-646-person-walking-loop-cycle.webp";
 
 interface TutorialStep {
+  route: string;
   targetSelector: string;
   title: string;
   titleAm: string;
@@ -20,93 +21,156 @@ interface TutorialStep {
   actionHint?: string;
   actionHintAm?: string;
   actionHintOr?: string;
-  preferredPlacement?: "top" | "bottom";
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
   {
+    route: "/dashboard",
     targetSelector: "#tut-wallet",
-    title: "Main Balance & Total Yield",
-    titleAm: "ዋና ቀሪ ሂሳብ እና የዕለት ትርፍ",
-    titleOr: "Haftee Qarshii fi Bu'aa Guyyaa",
-    description: "Here is your live ETB balance and accumulated returns. Your funds are protected by the Reserve Floor and grow every 24 hours.",
-    descriptionAm: "ዋና የብር ሂሳብዎ እና የዕለት ገቢዎ እዚህ ይገኛል። የተቀማጭ ገንዘብዎ በሪዘርቭ ፍሎር ሙሉ በሙሉ የተጠበቀ ነው።",
-    descriptionOr: "Hafteen qarshii keessanii fi bu'aan guyyaa asitti mul'ata. Qarshiin keessan eegamaadha.",
-    targetBadge: "Step 1 of 5",
-    targetBadgeAm: "ደረጃ 1 ከ 5",
-    targetBadgeOr: "Sadarkaa 1/5",
-    actionHint: "Live balance tracking & Reserve protection 🛡️",
+    title: "Main Balance & Reserve Floor",
+    titleAm: "ዋና ቀሪ ሂሳብ እና የሪዘርቭ ዋስትና",
+    titleOr: "Haftee Qarshii fi Eegumsa Rizarvii",
+    description: "Here is your live ETB balance. Your deposited funds are 100% protected and compound every 24 hours.",
+    descriptionAm: "ዋና የብር ሂሳብዎ እዚህ ይገኛል። የተቀማጭ ገንዘብዎ በሪዘርቭ ፍሎር ሙሉ በሙሉ የተጠበቀ ነው።",
+    descriptionOr: "Hafteen qarshii keessanii asitti mul'ata. Qarshiin keessan eegumsa guutuu qaba.",
+    targetBadge: "1 of 9 • Dashboard",
+    targetBadgeAm: "1 ከ 9 • ዳሽቦርድ",
+    targetBadgeOr: "1/9 • Daashboordii",
+    actionHint: "Live balance tracking & Reserve safety 🛡️",
     actionHintAm: "ቀጥታ የሂሳብ ቁጥጥር እና የሪዘርቭ ዋስትና 🛡️",
     actionHintOr: "Hordoffii haftee fi eegumsa rizarvii 🛡️",
-    preferredPlacement: "bottom",
   },
   {
+    route: "/dashboard",
     targetSelector: "#tut-actions",
-    title: "Instant Deposit & Action Center",
-    titleAm: "ፈጣን ተቀማጭ እና የአገልግሎት አዝራሮች",
-    titleOr: "Galcha Saffisaa fi Tajaajiloota",
-    description: "Deposit ETB via Telebirr or CBE, request fast withdrawals, explore VIP packages, and earn from daily tasks right here.",
-    descriptionAm: "በቴሌብር ወይም ንግድ ባንክ በፍጥነት ገንዘብ ያስገቡ፣ ያውጡ፣ ፓኬጆችን ይክፈቱ እና ከዕለት ተግባራት ተጨማሪ ብር ያግኙ።",
-    descriptionOr: "Telebirr yookiin CBE dhaan qarshii galchaa, baasaa, paakeejota banaa.",
-    targetBadge: "Step 2 of 5",
-    targetBadgeAm: "ደረጃ 2 ከ 5",
-    targetBadgeOr: "Sadarkaa 2/5",
-    actionHint: "Deposit starting from only 500 ETB 💳",
+    title: "Quick Action Center",
+    titleAm: "ፈጣን የአገልግሎት አዝራሮች",
+    titleOr: "Wiirtuu Tajaajila Saffisaa",
+    description: "Easily Deposit funds via Telebirr/CBE, request Withdrawals, view VIP Packages, and earn from Daily Tasks.",
+    descriptionAm: "በቴሌብር ወይም ንግድ ባንክ ገንዘብ ያስገቡ፣ ያውጡ፣ ፓኬጆችን ይክፈቱ እና ከዕለት ተግባራት ተጨማሪ ብር ያግኙ።",
+    descriptionOr: "Telebirr yookiin CBE dhaan qarshii galchaa, baasaa, hojiiwwan hojjedhaa.",
+    targetBadge: "2 of 9 • Actions",
+    targetBadgeAm: "2 ከ 9 • አገልግሎቶች",
+    targetBadgeOr: "2/9 • Tajaajiloota",
+    actionHint: "Min deposit is only 500 ETB 💳",
     actionHintAm: "ዝቅተኛው ተቀማጭ 500 ብር ብቻ ነው 💳",
     actionHintOr: "Galchi xiqqaan 500 Qarshiidha 💳",
-    preferredPlacement: "bottom",
   },
   {
+    route: "/dashboard",
     targetSelector: "#tut-streak",
     title: "Daily Login Streak (+5 ETB)",
     titleAm: "የዕለት ተሳትፎ ጉርሻ (+5 ብር)",
     titleOr: "Hirmaannaa Guyyaa (+5 Qarshii)",
-    description: "Tap the Check-In button once every 24 hours to build your streak and claim instant cash bonus rewards into your balance.",
+    description: "Tap the Check-In button once every 24 hours to earn free instant cash bonuses added to your balance.",
     descriptionAm: "በየቀኑ ይህንን አዝራር በመጫን የ 5 ብር የዕለት ጉርሻዎን በቀጥታ ወደ ዋና ሂሳብዎ ያስገቡ።",
     descriptionOr: "Guyyaa hunda galmaa'uun badhaasa qarshii 5 battalumatti fudhadhaa.",
-    targetBadge: "Step 3 of 5",
-    targetBadgeAm: "ደረጃ 3 ከ 5",
-    targetBadgeOr: "Sadarkaa 3/5",
+    targetBadge: "3 of 9 • Login Streak",
+    targetBadgeAm: "3 ከ 9 • የዕለት ጉርሻ",
+    targetBadgeOr: "3/9 • Hirmaannaa Guyyaa",
     actionHint: "Daily check-in gives free cash rewards 🎁",
     actionHintAm: "ነፃ የዕለት ተሳትፎ ሽልማቶች 🎁",
     actionHintOr: "Badhaasa galmee guyyaa bilisaa 🎁",
-    preferredPlacement: "top",
   },
   {
+    route: "/dashboard",
     targetSelector: "#tut-vipcards",
-    title: "3D VIP Cards & Guaranteed Yields",
-    titleAm: "የ 7 ቀን ቪአይፒ ካርዶች እና ትርፍ",
-    titleOr: "Kaardota VIP 3D fi Bu'aa",
-    description: "Unlock special VIP 1 through VIP 5 time cards to activate high-multiplier daily returns for 7 consecutive days.",
-    descriptionAm: "ለ 7 ተከታታይ ቀናት ከፍተኛ የዕለት ትርፍ የሚያስገኙ የቪአይፒ ካርዶችን እዚህ ይመልከቱ እና ያግብሩ።",
-    descriptionOr: "Kaardota VIP fayyadamuun bu'aa olaanaa guyyoota 7f argadhaa.",
-    targetBadge: "Step 4 of 5",
-    targetBadgeAm: "ደረጃ 4 ከ 5",
-    targetBadgeOr: "Sadarkaa 4/5",
-    actionHint: "Up to +4,375 ETB weekly yield 📈",
+    title: "3D VIP Time Cards",
+    titleAm: "የ 7 ቀን ቪአይፒ ካርዶች",
+    titleOr: "Kaardota VIP 3D",
+    description: "Explore interactive 3D time cards and preview your 7-day daily return potential with VIP multipliers.",
+    descriptionAm: "የ 7 ተከታታይ ቀናት ከፍተኛ የዕለት ትርፍ የሚያስገኙ የቪአይፒ ካርዶችን እዚህ ይመልከቱ እና ያግብሩ።",
+    descriptionOr: "Kaardota VIP 3D ilaaluun bu'aa olaanaa guyyoota 7f argadhaa.",
+    targetBadge: "4 of 9 • VIP Time Cards",
+    targetBadgeAm: "4 ከ 9 • ቪአይፒ ካርዶች",
+    targetBadgeOr: "4/9 • Kaardota VIP",
+    actionHint: "Up to +4,375 ETB weekly returns 📈",
     actionHintAm: "በሳምንት እስከ +4,375 ብር ትርፍ 📈",
-    actionHintOr: "Torbanitti hanga +4,375 Qarshii argadhaa 📈",
-    preferredPlacement: "top",
+    actionHintOr: "Torbanitti hanga +4,375 Qarshii 📈",
   },
   {
-    targetSelector: "#tut-nav-leaderboard",
-    title: "Top 689 Earners Leaderboard",
+    route: "/packages",
+    targetSelector: "#tut-packages-list",
+    title: "VIP 1 - VIP 5 Yield Packages",
+    titleAm: "የ 7 ቀን የቪአይፒ ፓኬጆች",
+    titleOr: "Paakeejota VIP 1 - VIP 5",
+    description: "Activate VIP packages with animated power icons for guaranteed daily profit streaming directly into your account.",
+    descriptionAm: "በየቀኑ የተረጋገጠ ትርፍ የሚያስገኙ የቪአይፒ ፓኬጆችን እዚህ ይክፈቱ።",
+    descriptionOr: "Paakeejota VIP banuudhaan bu'aa guyyaa mirkanaa'e argadhaa.",
+    targetBadge: "5 of 9 • Packages Page",
+    targetBadgeAm: "5 ከ 9 • ፓኬጆች",
+    targetBadgeOr: "5/9 • Paakeejota",
+    actionHint: "Daily returns credited every 24 hours ⚡",
+    actionHintAm: "ትርፍ በየ 24 ሰዓቱ ወደ ሂሳብዎ ይገባል ⚡",
+    actionHintOr: "Bu'aan sa'aatii 24 hundatti galama ⚡",
+  },
+  {
+    route: "/games",
+    targetSelector: "#tut-games-spinner",
+    title: "Naomi Arcade & Mob Spinner",
+    titleAm: "ናኦሚ አርኬድ እና የሞብ ስፒነር",
+    titleOr: "Taphawwan Naomi fi Mob Spinner",
+    description: "Spin the Minecraft Mob Picker to win Birr jackpots and rewards. VIP 4+ gets unlimited daily spins!",
+    descriptionAm: "የማይንክራፍት ካራክተር መምረጫውን በማሽከርከር የገንዘብ ሽልማቶችን ያሸንፉ።",
+    descriptionOr: "Taphawwan taphachuun badhaasa qarshii olaanaa argadhaa.",
+    targetBadge: "6 of 9 • Naomi Arcade",
+    targetBadgeAm: "6 ከ 9 • ናኦሚ አርኬድ",
+    targetBadgeOr: "6/9 • Taphawwan",
+    actionHint: "Win up to +215 ETB per lucky spin 🎮",
+    actionHintAm: "በአንድ ማሽከርከር እስከ +215 ብር ያሸንፉ 🎮",
+    actionHintOr: "Naannessuu tokkoon hanga 215 Qarshii 🎮",
+  },
+  {
+    route: "/tasks",
+    targetSelector: "#tut-tasks-list",
+    title: "Daily Tasks & Video Rewards",
+    titleAm: "የዕለት ተግባራት እና ቪዲዮዎች",
+    titleOr: "Hojiiwwan Guyyaa fi Viidiyoowwan",
+    description: "Complete quick video watches, Telegram channel joins, and referral activities to collect extra daily Birr.",
+    descriptionAm: "ቪዲዮዎችን በመመልከት እና ቀላል ተግባራትን በማጠናቀቅ ተጨማሪ ብር ያግኙ።",
+    descriptionOr: "Viidiyoo daawwachuun qarshii dabalataa guyyaa hunda sassaabbadhaa.",
+    targetBadge: "7 of 9 • Daily Tasks",
+    targetBadgeAm: "7 ከ 9 • ተግባራት",
+    targetBadgeOr: "7/9 • Hojiiwwan",
+    actionHint: "Daily habits that boost your earnings 💰",
+    actionHintAm: "ገቢዎን የሚያሳድጉ የዕለት ተግባራት 💰",
+    actionHintOr: "Galii keessan kan dabalan 💰",
+  },
+  {
+    route: "/leaderboard",
+    targetSelector: "#tut-leaderboard-top",
+    title: "Top 689 Earners Live Board",
     titleAm: "የ 689 ተጠቃሚዎች ደረጃ ሰንጠረዥ",
     titleOr: "Sadarkaa Miseensota 689",
-    description: "Tap the Trophy tab to view all 689 members competing for top ranks, key badges, and network referral commissions.",
-    descriptionAm: "የ 689 ተጠቃሚዎችን የገቢ ደረጃዎች እና የቀጥታ ውድድር ለማየት የዋንጫውን አዝራር ይጫኑ።",
-    descriptionOr: "Sadarkaa miseensota 689 ilaaluuf mallattoo waancaa tuqaa.",
-    targetBadge: "Step 5 of 5",
-    targetBadgeAm: "ደረጃ 5 ከ 5",
-    targetBadgeOr: "Sadarkaa 5/5",
-    actionHint: "You're all set to start earning today! 🌟",
-    actionHintAm: "አሁን ገቢ ማግኘት ለመጀመር ዝግጁ ነዎት! 🌟",
-    actionHintOr: "Amma eegaluuf qophiidha! 🌟",
-    preferredPlacement: "top",
+    description: "Check live ranking positions across all 689 members with animated key badges and active earnings competition.",
+    descriptionAm: "የ 689 ተጠቃሚዎችን የቀጥታ የገቢ ደረጃዎች እና የዋንጫ አሸናፊዎችን እዚህ ይመልከቱ።",
+    descriptionOr: "Sadarkaa miseensota 689 fi galii isaanii hordofaa.",
+    targetBadge: "8 of 9 • Leaderboard",
+    targetBadgeAm: "8 ከ 9 • የደረጃ ሰንጠረዥ",
+    targetBadgeOr: "8/9 • Sadarkaa",
+    actionHint: "Real-time active rankings competition 🏆",
+    actionHintAm: "የቀጥታ ውድድር እና ደረጃዎች 🏆",
+    actionHintOr: "Dorgommii sadarkaa yeroo qabatamaa 🏆",
+  },
+  {
+    route: "/profile",
+    targetSelector: "#tut-profile-kyc",
+    title: "Profile & KYC Verification",
+    titleAm: "መገለጫ እና የማንነት ማረጋገጫ (KYC)",
+    titleOr: "Piroofaayilii fi Mirkaneessa KYC",
+    description: "Upload your ID to verify your account, customize your profile picture up to 5MB, and manage your withdrawal settings.",
+    descriptionAm: "መታወቂያዎን በማስገባት ሂሳብዎን ያረጋግጡ እና የገንዘብ ማውጫ ሂሳብዎን ያስተካክሉ።",
+    descriptionOr: "Waraqaa eenyummaa galchuun herrega keessan mirkaneessaa.",
+    targetBadge: "9 of 9 • Profile & KYC",
+    targetBadgeAm: "9 ከ 9 • መገለጫ",
+    targetBadgeOr: "9/9 • Piroofaayilii",
+    actionHint: "You are all set to start earning! 🚀",
+    actionHintAm: "አሁን ገቢ ማግኘት ለመጀመር ሙሉ በሙሉ ዝግጁ ነዎት! 🚀",
+    actionHintOr: "Amma eegaluuf guutummaatti qophiidha! 🚀",
   },
 ];
 
-const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v2_completed";
+const TUTORIAL_STORAGE_KEY = "birrstream_tutorial_v3_completed";
 
 interface TargetBox {
   x: number;
@@ -124,8 +188,6 @@ export function TutorialGuide() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [targetBox, setTargetBox] = useState<TargetBox | null>(null);
-  const bubbleRef = useRef<HTMLDivElement>(null);
-  const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
 
   const displayFont = {
     fontFamily: isAmharic ? "'LogaComic', sans-serif" : "'Plus Jakarta Sans', sans-serif",
@@ -153,16 +215,16 @@ export function TutorialGuide() {
     }
   }, [currentStep]);
 
-  // Handle step change & scrolling
+  // Handle route change & smooth element scrolling
   useEffect(() => {
     if (!isOpen) return;
 
     const step = TUTORIAL_STEPS[currentStep];
     if (!step) return;
 
-    // If on another route, navigate back to dashboard first
-    if (location !== "/dashboard") {
-      setLocation("/dashboard");
+    // Navigate to step's route if not already there
+    if (location !== step.route) {
+      setLocation(step.route);
     }
 
     const timer = setTimeout(() => {
@@ -173,7 +235,7 @@ export function TutorialGuide() {
       } else {
         updateTargetBox();
       }
-    }, 150);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [isOpen, currentStep, location, setLocation, updateTargetBox]);
@@ -189,18 +251,18 @@ export function TutorialGuide() {
     };
   }, [isOpen, updateTargetBox]);
 
-  // First-time auto trigger
+  // Auto start on first visit
   useEffect(() => {
     const completed = localStorage.getItem(TUTORIAL_STORAGE_KEY);
     if (!completed) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 1500);
+      }, 1400);
       return () => clearTimeout(timer);
     }
   }, []);
 
-  // Event listener to re-trigger
+  // Event listener to restart guide from Profile
   useEffect(() => {
     const handleStart = () => {
       setCurrentStep(0);
@@ -220,7 +282,7 @@ export function TutorialGuide() {
       setTimeout(() => {
         setCurrentStep((prev) => prev + 1);
         setIsTransitioning(false);
-      }, 550);
+      }, 450);
     } else {
       handleComplete();
     }
@@ -232,7 +294,7 @@ export function TutorialGuide() {
       setTimeout(() => {
         setCurrentStep((prev) => prev - 1);
         setIsTransitioning(false);
-      }, 550);
+      }, 450);
     }
   };
 
@@ -246,55 +308,52 @@ export function TutorialGuide() {
   const step = TUTORIAL_STEPS[currentStep];
   const isLast = currentStep === TUTORIAL_STEPS.length - 1;
 
-  // Compute speech bubble layout placement relative to target element
+  // Placement calculation
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
   const isTargetInBottomHalf = targetBox ? targetBox.centerY > viewportHeight / 2 : false;
-  const isNavTarget = step.targetSelector.includes("nav");
+  const showBubbleAtTop = isTargetInBottomHalf;
 
-  // Determine card placement
-  const showBubbleAtTop = isNavTarget || isTargetInBottomHalf;
-
-  // Calculate pointer line coordinates
-  const bubbleAnchorX = typeof window !== "undefined" ? Math.min(window.innerWidth / 2, 220) : 200;
-  const bubbleAnchorY = showBubbleAtTop ? 280 : viewportHeight - 280;
+  // Anchor points for animated pointer line
+  const bubbleAnchorX = typeof window !== "undefined" ? Math.min(window.innerWidth / 2, 200) : 180;
+  const bubbleAnchorY = showBubbleAtTop ? 220 : viewportHeight - 220;
 
   const targetAnchorX = targetBox ? targetBox.centerX : bubbleAnchorX;
   const targetAnchorY = targetBox
     ? showBubbleAtTop
-      ? targetBox.y - 10
-      : targetBox.y + targetBox.height + 10
+      ? targetBox.y - 6
+      : targetBox.y + targetBox.height + 6
     : bubbleAnchorY;
 
   return (
-    <div className="fixed inset-0 z-[100] pointer-events-auto select-none">
-      {/* ── DARK BACKDROP WITH SPOTLIGHT MASK ── */}
-      <div className="absolute inset-0 bg-black/65 backdrop-blur-[2px] transition-opacity duration-500 pointer-events-auto" />
+    <div className="fixed inset-0 z-[100] pointer-events-none select-none">
+      {/* ── LIGHTWEIGHT NON-OBSCURING OVERLAY (NO HEAVY GLASS BLUR) ── */}
+      <div className="absolute inset-0 bg-black/20 pointer-events-none transition-opacity duration-300" />
 
-      {/* ── TARGET COMPONENT SPOTLIGHT & BEACON ── */}
+      {/* ── TARGET COMPONENT SPOTLIGHT & RADAR BEACON ── */}
       {targetBox && (
         <div
-          className="absolute z-10 pointer-events-none transition-all duration-500 ease-out"
+          className="absolute z-10 pointer-events-none transition-all duration-300 ease-out"
           style={{
-            left: targetBox.x - 6,
-            top: targetBox.y - 6,
-            width: targetBox.width + 12,
-            height: targetBox.height + 12,
+            left: targetBox.x - 4,
+            top: targetBox.y - 4,
+            width: targetBox.width + 8,
+            height: targetBox.height + 8,
           }}
         >
-          {/* Glowing Target Border */}
-          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_24px_rgba(245,230,163,0.85)] animate-pulse bg-white/5" />
+          {/* Crisp Glowing Golden Ring around the pointed component */}
+          <div className="w-full h-full rounded-2xl border-2 border-amber-400 shadow-[0_0_20px_rgba(245,230,163,0.9)]" />
 
-          {/* Pulsing Target Radar Beacon Point */}
+          {/* Pulsing Beacon Dot */}
           <div
             className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none"
             style={{
-              top: showBubbleAtTop ? -16 : "auto",
-              bottom: showBubbleAtTop ? "auto" : -16,
+              top: showBubbleAtTop ? -12 : "auto",
+              bottom: showBubbleAtTop ? "auto" : -12,
             }}
           >
-            <span className="relative flex h-6 w-6">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-80" />
-              <span className="relative inline-flex rounded-full h-6 w-6 bg-amber-500 border-2 border-white shadow-lg items-center justify-center text-[10px] font-black text-black">
+            <span className="relative flex h-5 w-5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-85" />
+              <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md items-center justify-center text-[9px] font-black text-black">
                 ●
               </span>
             </span>
@@ -302,18 +361,14 @@ export function TutorialGuide() {
         </div>
       )}
 
-      {/* ── ANIMATED CONNECTING POINTER LINE (Connecting Chat Bubble & Target Element) ── */}
+      {/* ── ANIMATED CONNECTING POINTER LINE ── */}
       {targetBox && (
         <svg className="absolute inset-0 w-full h-full z-20 pointer-events-none overflow-visible">
           <defs>
             <linearGradient id="pointerLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#F5E6A3" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#22c55e" stopOpacity="0.95" />
+              <stop offset="0%" stopColor="#F5E6A3" stopOpacity="1" />
+              <stop offset="100%" stopColor="#22c55e" stopOpacity="1" />
             </linearGradient>
-            <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="glow" />
-              <feComposite in="SourceGraphic" in2="glow" operator="over" />
-            </filter>
           </defs>
 
           {/* Animated Connecting Line Path */}
@@ -321,90 +376,86 @@ export function TutorialGuide() {
             d={`M ${targetAnchorX} ${targetAnchorY} Q ${(targetAnchorX + bubbleAnchorX) / 2} ${(targetAnchorY + bubbleAnchorY) / 2} ${bubbleAnchorX} ${bubbleAnchorY}`}
             fill="none"
             stroke="url(#pointerLineGrad)"
-            strokeWidth="3.5"
-            strokeDasharray="6,4"
+            strokeWidth="3"
+            strokeDasharray="5,4"
             className="animate-[dash_1s_linear_infinite]"
-            filter="url(#lineGlow)"
           />
 
-          {/* Anchor Dot on Target */}
-          <circle cx={targetAnchorX} cy={targetAnchorY} r="5" fill="#F5E6A3" stroke="#ffffff" strokeWidth="2" />
+          {/* Glowing Target Anchor Dot */}
+          <circle cx={targetAnchorX} cy={targetAnchorY} r="4.5" fill="#F5E6A3" stroke="#121331" strokeWidth="1.5" />
         </svg>
       )}
 
-      {/* ── FLOATING TUTORIAL CARD & ANIMATED AVATAR ── */}
+      {/* ── NIMBLE COMPACT CHAT BUBBLE & MOVING AVATAR ── */}
       <div
-        className={`absolute left-0 right-0 px-4 z-30 flex flex-col items-center transition-all duration-500 ease-out max-w-md mx-auto ${
-          showBubbleAtTop ? "top-6 sm:top-10" : "bottom-6 sm:bottom-10"
+        className={`absolute left-0 right-0 px-3 z-30 flex flex-col items-center pointer-events-auto transition-all duration-400 ease-out max-w-[330px] sm:max-w-[360px] mx-auto ${
+          showBubbleAtTop ? "top-4 sm:top-6" : "bottom-4 sm:bottom-6"
         }`}
       >
-        {/* Animated Avatar: Walking during transition, Protesting when speech bubble is open */}
+        {/* Animated Avatar */}
         <div
-          className={`relative z-40 transition-all duration-500 ease-out flex flex-col items-center ${
-            showBubbleAtTop ? "order-2 -mt-4" : "order-1 -mb-4"
+          className={`relative z-40 transition-all duration-400 flex flex-col items-center ${
+            showBubbleAtTop ? "order-2 -mt-3" : "order-1 -mb-3"
           }`}
         >
           {isTransitioning ? (
-            // Walking Avatar with moving displacement animation
-            <div className="w-24 h-24 sm:w-28 sm:h-28 transition-transform duration-500 animate-bounce drop-shadow-2xl">
+            <div className="w-16 h-16 sm:w-18 sm:h-18 animate-bounce drop-shadow-lg">
               <img
                 src={walkingAvatar}
                 alt="Walking Guide"
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               />
             </div>
           ) : (
-            // Protesting / Explaining Avatar pointing at the specific component
-            <div className="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-2xl animate-in zoom-in-90 duration-300">
+            <div className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-lg animate-in zoom-in-90 duration-200">
               <img
                 src={protestAvatar}
                 alt="Pointing Guide"
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform"
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               />
             </div>
           )}
         </div>
 
-        {/* ── SPEECH BUBBLE CHAT CARD ── */}
+        {/* Compact Speech Bubble Card */}
         <div
-          ref={bubbleRef}
-          className={`w-full bg-card/95 backdrop-blur-md border-2 border-primary/50 rounded-[28px] p-5 shadow-2xl relative z-30 overflow-hidden ${
+          className={`w-full bg-card/95 border-2 border-primary/60 rounded-3xl p-3.5 sm:p-4 shadow-xl relative z-30 overflow-hidden ${
             showBubbleAtTop ? "order-1" : "order-2"
           }`}
         >
-          {/* Gradient accent top line */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-emerald-400 to-primary" />
+          {/* Top colored accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-primary" />
 
-          {/* Card Header */}
-          <div className="flex items-center justify-between mb-2.5 pt-1">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-1.5 pt-0.5">
             <div className="flex items-center gap-1.5">
-              <span className="px-2.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 text-[10px] font-black uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 text-[9.5px] font-black uppercase tracking-wider">
                 {isAmharic ? step.targetBadgeAm : isOromo ? step.targetBadgeOr : step.targetBadge}
               </span>
-              <span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-500" />
-                <span>Interactive Point</span>
+              <span className="text-[9.5px] text-amber-500 font-bold flex items-center gap-0.5">
+                <Sparkles className="w-2.5 h-2.5" />
+                <span>Tour</span>
               </span>
             </div>
 
             <button
               type="button"
               onClick={handleComplete}
-              className="w-7 h-7 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
+              className="w-6 h-6 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
               title="Close Tutorial"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {/* Title */}
-          <h3 className="font-black text-base text-foreground mb-1.5 leading-tight" style={displayFont}>
+          <h3 className="font-bold text-sm text-foreground mb-1 leading-tight" style={displayFont}>
             {isAmharic ? step.titleAm : isOromo ? step.titleOr : step.title}
           </h3>
 
           {/* Description */}
           <p
-            className="text-xs text-muted-foreground leading-relaxed mb-3.5"
+            className="text-[11.5px] text-muted-foreground leading-relaxed mb-2.5"
             style={isAmharic ? { fontFamily: "'Noto Sans Ethiopic', sans-serif" } : {}}
           >
             {isAmharic ? step.descriptionAm : isOromo ? step.descriptionOr : step.description}
@@ -412,41 +463,41 @@ export function TutorialGuide() {
 
           {/* Action Hint */}
           {step.actionHint && (
-            <div className="bg-primary/10 border border-primary/25 rounded-2xl px-3 py-2 mb-3.5 flex items-center gap-2 text-[11px] font-bold text-primary">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-              <span>{isAmharic ? step.actionHintAm : isOromo ? step.actionHintOr : step.actionHint}</span>
+            <div className="bg-primary/10 border border-primary/20 rounded-xl px-2.5 py-1.5 mb-2.5 flex items-center gap-1.5 text-[10.5px] font-bold text-primary">
+              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{isAmharic ? step.actionHintAm : isOromo ? step.actionHintOr : step.actionHint}</span>
             </div>
           )}
 
-          {/* Footer Controls & Step Navigation */}
+          {/* Footer Controls */}
           <div className="flex items-center justify-between pt-2 border-t border-border/60">
             {/* Step Dots */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               {TUTORIAL_STEPS.map((_, idx) => (
                 <div
                   key={idx}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                  className={`h-1 rounded-full transition-all duration-200 ${
                     idx === currentStep
-                      ? "w-6 bg-primary"
+                      ? "w-4 bg-primary"
                       : idx < currentStep
-                      ? "w-2 bg-primary/40"
-                      : "w-1.5 bg-muted-foreground/30"
+                      ? "w-1.5 bg-primary/40"
+                      : "w-1 bg-muted-foreground/30"
                   }`}
                 />
               ))}
             </div>
 
-            {/* Buttons */}
-            <div className="flex items-center gap-2">
+            {/* Nav Buttons */}
+            <div className="flex items-center gap-1.5">
               {currentStep > 0 && (
                 <button
                   type="button"
                   onClick={handlePrev}
                   disabled={isTransitioning}
-                  className="px-3 py-1.5 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-muted/70 hover:bg-muted transition-colors flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-full text-[11px] font-bold text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted transition-colors flex items-center gap-1 cursor-pointer"
                   style={displayFont}
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-3 h-3" />
                   <span>{isAmharic ? "ወደ ኋላ" : isOromo ? "Duuba" : "Back"}</span>
                 </button>
               )}
@@ -455,7 +506,7 @@ export function TutorialGuide() {
                 type="button"
                 onClick={handleNext}
                 disabled={isTransitioning}
-                className="px-4 py-2 rounded-full text-xs font-black bg-primary text-primary-foreground shadow-md shadow-primary/25 hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-primary text-primary-foreground shadow-sm shadow-primary/25 hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                 style={displayFont}
               >
                 <span>
@@ -471,7 +522,7 @@ export function TutorialGuide() {
                     ? "Itti Fufi"
                     : "Next"}
                 </span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3 h-3" />
               </button>
             </div>
           </div>
